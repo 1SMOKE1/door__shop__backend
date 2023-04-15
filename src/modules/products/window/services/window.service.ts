@@ -284,7 +284,7 @@ export class WindowService {
     await checkArrFieldByEnum(GlassesWindowEnum, glasses, "glasses");
 
 
-    const newProduct = this.windowRepository.create({
+    return await this.windowRepository.update(id, {
       name,
       country,
       guarantee,
@@ -300,8 +300,15 @@ export class WindowService {
       glasses,
       home_page: homePage,
       description,
-    });
-    return await this.windowRepository.save(newProduct);
+    })
+    .then(() => this.findById(id));
+    
   }
 
+  async deleteById(id: number){
+    if ((await this.findById(id)) == null) 
+    throw new HttpException(`window with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
+
+    return await this.windowRepository.delete(id);
+  }
 }

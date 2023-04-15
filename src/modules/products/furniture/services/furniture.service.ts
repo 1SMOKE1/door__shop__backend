@@ -190,7 +190,8 @@ export class FurnitureService {
   }
 
   async deleteById(id: number) {
-    if ((await this.findById(id)) == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
+    if ((await this.findById(id)) == null) 
+    throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
 
     return await this.furnitureRepository.delete(id);
   }
