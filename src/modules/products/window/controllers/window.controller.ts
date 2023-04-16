@@ -1,10 +1,25 @@
-import { BadRequestException, Controller, Get, HttpStatus, Res, ParseIntPipe, Param, Post, Body, Put, Delete } from '@nestjs/common';
+import { BadRequestException, Controller, Get, HttpStatus, Res, ParseIntPipe, Param, Post, Body, Put, Delete, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { WindowService } from '../services/window.service';
 import { Response } from 'express';
 import { CreateWindowDto } from '../dto/create-window.dto';
 import { UpdateWindowDto } from '../dto/update-window.dto';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { imageFileFilter, imageStorage } from 'src/multer-config/multer.config';
+import { IImageFiles } from 'src/interfaces/IImageFile';
 
 @Controller('window')
+@UseInterceptors(
+  FileFieldsInterceptor([
+    { name: 'img_main', maxCount: 1 },
+    { name: 'img_1', maxCount: 1 },
+    { name: 'img_2', maxCount: 1},
+    { name: 'img_3', maxCount: 1},
+    { name: 'img_4', maxCount: 1},
+  ], {
+    storage: imageStorage,
+    fileFilter: imageFileFilter
+  })
+)
 export class WindowController {
 
   constructor(
@@ -39,10 +54,11 @@ export class WindowController {
   @Post()
   async createOne(
     @Body() body: CreateWindowDto,
+    @UploadedFiles() files: IImageFiles,
     @Res() res: Response
   ){
     try {
-      const newWindow = await this.windowService.createOne(body);
+      const newWindow = await this.windowService.createOne(body, files);
       return res.status(HttpStatus.CREATED).json(newWindow);
     } catch (err) {
       throw new BadRequestException(err);
@@ -52,11 +68,12 @@ export class WindowController {
   @Put(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number,
+    @UploadedFiles() files: IImageFiles,
     @Body() body: UpdateWindowDto,
     @Res() res: Response
   ){
     try {
-      const updatedWindow = await this.windowService.updateById(id, body);
+      const updatedWindow = await this.windowService.updateById(id, body, files);
       return res.status(HttpStatus.CREATED).json(updatedWindow);
     } catch (err) {
       throw new BadRequestException(err);

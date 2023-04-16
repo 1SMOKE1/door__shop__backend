@@ -1,11 +1,33 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  ParseIntPipe, Post, Put, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { EntranceDoorService } from '../services/entrance-door.service';
 import { Response } from 'express';
 import { CreateEntranceDoorDto } from '../dto/create-entrance-door.dto';
 import { UpdateEntranceDoorDto } from '../dto/update-entrance-door.dto';
-
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { imageFileFilter, imageStorage } from 'src/multer-config/multer.config';
+import { IImageFiles } from 'src/interfaces/IImageFile';
 
 @Controller('entrance-door')
+@UseInterceptors(
+  FileFieldsInterceptor([
+    { name: 'img_main', maxCount: 1 },
+    { name: 'img_1', maxCount: 1 },
+    { name: 'img_2', maxCount: 1},
+    { name: 'img_3', maxCount: 1},
+    { name: 'img_4', maxCount: 1},
+  ], {
+    storage: imageStorage,
+    fileFilter: imageFileFilter
+  })
+)
 export class EntranceDoorController {
 
   constructor(
@@ -37,13 +59,15 @@ export class EntranceDoorController {
     }
   }
 
+  
   @Post()
   async createOne(
     @Body() body: CreateEntranceDoorDto,
-    @Res() res: Response
+    @UploadedFiles() files: IImageFiles,
+    @Res() res: Response,
   ){
     try {
-      const newEntranceDoor = await this.entranceDoorService.createOne(body);
+      const newEntranceDoor = await this.entranceDoorService.createOne(body, files);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
     } catch (err) {
       throw new BadRequestException(err);
@@ -53,14 +77,14 @@ export class EntranceDoorController {
   @Put(':id')
   async updateById(
     @Param('id', ParseIntPipe) id: number,
+    @UploadedFiles() files: IImageFiles,
     @Body() body: UpdateEntranceDoorDto,
     @Res() res: Response
   ){
     try {
-      const newEntranceDoor = await this.entranceDoorService.updateById(id, body);
+      const newEntranceDoor = await this.entranceDoorService.updateById(id, body, files);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
     } catch (err) {
-      console.log(err);
       throw new BadRequestException(err);
     }
   }

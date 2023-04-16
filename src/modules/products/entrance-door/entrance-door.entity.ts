@@ -40,22 +40,22 @@ export class EntranceDoorEntity {
   @Column("varchar")
   in_stock: InStockEnum;
 
-  @Column("text", { array: true })
+  @Column("text", { array: true, default: []})
   amount_of_sealing_materials: AmountOfSealingMaterialsEnum[];
 
-  @Column("text", { array: true })
+  @Column("text", { array: true, default: []})
   fabric_material: FabricMaterialEnum[];
 
-  @Column("text", { array: true })
+  @Column("text", { array: true, default: [] })
   purpose: PuproseEnum[];
 
-  @Column("text", { array: true })
+  @Column("text", { array: true, default: [] })
   opening_method: OpeningMethodEnum[];
 
-  @Column("text", { array: true })
+  @Column("text", { array: true, default: [] })
   covering: CoveringEnum[];
 
-  @Column("text", { array: true })
+  @Column("text", { array: true, default: [] })
   frame_material: FrameMaterialEntranceDoorEnum[];
 
   @Column("boolean", { default: false })

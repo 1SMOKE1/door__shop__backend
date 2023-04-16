@@ -13,6 +13,7 @@ import { EntranceDoorModule } from './modules/products/entrance-door/entrance-do
 import { InteriorDoorModule } from './modules/products/interior-door/interior-door.module';
 import { WindowModule } from './modules/products/window/window.module';
 import { FurnitureModule } from './modules/products/furniture/furniture.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 
 @Module({
@@ -39,6 +40,9 @@ import { FurnitureModule } from './modules/products/furniture/furniture.module';
         ],
         synchronize: true,
       }),
+    }),
+    MulterModule.register({
+      dest: './uploads',
     }),
     ProductProducersModule,
     TypeOfProductsModule,
