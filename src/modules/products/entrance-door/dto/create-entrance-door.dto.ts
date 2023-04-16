@@ -21,9 +21,9 @@ export class CreateEntranceDoorDto{
 
   state: StateEnum;
 
-  price: number;
+  price: number | string;
 
-  installationPrice: number;
+  installationPrice: number | string;
 
   inStock: InStockEnum;
 

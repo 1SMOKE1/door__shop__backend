@@ -11,6 +11,8 @@ import { ProductProducerEntity } from "src/modules/product-producers/product-pro
 import checkEnum from "src/utils/checkEnum";
 import generateErrorArr from "src/utils/generateErrorArr";
 import { UpdateFurnitureDto } from "../dto/update-furniture.dto";
+import { IImageFiles } from "src/interfaces/IImageFile";
+import { updateImage } from "src/utils/updateImage";
 
 @Injectable()
 export class FurnitureService {
@@ -26,17 +28,28 @@ export class FurnitureService {
   }
 
   async findById(id: number) {
-    const currentProduct = await this.furnitureRepository.findOne({where: {id}, relations: {product_producer: true}});
+    const currentProduct = await this.furnitureRepository.findOne({ where: { id }, relations: { product_producer: true } });
 
     if (currentProduct == null) throw new HttpException(`furniture with id: ${id}, doesn't exists`, HttpStatus.FORBIDDEN);
 
     return currentProduct;
   }
 
-  async createOne(body: CreateFurnitureDto) {
+  async createOne(body: CreateFurnitureDto, files: IImageFiles) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
-    const { name, country, guarantee, state, inStock, price, installationPrice, productProducerName, homePage, description } = body;
+    const {
+      name,
+      country,
+      guarantee,
+      state,
+      inStock,
+      price,
+      installationPrice,
+      productProducerName,
+      homePage,
+      description
+    } = body;
 
     if (!name) throw new HttpException("No name", HttpStatus.FORBIDDEN);
 
@@ -52,7 +65,7 @@ export class FurnitureService {
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if(!country) throw new HttpException('No country', HttpStatus.FORBIDDEN);
+    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
@@ -60,7 +73,7 @@ export class FurnitureService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if(!guarantee) throw new HttpException('No guarantee', HttpStatus.FORBIDDEN);
+    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
 
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
@@ -68,7 +81,7 @@ export class FurnitureService {
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if(!state) throw new HttpException('No state', HttpStatus.FORBIDDEN);
+    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
 
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
@@ -86,17 +99,15 @@ export class FurnitureService {
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!price) throw new HttpException("No price", HttpStatus.FORBIDDEN);
-
-    if(typeof price != 'number') throw new HttpException("price must be typeof number", HttpStatus.CONFLICT);
+    if (typeof +price != "number") throw new HttpException("price must be typeof number", HttpStatus.CONFLICT);
 
     if (price < 0) throw new HttpException("Incorrect price", HttpStatus.CONFLICT);
 
-    if (!installationPrice) throw new HttpException("No installationPrice", HttpStatus.FORBIDDEN);
+    if (typeof +installationPrice != "number") throw new HttpException("installationPrice must be typeof number", HttpStatus.CONFLICT);
 
-    if(typeof installationPrice != 'number') throw new HttpException("installationPrice must be typeof number", HttpStatus.CONFLICT);
+    if (+installationPrice < 0) throw new HttpException("Incorrect installationPrice", HttpStatus.CONFLICT);
 
-    if (installationPrice < 0) throw new HttpException("Incorrect installationPrice", HttpStatus.CONFLICT);
+    const {img_main, img_1, img_2, img_3, img_4} = files;
 
     const newProduct = this.furnitureRepository.create({
       name,
@@ -109,16 +120,34 @@ export class FurnitureService {
       product_producer: productProducer,
       home_page: homePage,
       description,
+      img_main: img_main ? img_main[0].path : null,
+      img_1: img_1 ? img_1[0].path : null,
+      img_2: img_2 ? img_2[0].path : null,
+      img_3: img_3 ? img_3[0].path : null,
+      img_4: img_4 ? img_4[0].path : null
     });
     return await this.furnitureRepository.save(newProduct);
   }
 
-  async updateById(id: number, body: UpdateFurnitureDto) {
+  async updateById(id: number, body: UpdateFurnitureDto, files: IImageFiles) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
-    if ((await this.findById(id)) == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
+    const curProduct = await this.findById(id);
 
-    const { name, country, guarantee, state, inStock, price, installationPrice, productProducerName, homePage, description } = body;
+    if (curProduct == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
+
+    const {
+      name,
+      country,
+      guarantee,
+      state,
+      inStock,
+      price,
+      installationPrice,
+      productProducerName,
+      homePage,
+      description
+    } = body;
 
     if (!name) throw new HttpException("No name", HttpStatus.FORBIDDEN);
 
@@ -133,17 +162,23 @@ export class FurnitureService {
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
 
+    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
+
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
+    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
+
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
+
+    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
 
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
@@ -161,17 +196,17 @@ export class FurnitureService {
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!price) throw new HttpException("No price", HttpStatus.FORBIDDEN);
-
-    if(typeof price != 'number') throw new HttpException("price must be typeof number", HttpStatus.CONFLICT);
+    if (typeof +price != "number") throw new HttpException("price must be typeof number", HttpStatus.CONFLICT);
 
     if (price < 0) throw new HttpException("Incorrect price", HttpStatus.CONFLICT);
 
-    if (!installationPrice) throw new HttpException("No installationPrice", HttpStatus.FORBIDDEN);
+    if (typeof +installationPrice != "number") throw new HttpException("installationPrice must be typeof number", HttpStatus.CONFLICT);
 
-    if(typeof installationPrice != 'number') throw new HttpException("installationPrice must be typeof number", HttpStatus.CONFLICT);
+    if (+installationPrice < 0) throw new HttpException("Incorrect installationPrice", HttpStatus.CONFLICT);
 
-    if (installationPrice < 0) throw new HttpException("Incorrect installationPrice", HttpStatus.CONFLICT);
+    // IMAGES
+
+    const {img_main, img_1, img_2, img_3, img_4} = files;
 
     return await this.furnitureRepository
       .update(id, {
@@ -185,6 +220,11 @@ export class FurnitureService {
         product_producer: productProducer,
         home_page: homePage,
         description,
+        img_main: updateImage(curProduct, img_main, 'img_main'),
+        img_1: updateImage(curProduct, img_1, 'img_1'),
+        img_2: updateImage(curProduct, img_2, 'img_2'),
+        img_3: updateImage(curProduct, img_3, 'img_3'),
+        img_4: updateImage(curProduct, img_4, 'img_4')
       })
       .then(() => this.findById(id));
   }
