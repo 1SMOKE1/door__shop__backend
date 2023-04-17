@@ -21,6 +21,7 @@ import { StructuralFeaturesEnum } from "src/enums/structural-features.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 
 export interface IProduct{
+  id: number;
   name: string, // Назва
   product_producer: ProductProducerEntity,
   country: CountryEnum, // Країна виробник
