@@ -8,7 +8,7 @@ export const imageFileFilter = (req, file, callback) => {
 };
 
 export const imageStorage = diskStorage({
-    destination: './uploads',
+    destination: './uploads/images',
     filename: (req: any, file: any, cb: any) => {
       cb(null, `${file.originalname}`);
    },

@@ -14,6 +14,8 @@ import { InteriorDoorModule } from './modules/products/interior-door/interior-do
 import { WindowModule } from './modules/products/window/window.module';
 import { FurnitureModule } from './modules/products/furniture/furniture.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { ProductsModule } from './modules/products/products.module';
 
 
 @Module({
@@ -44,12 +46,27 @@ import { MulterModule } from '@nestjs/platform-express';
     MulterModule.register({
       dest: './uploads',
     }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        transport: {
+          service: configService.get('MAILER_SERVICE'),
+          host: configService.get('MAILER_HOST'),
+          auth: {
+            user: configService.get('MAILER_USER'),
+            pass: configService.get('MAILER_PASS')
+          }
+        }
+      }),
+      inject: [ConfigService]
+    }),
     ProductProducersModule,
     TypeOfProductsModule,
     EntranceDoorModule,
     InteriorDoorModule,
     WindowModule,
-    FurnitureModule
+    FurnitureModule,
+    ProductsModule,
   ],
   controllers: [],
   providers: [],

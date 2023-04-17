@@ -22,6 +22,7 @@ import { FabricMaterialEnum } from "src/enums/fabric-material.enum";
 import { IImageFiles } from "src/interfaces/IImageFile";
 import { updateImage } from "src/utils/updateImage";
 
+
 @Injectable()
 export class EntranceDoorService {
   constructor(
@@ -38,9 +39,7 @@ export class EntranceDoorService {
   async findById(id: number) {
     const currentProduct = await this.entranceDoorRepository.findOne({ where: { id }, relations: { product_producer: true } });
 
-    if (currentProduct == null)
-    throw new HttpException(`entrance_door with id: ${id}, doesn't exists`,
-    HttpStatus.FORBIDDEN);
+    if (currentProduct == null) throw new HttpException(`entrance_door with id: ${id}, doesn't exists`, HttpStatus.FORBIDDEN);
 
     return currentProduct;
   }
@@ -72,13 +71,13 @@ export class EntranceDoorService {
     if (name.trim() == "") throw new HttpException(`Name can't be empty`, HttpStatus.CONFLICT);
 
     if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+
     const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
     if (productProducer == null) {
       const producers = await this.productProducerRepository.find();
 
-      throw new HttpException(`Incorrect productProducers: ${producers
-        .map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
@@ -86,8 +85,7 @@ export class EntranceDoorService {
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
 
-      throw new HttpException(`Incorrect country, you could choose from: ${countries
-        .map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
@@ -95,8 +93,7 @@ export class EntranceDoorService {
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
-      throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties
-        .map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
@@ -104,8 +101,7 @@ export class EntranceDoorService {
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
-      throw new HttpException(`Incorrect state, you could choose from: ${states
-        .map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!inStock) {
@@ -115,8 +111,7 @@ export class EntranceDoorService {
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
 
-      throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks
-        .map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (typeof +price != "number") throw new HttpException("price must be typeof number", HttpStatus.CONFLICT);
@@ -132,11 +127,7 @@ export class EntranceDoorService {
 
     await fieldTypeOfArr(amountOfSealingMaterials);
 
-    const emptyAmountOfSealingMaterials = await checkArrFieldByEnum(
-      AmountOfSealingMaterialsEnum,
-      amountOfSealingMaterials,
-      "amountOfSealingMaterials"
-    );
+    const emptyAmountOfSealingMaterials = await checkArrFieldByEnum(AmountOfSealingMaterialsEnum, amountOfSealingMaterials, "amountOfSealingMaterials");
 
     // fabricMaterial: string[] // Матеріл дверного полотна
     if (!fabricMaterial) throw new HttpException("No fabricMaterial", HttpStatus.FORBIDDEN);
@@ -173,7 +164,7 @@ export class EntranceDoorService {
 
     const emptyFrameMaterial = await checkArrFieldByEnum(FrameMaterialEntranceDoorEnum, frameMaterial, "frameMaterial");
 
-    const {img_main, img_1, img_2, img_3, img_4} = files;
+    const { img_main, img_1, img_2, img_3, img_4 } = files;
 
     const newProduct = this.entranceDoorRepository.create({
       name,
@@ -196,7 +187,7 @@ export class EntranceDoorService {
       img_1: img_1 ? img_1[0].path : null,
       img_2: img_2 ? img_2[0].path : null,
       img_3: img_3 ? img_3[0].path : null,
-      img_4: img_4 ? img_4[0].path : null
+      img_4: img_4 ? img_4[0].path : null,
     });
     return await this.entranceDoorRepository.save(newProduct);
   }
@@ -206,9 +197,7 @@ export class EntranceDoorService {
 
     const curProduct = await this.findById(id);
 
-    if (curProduct == null)
-    throw new HttpException(`entrance_door with current id: ${id} doesn't exists`,
-    HttpStatus.NOT_FOUND);
+    if (curProduct == null) throw new HttpException(`entrance_door with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
 
     const {
       name,
@@ -234,13 +223,13 @@ export class EntranceDoorService {
     if (name.trim() == "") throw new HttpException(`Name can't be empty`, HttpStatus.CONFLICT);
 
     if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+
     const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
     if (productProducer == null) {
       const producers = await this.productProducerRepository.find();
 
-      throw new HttpException(`Incorrect productProducers: ${producers
-        .map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
@@ -248,8 +237,7 @@ export class EntranceDoorService {
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
 
-      throw new HttpException(`Incorrect country, you could choose from: ${countries
-        .map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
@@ -257,8 +245,7 @@ export class EntranceDoorService {
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
-      throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties
-        .map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
@@ -266,8 +253,7 @@ export class EntranceDoorService {
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
-      throw new HttpException(`Incorrect state, you could choose from: ${states
-        .map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!inStock) {
@@ -277,45 +263,30 @@ export class EntranceDoorService {
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
 
-      throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks
-        .map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (typeof +price != "number") throw new HttpException("price must be typeof number", HttpStatus.CONFLICT);
 
     if (+price < 0) throw new HttpException("Incorrect price", HttpStatus.CONFLICT);
 
-    if (typeof +installationPrice != "number")
-    throw new HttpException("installationPrice must be typeof number",
-    HttpStatus.CONFLICT);
+    if (typeof +installationPrice != "number") throw new HttpException("installationPrice must be typeof number", HttpStatus.CONFLICT);
 
-    if (+installationPrice < 0)
-    throw new HttpException("Incorrect installationPrice",
-    HttpStatus.CONFLICT);
+    if (+installationPrice < 0) throw new HttpException("Incorrect installationPrice", HttpStatus.CONFLICT);
 
     // amountOfSealingMaterials: string[] // Кількість ущільнюючих контурів
     if (!amountOfSealingMaterials) throw new HttpException("No amountOfSealingMaterials", HttpStatus.FORBIDDEN);
 
     await fieldTypeOfArr(amountOfSealingMaterials);
 
-    const emptyAmountOfSealingMaterials = await checkArrFieldByEnum(
-      AmountOfSealingMaterialsEnum,
-      amountOfSealingMaterials,
-      "amountOfSealingMaterials"
-    );
+    const emptyAmountOfSealingMaterials = await checkArrFieldByEnum(AmountOfSealingMaterialsEnum, amountOfSealingMaterials, "amountOfSealingMaterials");
 
     // fabricMaterial: string[] // Матеріл дверного полотна
-    if (!fabricMaterial)
-    throw new HttpException("No fabricMaterial",
-    HttpStatus.FORBIDDEN);
+    if (!fabricMaterial) throw new HttpException("No fabricMaterial", HttpStatus.FORBIDDEN);
 
     await fieldTypeOfArr(fabricMaterial);
 
-    const emptyFabricMaterial = await checkArrFieldByEnum(
-      FabricMaterialEnum,
-      fabricMaterial,
-      "fabricMaterial"
-    );
+    const emptyFabricMaterial = await checkArrFieldByEnum(FabricMaterialEnum, fabricMaterial, "fabricMaterial");
 
     // purpose: string[] // Призначення двері
     if (!purpose) throw new HttpException("No purpose", HttpStatus.FORBIDDEN);
@@ -347,7 +318,7 @@ export class EntranceDoorService {
 
     // IMAGES
 
-    const {img_main, img_1, img_2, img_3, img_4} = files;
+    const { img_main, img_1, img_2, img_3, img_4 } = files;
 
     return await this.entranceDoorRepository
       .update(id, {
@@ -367,19 +338,17 @@ export class EntranceDoorService {
         frame_material: emptyFrameMaterial === null ? frameMaterial : [],
         home_page: homePage,
         description,
-        img_main: updateImage(curProduct, img_main, 'img_main'),
-        img_1: updateImage(curProduct, img_1, 'img_1'),
-        img_2: updateImage(curProduct, img_2, 'img_2'),
-        img_3: updateImage(curProduct, img_3, 'img_3'),
-        img_4: updateImage(curProduct, img_4, 'img_4')
+        img_main: updateImage(curProduct, img_main, "img_main"),
+        img_1: updateImage(curProduct, img_1, "img_1"),
+        img_2: updateImage(curProduct, img_2, "img_2"),
+        img_3: updateImage(curProduct, img_3, "img_3"),
+        img_4: updateImage(curProduct, img_4, "img_4"),
       })
       .then(() => this.findById(id));
   }
 
   async deleteById(id: number) {
-    if ((await this.findById(id)) == null)
-    throw new HttpException(`entrance_door with current id: ${id} doesn't exists`,
-    HttpStatus.FORBIDDEN);
+    if ((await this.findById(id)) == null) throw new HttpException(`entrance_door with current id: ${id} doesn't exists`, HttpStatus.FORBIDDEN);
 
     return await this.entranceDoorRepository.delete(id);
   }

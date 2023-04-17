@@ -38,18 +38,7 @@ export class FurnitureService {
   async createOne(body: CreateFurnitureDto, files: IImageFiles) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
-    const {
-      name,
-      country,
-      guarantee,
-      state,
-      inStock,
-      price,
-      installationPrice,
-      productProducerName,
-      homePage,
-      description
-    } = body;
+    const { name, country, guarantee, state, inStock, price, installationPrice, productProducerName, homePage, description } = body;
 
     if (!name) throw new HttpException("No name", HttpStatus.FORBIDDEN);
 
@@ -107,7 +96,7 @@ export class FurnitureService {
 
     if (+installationPrice < 0) throw new HttpException("Incorrect installationPrice", HttpStatus.CONFLICT);
 
-    const {img_main, img_1, img_2, img_3, img_4} = files;
+    const { img_main, img_1, img_2, img_3, img_4 } = files;
 
     const newProduct = this.furnitureRepository.create({
       name,
@@ -124,7 +113,7 @@ export class FurnitureService {
       img_1: img_1 ? img_1[0].path : null,
       img_2: img_2 ? img_2[0].path : null,
       img_3: img_3 ? img_3[0].path : null,
-      img_4: img_4 ? img_4[0].path : null
+      img_4: img_4 ? img_4[0].path : null,
     });
     return await this.furnitureRepository.save(newProduct);
   }
@@ -136,24 +125,14 @@ export class FurnitureService {
 
     if (curProduct == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
 
-    const {
-      name,
-      country,
-      guarantee,
-      state,
-      inStock,
-      price,
-      installationPrice,
-      productProducerName,
-      homePage,
-      description
-    } = body;
+    const { name, country, guarantee, state, inStock, price, installationPrice, productProducerName, homePage, description } = body;
 
     if (!name) throw new HttpException("No name", HttpStatus.FORBIDDEN);
 
     if (name.trim() == "") throw new HttpException(`Name can't be empty`, HttpStatus.CONFLICT);
 
     if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+
     const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
     if (productProducer == null) {
@@ -175,7 +154,7 @@ export class FurnitureService {
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
-      throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect guarantee,you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
@@ -186,9 +165,7 @@ export class FurnitureService {
       throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!inStock) {
-      throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
-    }
+    if (!inStock) throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
 
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
@@ -206,7 +183,7 @@ export class FurnitureService {
 
     // IMAGES
 
-    const {img_main, img_1, img_2, img_3, img_4} = files;
+    const { img_main, img_1, img_2, img_3, img_4 } = files;
 
     return await this.furnitureRepository
       .update(id, {
@@ -220,11 +197,11 @@ export class FurnitureService {
         product_producer: productProducer,
         home_page: homePage,
         description,
-        img_main: updateImage(curProduct, img_main, 'img_main'),
-        img_1: updateImage(curProduct, img_1, 'img_1'),
-        img_2: updateImage(curProduct, img_2, 'img_2'),
-        img_3: updateImage(curProduct, img_3, 'img_3'),
-        img_4: updateImage(curProduct, img_4, 'img_4')
+        img_main: updateImage(curProduct, img_main, "img_main"),
+        img_1: updateImage(curProduct, img_1, "img_1"),
+        img_2: updateImage(curProduct, img_2, "img_2"),
+        img_3: updateImage(curProduct, img_3, "img_3"),
+        img_4: updateImage(curProduct, img_4, "img_4"),
       })
       .then(() => this.findById(id));
   }
