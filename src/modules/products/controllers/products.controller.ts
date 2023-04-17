@@ -33,7 +33,6 @@ export class ProductsController {
       const filtered = await this.productsService.filtration(body, query)
       return res.status(HttpStatus.OK).json(filtered);
     } catch (err) {
-      console.log(err);
       throw new BadRequestException(err);
     }
   }

@@ -16,6 +16,8 @@ import { FurnitureModule } from './modules/products/furniture/furniture.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ProductsModule } from './modules/products/products.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { OrderEntity } from './modules/orders/order.entity';
 
 
 @Module({
@@ -38,7 +40,8 @@ import { ProductsModule } from './modules/products/products.module';
           EntranceDoorEntity,
           InteriorDoorEntity,
           WindowEntity,
-          FurnitureEntity
+          FurnitureEntity,
+          OrderEntity
         ],
         synchronize: true,
       }),
@@ -67,6 +70,7 @@ import { ProductsModule } from './modules/products/products.module';
     WindowModule,
     FurnitureModule,
     ProductsModule,
+    OrdersModule,
   ],
   controllers: [],
   providers: [],
