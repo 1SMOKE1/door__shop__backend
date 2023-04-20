@@ -2,12 +2,15 @@ import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
 import { StateEnum } from "src/enums/state.enum";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 export class CreateFurnitureDto {
 
   name: string;
 
   productProducerName: string;
+
+  typeOfProductName: TypeOfProductEnum;
 
   country: CountryEnum;
 

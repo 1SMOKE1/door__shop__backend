@@ -13,6 +13,7 @@ import generateErrorArr from "src/utils/generateErrorArr";
 import { UpdateFurnitureDto } from "../dto/update-furniture.dto";
 import { IImageFiles } from "src/interfaces/IImageFile";
 import { updateImage } from "src/utils/updateImage";
+import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 
 @Injectable()
 export class FurnitureService {
@@ -21,6 +22,8 @@ export class FurnitureService {
     private readonly furnitureRepository: Repository<FurnitureEntity>,
     @InjectRepository(ProductProducerEntity)
     private readonly productProducerRepository: Repository<ProductProducerEntity>,
+    @InjectRepository(TypeOfProductEntity)
+    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>,
   ) {}
 
   async findAll() {
@@ -38,7 +41,19 @@ export class FurnitureService {
   async createOne(body: CreateFurnitureDto, files: IImageFiles) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
-    const { name, country, guarantee, state, inStock, price, installationPrice, productProducerName, homePage, description } = body;
+    const {
+      name,
+      country, 
+      guarantee,
+      state,
+      inStock,
+      price,
+      installationPrice,
+      productProducerName,
+      typeOfProductName,
+      homePage,
+      description
+    } = body;
 
     if (!name) throw new HttpException("No name", HttpStatus.FORBIDDEN);
 
@@ -46,14 +61,27 @@ export class FurnitureService {
 
     if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
 
-    const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName });
+    const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
-    if (productProducer == null) {
+    if (product_producer == null) {
       const producers = await this.productProducerRepository.find();
 
-      throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect productProducer you could choose from: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
 
+    if(!typeOfProductName) throw new HttpException('Ho typeOfProductName', HttpStatus.FORBIDDEN);
+
+    const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
+
+    if(type_of_product == null){
+      const typeOfProducts = await this.typeOfProductRepository.find();
+
+      throw new HttpException(`Incorrect typeOfProrductName you could choose from: ${typeOfProducts
+        .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
+    }
+
+
+    
     if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
 
     if (!(await checkEnum(CountryEnum, country))) {
@@ -106,7 +134,8 @@ export class FurnitureService {
       in_stock: inStock,
       price,
       installation_price: installationPrice,
-      product_producer: productProducer,
+      product_producer,
+      type_of_product,
       home_page: homePage,
       description,
       img_main: img_main ? img_main[0].path : null,
@@ -125,7 +154,19 @@ export class FurnitureService {
 
     if (curProduct == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
 
-    const { name, country, guarantee, state, inStock, price, installationPrice, productProducerName, homePage, description } = body;
+    const {
+      name,
+      country,
+      guarantee,
+      state,
+      inStock,
+      price,
+      installationPrice,
+      productProducerName,
+      homePage,
+      description,
+      typeOfProductName
+    } = body;
 
     if (!name) throw new HttpException("No name", HttpStatus.FORBIDDEN);
 
@@ -139,6 +180,17 @@ export class FurnitureService {
       const producers = await this.productProducerRepository.find();
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+    }
+
+    if(!typeOfProductName) throw new HttpException('Ho typeOfProductName', HttpStatus.FORBIDDEN);
+
+    const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
+
+    if(type_of_product == null){
+      const typeOfProducts = await this.typeOfProductRepository.find();
+
+      throw new HttpException(`Incorrect typeOfProrductName you could choose from: ${typeOfProducts
+        .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
     if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
@@ -195,6 +247,7 @@ export class FurnitureService {
         price,
         installation_price: installationPrice,
         product_producer: productProducer,
+        type_of_product,
         home_page: homePage,
         description,
         img_main: updateImage(curProduct, img_main, "img_main"),

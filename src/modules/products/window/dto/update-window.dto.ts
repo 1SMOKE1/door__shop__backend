@@ -7,6 +7,7 @@ import { InStockEnum } from "src/enums/in-stock.enum";
 import { LaminationWindowEnum } from "src/enums/lamination-window.enum";
 import { ProfileWindowEnum } from "src/enums/profile-window.enum";
 import { StateEnum } from "src/enums/state.enum";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 export class UpdateWindowDto {
 
@@ -14,6 +15,8 @@ export class UpdateWindowDto {
   name: string;
 
   productProducerName: string;
+
+  typeOfProductName: TypeOfProductEnum;
 
   country: CountryEnum;
 

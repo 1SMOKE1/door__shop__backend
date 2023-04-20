@@ -8,12 +8,15 @@ import { OpeningMethodEnum } from "src/enums/opening-method.enum";
 import { OpeningTypeEnum } from "src/enums/opening-type.enum";
 import { StateEnum } from "src/enums/state.enum";
 import { StructuralFeaturesEnum } from "src/enums/structural-features.enum";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 export class UpdateInteriorDoorDto {
 
   name: string;
 
   productProducerName: string;
+
+  typeOfProductName: TypeOfProductEnum;
 
   country: CountryEnum;
 

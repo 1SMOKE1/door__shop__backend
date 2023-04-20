@@ -9,6 +9,7 @@ import { OpeningTypeEnum } from "src/enums/opening-type.enum";
 import { StateEnum } from "src/enums/state.enum";
 import { StructuralFeaturesEnum } from "src/enums/structural-features.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
+import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "interior_door" })
@@ -21,6 +22,9 @@ export class InteriorDoorEntity {
 
   @ManyToOne(() => ProductProducerEntity)
   product_producer: ProductProducerEntity;
+
+  @ManyToOne(() => TypeOfProductEntity)
+  type_of_product: TypeOfProductEntity;
 
   @Column("varchar")
   country: CountryEnum;

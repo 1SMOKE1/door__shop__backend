@@ -8,12 +8,15 @@ import { InStockEnum } from "src/enums/in-stock.enum";
 import { OpeningMethodEnum } from "src/enums/opening-method.enum";
 import { StateEnum } from "src/enums/state.enum";
 import { PuproseEnum } from "src/enums/purpose.enum";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 export class CreateEntranceDoorDto{
 
   name: string;
 
   productProducerName: string;
+
+  typeOfProductName: TypeOfProductEnum;
 
   country: CountryEnum;
 

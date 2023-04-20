@@ -4,11 +4,13 @@ import { FurnitureService } from './services/furniture.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FurnitureEntity } from './furniture.entity';
 import { ProductProducersModule } from 'src/modules/product-producers/product-producers.module';
+import { TypeOfProductsModule } from 'src/modules/type-of-products/type-of-products.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([FurnitureEntity]),
-    ProductProducersModule
+    ProductProducersModule,
+    TypeOfProductsModule
   ],
   controllers: [FurnitureController],
   providers: [FurnitureService],
