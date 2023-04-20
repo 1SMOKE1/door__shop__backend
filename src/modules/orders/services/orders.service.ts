@@ -4,7 +4,9 @@ import { OrderEntity } from '../order.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { MailerService } from '@nestjs-modules/mailer';
-import { ICartLine } from '../interfaces/ICartLine';
+import userMessage from 'src/utils/emailing/user-message';
+import { UpdateOrderDto } from '../dto/update-order.dto';
+import ownerMessage from 'src/utils/emailing/owner-message';
 
 @Injectable()
 export class OrdersService {
@@ -25,6 +27,8 @@ export class OrdersService {
 
   async createOne (body: CreateOrderDto){
 
+    if(!body) throw new HttpException('No body', HttpStatus.FORBIDDEN);
+
     const {
       name,
       phone,
@@ -42,74 +46,81 @@ export class OrdersService {
       cart_lines: cartLines
     }
 
+    // client email
+
     try{
-      await this.mailerService.sendMail({
-        from: 'Doorshop.dp.ua@gmail.com',
-        to: 'chumak.dp.ua@gmail.com', // chumak.dp.ua@gmail.com
-        subject: `Замовлення З door_shop`,
-        html: `
-        <h1>Ім'я замовника: ${name}</h1>
-        <p>Адресса замовника: ${address}</p>
-        <p>Email: ${email}</p>
-        <p>Кінцева ціна замовлення: ${totalCost} грн</p>
-        <p>Телефон замовника: ${phone}</p>
-        <p>Тип оплати замовлення: ${kindOfPayvment}</p>
-        <div style="margin-bottom: 20px;">Товари замовника: 
-          <div style="display: flex;">${this.getCartLinesHTML(cartLines)}</div>
-        </div>
-        `,
-        attachments: this.getCartLinesImages(cartLines)        
-      })
+      await this.mailerService.sendMail(userMessage(name, email, totalCost, phone, cartLines));
+    } catch (err) {
+      throw new HttpException('Incorrect user email', HttpStatus.CONFLICT);
+    }
+
+    // site owner email
+    try{
+      await this.mailerService.sendMail(ownerMessage(name, email, totalCost, phone,address, kindOfPayvment, cartLines));
     } catch (err) {
       throw new HttpException('Incorrect some data for emailing to owner', HttpStatus.CONFLICT);
     }
-    
-
     
     const newOrder = this.orderRepository.create(newOrderBody);
     return await this.orderRepository.save(newOrder);
   }
 
+  async updateById(id: number, body: UpdateOrderDto){
+
+    if(!body) throw new HttpException('No body', HttpStatus.FORBIDDEN);
+
+    const updatedItem = await this.findById(id);
+
+    if(updatedItem == null)
+    throw new HttpException(`No such item with id: ${id}`, HttpStatus.FORBIDDEN);
+    
+    
+
+    const {
+      name,
+      phone, 
+      address, 
+      email,
+      cartLines, 
+      totalCost,
+      kindOfPayvment,
+      shiped
+    } = body
 
 
 
-
-  private getCartLinesImages(arr: ICartLine[]){
-    return arr.map((el: ICartLine) => {
-        const filename = el.product.img_main.split('\\').pop();
-        const cid = filename.split('.').shift();
-        return {
-          filename,
-          path: el.product.img_main,
-          cid
-        }
-      }
-    )
-  }
-
-  private getCartLinesHTML(arr: ICartLine[]) { 
-    let txt = ''; 
-
-    for(const item of arr){
-
-      const cid = item.product.img_main.split('\\').pop().split('.').shift();
-
-      txt +=
-        `
-        <div class="card-product">
-          <div class="card-product-img-wrap">
-            <img style="width: 20%;" src=cid:${cid} alt="">
-          </div>
-          <div class="card-product-body">
-            <h2 class="font-h2"></h2>
-            <p>ID продукту: ${item.product.id}</p>
-            <p>Назва продукту: ${item.product.name}</p>
-            <p>Кількість: ${item.quantity}</p>
-            <p>Ціна за одиницю товару: ${item.product.price}.00 грн</p>
-          </div>
-        </div><br><br><br>`;
+    const updatedOrderBody = {
+      name,
+      phone,
+      address,
+      email,
+      total_cost: totalCost,
+      kind_of_payvment: kindOfPayvment,
+      cart_lines: cartLines,
+      shiped
     }
-    return txt; 
+
+    return await this.orderRepository.update({id}, updatedOrderBody).then(() => this.findById(id));
   }
+
+  async deleteById(id: number){
+    
+    const deletedItem = await this.findById(id);
+
+    if (deletedItem === null) {
+      throw new HttpException(
+        `Sorry this item doesn't even exists`,
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    return await this.orderRepository.delete(id)
+    .then(() => `successfully delete by id: ${id}`)
+  }
+
+
+  
+
+  
 
 }

@@ -9,6 +9,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { GlassUnitWindowEnum } from "src/enums/glass-unit-window.enum";
 import { LaminationWindowEnum } from "src/enums/lamination-window.enum";
 import { GlassesWindowEnum } from "src/enums/glasses-window.enum";
+import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 
 
 
@@ -22,6 +23,9 @@ export class WindowEntity {
 
   @ManyToOne(() => ProductProducerEntity)
   product_producer: ProductProducerEntity;
+
+  @ManyToOne(() => TypeOfProductEntity)
+  type_of_product: TypeOfProductEntity;
 
   @Column("varchar")
   country: CountryEnum;

@@ -3,6 +3,7 @@ import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
 import { StateEnum } from "src/enums/state.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
+import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name: "funiture"})
@@ -15,6 +16,9 @@ export class FurnitureEntity {
 
   @ManyToOne(() => ProductProducerEntity)
   product_producer: ProductProducerEntity;
+
+  @ManyToOne(() => TypeOfProductEntity)
+  type_of_product: TypeOfProductEntity;
 
   @Column("varchar")
   country: CountryEnum;

@@ -21,6 +21,7 @@ import { UpdateEntranceDoorDto } from "../dto/update-entrance-door.dto";
 import { FabricMaterialEnum } from "src/enums/fabric-material.enum";
 import { IImageFiles } from "src/interfaces/IImageFile";
 import { updateImage } from "src/utils/updateImage";
+import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 
 
 @Injectable()
@@ -30,6 +31,8 @@ export class EntranceDoorService {
     private readonly entranceDoorRepository: Repository<EntranceDoorEntity>,
     @InjectRepository(ProductProducerEntity)
     private readonly productProducerRepository: Repository<ProductProducerEntity>,
+    @InjectRepository(TypeOfProductEntity)
+    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>
   ) {}
 
   async findAll() {
@@ -56,6 +59,7 @@ export class EntranceDoorService {
       price,
       installationPrice,
       productProducerName,
+      typeOfProductName,
       amountOfSealingMaterials,
       fabricMaterial,
       openingMethod,
@@ -72,12 +76,24 @@ export class EntranceDoorService {
 
     if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
 
-    const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName });
+    const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
-    if (productProducer == null) {
+    if (product_producer == null) {
       const producers = await this.productProducerRepository.find();
 
-      throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect productProducer you could choose from: ${producers
+        .map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+    }
+
+    if(!typeOfProductName) throw new HttpException('Ho typeOfProductName', HttpStatus.FORBIDDEN);
+
+    const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
+
+    if(type_of_product == null){
+      const typeOfProducts = await this.typeOfProductRepository.find();
+
+      throw new HttpException(`Incorrect typeOfProrductName you could choose from: ${typeOfProducts
+        .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
     if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
@@ -174,7 +190,8 @@ export class EntranceDoorService {
       in_stock: inStock,
       price: +price,
       installation_price: +installationPrice,
-      product_producer: productProducer,
+      product_producer,
+      type_of_product,
       amount_of_sealing_materials: emptyAmountOfSealingMaterials === null ? amountOfSealingMaterials : [],
       fabric_material: emptyFabricMaterial === null ? fabricMaterial : [],
       opening_method: emptyOpeningMethod === null ? openingMethod : [],
@@ -208,6 +225,7 @@ export class EntranceDoorService {
       price,
       installationPrice,
       productProducerName,
+      typeOfProductName,
       amountOfSealingMaterials,
       fabricMaterial,
       openingMethod,
@@ -224,13 +242,25 @@ export class EntranceDoorService {
 
     if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
 
-    const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName });
+    const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
-    if (productProducer == null) {
+    if (product_producer == null) {
       const producers = await this.productProducerRepository.find();
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
+
+    if(!typeOfProductName) throw new HttpException('No typeOfProduct', HttpStatus.FORBIDDEN);
+
+    const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
+
+    if(type_of_product == null){
+      const typeOfProducts = await this.typeOfProductRepository.find();
+
+      throw new HttpException(`Incorrect typeOfProrduct you could choose from: ${typeOfProducts
+        .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
+    }
+
 
     if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
 
@@ -329,7 +359,8 @@ export class EntranceDoorService {
         in_stock: inStock,
         price: +price,
         installation_price: installationPrice,
-        product_producer: productProducer,
+        type_of_product,
+        product_producer,
         amount_of_sealing_materials: emptyAmountOfSealingMaterials === null ? amountOfSealingMaterials : [],
         fabric_material: emptyFabricMaterial === null ? fabricMaterial : [],
         opening_method: emptyOpeningMethod === null ? openingMethod : [],

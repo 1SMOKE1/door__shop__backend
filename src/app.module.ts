@@ -18,6 +18,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ProductsModule } from './modules/products/products.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { OrderEntity } from './modules/orders/order.entity';
+import { OurWorksModule } from './modules/our-works/our-works.module';
+import { OurWorkEntity } from './modules/our-works/our-work.entity';
+import { OurCommentsModule } from './modules/our-comments/our-comments.module';
+import { OurCommentEntity } from './modules/our-comments/our-comment.entity';
 
 
 @Module({
@@ -41,7 +45,9 @@ import { OrderEntity } from './modules/orders/order.entity';
           InteriorDoorEntity,
           WindowEntity,
           FurnitureEntity,
-          OrderEntity
+          OrderEntity,
+          OurWorkEntity,
+          OurCommentEntity
         ],
         synchronize: true,
       }),
@@ -71,6 +77,9 @@ import { OrderEntity } from './modules/orders/order.entity';
     FurnitureModule,
     ProductsModule,
     OrdersModule,
+    OurWorksModule,
+    OurCommentsModule,
+    OurCommentsModule,
   ],
   controllers: [],
   providers: [],
