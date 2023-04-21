@@ -23,12 +23,12 @@ export class OurWorksService {
     return await this.ourWorksRepository.findOneBy({id});
   }
 
-  async createOne(body: CreateOurWorkDto, image: Express.Multer.File[]){
+  async createOne(body: CreateOurWorkDto, image: Express.Multer.File){
 
     if(!body) throw new HttpException('No body', HttpStatus.FORBIDDEN);
 
     const { imgAlt } = body;
-    const img_src = image[0] ? image[0].path : null;
+    const img_src = image ? image.path : null;
 
     const newOurWork = this.ourWorksRepository.create({
       img_src,
@@ -38,7 +38,7 @@ export class OurWorksService {
     return await this.ourWorksRepository.save(newOurWork);
   }
 
-  async updateById(id: number, body: UpdateOurWorkDto, image: Express.Multer.File[]){
+  async updateById(id: number, body: UpdateOurWorkDto, image: Express.Multer.File){
 
     if(!body) throw new HttpException('No body', HttpStatus.FORBIDDEN);
 
@@ -49,8 +49,7 @@ export class OurWorksService {
     
 
     const { imgAlt } = body;
-    const img_src = image[0] ? image[0].path : null;
-
+    const img_src = image ? image.path : null;
 
     return await this.ourWorksRepository.update({id}, {
       img_src,

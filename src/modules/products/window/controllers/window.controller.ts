@@ -4,7 +4,7 @@ import { Response } from "express";
 import { CreateWindowDto } from "../dto/create-window.dto";
 import { UpdateWindowDto } from "../dto/update-window.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { imageFileFilter, imageStorage } from "src/multer-config/multer.config";
+import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
 import { IImageFiles } from "src/interfaces/IImageFile";
 
 @Controller("window")
