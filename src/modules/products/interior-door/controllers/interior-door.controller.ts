@@ -19,7 +19,7 @@ import { Response } from "express";
 import { CreateInteriorDoorDto } from "../dto/create-interior-door.dto";
 import { UpdateInteriorDoorDto } from "../dto/update-interior-door.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { imageFileFilter, imageStorage } from "src/multer-config/multer.config";
+import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
 import { IImageFiles } from "src/interfaces/IImageFile";
 
 @Controller("interior-door")

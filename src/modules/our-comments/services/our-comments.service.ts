@@ -21,12 +21,12 @@ export class OurCommentsService {
     return await this.ourCommentsRepository.findOneBy({id});
   }
 
-  async createOne(body: CreateOurCommentDto, image: Express.Multer.File[]){
+  async createOne(body: CreateOurCommentDto, image: Express.Multer.File){
 
     if(!body) throw new HttpException('No body', HttpStatus.FORBIDDEN);
 
     const { imgAlt } = body;
-    const img_src = image[0] ? image[0].path : null;
+    const img_src = image ? image.path : null;
 
     const newOurComment = this.ourCommentsRepository.create({
       img_src,
@@ -36,7 +36,7 @@ export class OurCommentsService {
     return await this.ourCommentsRepository.save(newOurComment);
   }
 
-  async updateById(id: number, body: UpdateOurCommentDto, image: Express.Multer.File[]){
+  async updateById(id: number, body: UpdateOurCommentDto, image: Express.Multer.File){
 
     if(!body) throw new HttpException('No body', HttpStatus.FORBIDDEN);
 
@@ -44,10 +44,9 @@ export class OurCommentsService {
 
     if(curItem == null)
     throw new HttpException(`Such item doesn't exists`, HttpStatus.FORBIDDEN);
-    
 
     const { imgAlt } = body;
-    const img_src = image[0] ? image[0].path : null;
+    const img_src = image ? image.path : null;
 
 
     return await this.ourCommentsRepository.update({id}, {
