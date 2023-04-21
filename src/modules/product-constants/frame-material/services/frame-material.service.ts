@@ -29,12 +29,12 @@ export class FrameMaterialService {
 
     const { isUsing } = body;
 
-    const newFabricMaterial = this.frameMaterialRepository.create({
+    const newEntity = this.frameMaterialRepository.create({
       ...body,
       is_using: isUsing
     })
 
-    return await this.frameMaterialRepository.save(newFabricMaterial);
+    return await this.frameMaterialRepository.save(newEntity);
   }
 
   async updateById(id: number, body: UpdateFabricMaterialDto){

@@ -29,12 +29,12 @@ export class OpeningMethodService {
 
     const { isUsing } = body;
 
-    const newFabricMaterial = this.openingMethodRepository.create({
+    const newEntity = this.openingMethodRepository.create({
       ...body,
       is_using: isUsing
     })
 
-    return await this.openingMethodRepository.save(newFabricMaterial);
+    return await this.openingMethodRepository.save(newEntity);
   }
 
   async updateById(id: number, body: UpdateFabricMaterialDto){
