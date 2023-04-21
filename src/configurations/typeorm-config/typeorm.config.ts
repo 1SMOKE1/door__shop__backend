@@ -9,10 +9,13 @@ import { CoveringEntity } from "src/modules/product-constants/covering/covering.
 import { FabricMaterialEntity } from "src/modules/product-constants/fabric-material/fabric-material.entity";
 import { FinishingTheSurfaceEntity } from "src/modules/product-constants/finishing-the-surface/finishing-the-surface.entity";
 import { FrameMaterialEntity } from "src/modules/product-constants/frame-material/frame-material.entity";
+import { InstallationTypeEntity } from "src/modules/product-constants/installation-type/installation-type.entity";
 import { OpeningMethodEntity } from "src/modules/product-constants/opening-method/opening-method.entity";
 import { OpeningTypeEntity } from "src/modules/product-constants/opening-type/opening-type.entity";
 import { PurposeEntity } from "src/modules/product-constants/purpose/purpose.entity";
 import { StructuralFeatureEntity } from "src/modules/product-constants/structural-features/structural-feature.entity";
+import { WindowConstructionEntity } from "src/modules/product-constants/window-construction/window-construction.entity";
+import { WindowProfileEntity } from "src/modules/product-constants/window-profile/window-profile.entity";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { EntranceDoorEntity } from "src/modules/products/entrance-door/entrance-door.entity";
 import { FurnitureEntity } from "src/modules/products/furniture/furniture.entity";
@@ -55,6 +58,9 @@ class TypeOrmConfigService implements TypeOrmOptionsFactory {
           FinishingTheSurfaceEntity,
           StructuralFeatureEntity,
           OpeningTypeEntity,
+          InstallationTypeEntity,
+          WindowProfileEntity,
+          WindowConstructionEntity,
         ],
         synchronize: true,
     };

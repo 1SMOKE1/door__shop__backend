@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PurposeEntity } from '../purpose.entity';
 import { Repository } from 'typeorm';
-import { CreateFabricMaterialDto } from '../../fabric-material/dto/create-fabric-material.dto';
-import { UpdateFabricMaterialDto } from '../../fabric-material/dto/update-fabric-material.dto';
+import { CreatePurposeDto } from '../dto/create-purpose.dto';
+import { UpdatePurposeDto } from '../dto/update-purpose.dto';
 
 @Injectable()
 export class PurposeService {
@@ -25,7 +25,7 @@ export class PurposeService {
     return curItem;
   }
 
-  async createOne(body: CreateFabricMaterialDto){
+  async createOne(body: CreatePurposeDto){
 
     const { isUsing } = body;
 
@@ -37,7 +37,7 @@ export class PurposeService {
     return await this.purposeRepository.save(newEntity);
   }
 
-  async updateById(id: number, body: UpdateFabricMaterialDto){
+  async updateById(id: number, body: UpdatePurposeDto){
 
     const curItem = await this.findById(id);
 

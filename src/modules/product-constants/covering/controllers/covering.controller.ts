@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
 import { CoveringService } from '../services/covering.service';
-import { CreateAmountOfSealingMaterialDto } from '../../amount-of-sealing-materials/dto/create-amount-of-sealing-material.dto';
-import { UpdateAmountOfSealingMaterialDto } from '../../amount-of-sealing-materials/dto/update-amount-of-sealing-material.dto';
 import { Response } from 'express';
+import { CreateCoveringDto } from '../dto/create-covering.dto';
+import { UpdateCoveringDto } from '../dto/update-covering.dto';
 
 @Controller('covering')
 export class CoveringController {
@@ -25,7 +25,7 @@ export class CoveringController {
 
   @Post()
   async createOne(
-    @Body() body: CreateAmountOfSealingMaterialDto,
+    @Body() body: CreateCoveringDto,
     @Res() res: Response
     ){
     try {
@@ -39,7 +39,7 @@ export class CoveringController {
   @Put(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateAmountOfSealingMaterialDto,
+    @Body() body: UpdateCoveringDto,
     @Res() res: Response){
     try {
       const updatedEntity = await this.coveringService.updateById(id, body);

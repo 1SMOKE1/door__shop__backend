@@ -22,6 +22,12 @@ import { FrameMaterialModule } from './modules/product-constants/frame-material/
 import { FinishingTheSurfaceModule } from './modules/product-constants/finishing-the-surface/finishing-the-surface.module';
 import { StructuralFeaturesModule } from './modules/product-constants/structural-features/structural-features.module';
 import { OpeningTypeModule } from './modules/product-constants/opening-type/opening-type.module';
+import { InstallationTypeModule } from './modules/product-constants/installation-type/installation-type.module';
+import { WindowProfileModule } from './modules/product-constants/window-profile/window-profile.module';
+import { WindowConstructionModule } from './modules/product-constants/window-construction/window-construction.module';
+import { WindowGlassUnitModule } from './modules/product-constants/window-glass-unit/window-glass-unit.module';
+import { WindowLaminationModule } from './modules/product-constants/window-lamination/window-lamination.module';
+import { WindowGlassesModule } from './modules/product-constants/window-glasses/window-glasses.module';
 import TypeOrmConfigService from './configurations/typeorm-config/typeorm.config';
 import MailerConfigService from './configurations/mailer-config/mailer.config';
 
@@ -61,6 +67,12 @@ import MailerConfigService from './configurations/mailer-config/mailer.config';
     FinishingTheSurfaceModule,
     StructuralFeaturesModule,
     OpeningTypeModule,
+    InstallationTypeModule,
+    WindowProfileModule,
+    WindowConstructionModule,
+    WindowGlassUnitModule,
+    WindowLaminationModule,
+    WindowGlassesModule,
   ],
   controllers: [],
   providers: [],
