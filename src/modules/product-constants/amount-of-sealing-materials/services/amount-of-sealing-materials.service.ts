@@ -21,6 +21,7 @@ export class AmountOfSealingMaterialsService {
   }
 
   async createOne(body: CreateAmountOfSealingMaterialDto) {
+
     const { isUsing } = body;
 
     const newAmountOfSealingMaterial = this.amountOfSealingMaterialsRepository.create({ ...body, is_using: isUsing });
@@ -44,6 +45,7 @@ export class AmountOfSealingMaterialsService {
 
     if (curItem == null) throw new HttpException(`This item doesn't exists`, HttpStatus.FORBIDDEN);
 
-    return await this.amountOfSealingMaterialsRepository.delete(id);
+    return await this.amountOfSealingMaterialsRepository.delete(id)
+    .then(() => `successfully delete by id: ${id}`);
   }
 }

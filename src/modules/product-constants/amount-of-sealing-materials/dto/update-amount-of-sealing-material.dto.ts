@@ -1,16 +1,18 @@
-import { IsNotEmpty, IsString, IsNumber, IsPositive, IsBoolean } from "class-validator";
+import { IsNotEmpty, IsString, IsNumber, IsPositive, IsBoolean, IsOptional } from "class-validator";
 
 export class UpdateAmountOfSealingMaterialDto {
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   name: string;
 
   @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   @IsPositive()
   price: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsBoolean()
   isUsing: boolean;
 }
