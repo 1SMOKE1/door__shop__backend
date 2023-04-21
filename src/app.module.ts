@@ -14,6 +14,11 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { OurWorksModule } from './modules/our-works/our-works.module';
 import { OurCommentsModule } from './modules/our-comments/our-comments.module';
 import { AmountOfSealingMaterialsModule } from './modules/product-constants/amount-of-sealing-materials/amount-of-sealing-materials.module';
+import { FabricMaterialModule } from './modules/product-constants/fabric-material/fabric-material.module';
+import { PurposeModule } from './modules/product-constants/purpose/purpose.module';
+import { OpeningMethodModule } from './modules/product-constants/opening-method/opening-method.module';
+import { CoveringModule } from './modules/product-constants/covering/covering.module';
+import { FrameMaterialModule } from './modules/product-constants/frame-material/frame-material.module';
 import TypeOrmConfigService from './configurations/typeorm-config/typeorm.config';
 import MailerConfigService from './configurations/mailer-config/mailer.config';
 
@@ -45,6 +50,16 @@ import MailerConfigService from './configurations/mailer-config/mailer.config';
     OurCommentsModule,
     
     AmountOfSealingMaterialsModule,
+    
+    FabricMaterialModule,
+    
+    PurposeModule,
+    
+    OpeningMethodModule,
+    
+    CoveringModule,
+    
+    FrameMaterialModule,
   ],
   controllers: [],
   providers: [],
