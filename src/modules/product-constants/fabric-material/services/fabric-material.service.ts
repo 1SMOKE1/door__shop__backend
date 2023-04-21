@@ -29,12 +29,12 @@ export class FabricMaterialService {
 
     const { isUsing } = body;
 
-    const newFabricMaterial = this.fabricMaterialRepository.create({
+    const newEntity = this.fabricMaterialRepository.create({
       ...body,
       is_using: isUsing
     })
 
-    return await this.fabricMaterialRepository.save(newFabricMaterial);
+    return await this.fabricMaterialRepository.save(newEntity);
   }
 
   async updateById(id: number, body: UpdateFabricMaterialDto){

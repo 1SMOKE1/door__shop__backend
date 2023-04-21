@@ -19,6 +19,9 @@ import { PurposeModule } from './modules/product-constants/purpose/purpose.modul
 import { OpeningMethodModule } from './modules/product-constants/opening-method/opening-method.module';
 import { CoveringModule } from './modules/product-constants/covering/covering.module';
 import { FrameMaterialModule } from './modules/product-constants/frame-material/frame-material.module';
+import { FinishingTheSurfaceModule } from './modules/product-constants/finishing-the-surface/finishing-the-surface.module';
+import { StructuralFeaturesModule } from './modules/product-constants/structural-features/structural-features.module';
+import { OpeningTypeModule } from './modules/product-constants/opening-type/opening-type.module';
 import TypeOrmConfigService from './configurations/typeorm-config/typeorm.config';
 import MailerConfigService from './configurations/mailer-config/mailer.config';
 
@@ -50,16 +53,14 @@ import MailerConfigService from './configurations/mailer-config/mailer.config';
     OurCommentsModule,
     
     AmountOfSealingMaterialsModule,
-    
     FabricMaterialModule,
-    
     PurposeModule,
-    
     OpeningMethodModule,
-    
     CoveringModule,
-    
     FrameMaterialModule,
+    FinishingTheSurfaceModule,
+    StructuralFeaturesModule,
+    OpeningTypeModule,
   ],
   controllers: [],
   providers: [],

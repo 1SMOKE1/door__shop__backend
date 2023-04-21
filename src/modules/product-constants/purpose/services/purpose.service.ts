@@ -29,12 +29,12 @@ export class PurposeService {
 
     const { isUsing } = body;
 
-    const newFabricMaterial = this.purposeRepository.create({
+    const newEntity = this.purposeRepository.create({
       ...body,
       is_using: isUsing
     })
 
-    return await this.purposeRepository.save(newFabricMaterial);
+    return await this.purposeRepository.save(newEntity);
   }
 
   async updateById(id: number, body: UpdateFabricMaterialDto){

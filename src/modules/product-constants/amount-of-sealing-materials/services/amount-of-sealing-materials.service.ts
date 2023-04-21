@@ -24,9 +24,9 @@ export class AmountOfSealingMaterialsService {
 
     const { isUsing } = body;
 
-    const newAmountOfSealingMaterial = this.amountOfSealingMaterialsRepository.create({ ...body, is_using: isUsing });
+    const newEntity = this.amountOfSealingMaterialsRepository.create({ ...body, is_using: isUsing });
 
-    return await this.amountOfSealingMaterialsRepository.save(newAmountOfSealingMaterial);
+    return await this.amountOfSealingMaterialsRepository.save(newEntity);
   }
 
   async updateById(id: number, body: UpdateAmountOfSealingMaterialDto) {

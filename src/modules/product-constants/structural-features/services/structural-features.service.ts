@@ -1,24 +1,24 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CoveringEntity } from '../covering.entity';
+import { StructuralFeatureEntity } from '../structural-feature.entity';
 import { Repository } from 'typeorm';
 import { CreateFabricMaterialDto } from '../../fabric-material/dto/create-fabric-material.dto';
 import { UpdateFabricMaterialDto } from '../../fabric-material/dto/update-fabric-material.dto';
 
 @Injectable()
-export class CoveringService {
+export class StructuralFeaturesService {
 
   constructor(
-    @InjectRepository(CoveringEntity)
-    private readonly coveringRepository: Repository<CoveringEntity>
+    @InjectRepository(StructuralFeatureEntity)
+    private readonly structuralFeatureRepository: Repository<StructuralFeatureEntity>
   ){}
 
   async findAll(){
-    return await this.coveringRepository.find();
+    return await this.structuralFeatureRepository.find();
   }
 
   async findById(id: number){
-    const curItem = await this.coveringRepository.findOneBy({id});
+    const curItem = await this.structuralFeatureRepository.findOneBy({id});
 
     if(curItem == null) throw new HttpException(`Item by id: ${id} doesn't exists`, HttpStatus.FORBIDDEN);
 
@@ -29,12 +29,12 @@ export class CoveringService {
 
     const { isUsing } = body;
 
-    const newEntity = this.coveringRepository.create({
+    const newEntity = this.structuralFeatureRepository.create({
       ...body,
       is_using: isUsing
     })
 
-    return await this.coveringRepository.save(newEntity);
+    return await this.structuralFeatureRepository.save(newEntity);
   }
 
   async updateById(id: number, body: UpdateFabricMaterialDto){
@@ -45,7 +45,7 @@ export class CoveringService {
 
     const { isUsing } = body;
 
-    return await this.coveringRepository.update(id, {...body, is_using: isUsing})
+    return await this.structuralFeatureRepository.update(id, {...body, is_using: isUsing})
     .then(() => this.findById(id));
   }
 
@@ -54,7 +54,7 @@ export class CoveringService {
 
     if (curItem == null) throw new HttpException(`This item doesn't exists`, HttpStatus.FORBIDDEN);
 
-    return await this.coveringRepository.delete({id})
+    return await this.structuralFeatureRepository.delete({id})
     .then(() => `successfully delete by id: ${id}`)
   }
 }
