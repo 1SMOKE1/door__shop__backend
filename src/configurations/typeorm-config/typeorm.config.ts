@@ -15,6 +15,9 @@ import { OpeningTypeEntity } from "src/modules/product-constants/opening-type/op
 import { PurposeEntity } from "src/modules/product-constants/purpose/purpose.entity";
 import { StructuralFeatureEntity } from "src/modules/product-constants/structural-features/structural-feature.entity";
 import { WindowConstructionEntity } from "src/modules/product-constants/window-construction/window-construction.entity";
+import { WindowGlassUnitEntity } from "src/modules/product-constants/window-glass-unit/window-glass-unit.entity";
+import { WindowGlassEntity } from "src/modules/product-constants/window-glasses/window-glasses.entity";
+import { WindowLaminationEntity } from "src/modules/product-constants/window-lamination/window-lamination.entity";
 import { WindowProfileEntity } from "src/modules/product-constants/window-profile/window-profile.entity";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { EntranceDoorEntity } from "src/modules/products/entrance-door/entrance-door.entity";
@@ -61,6 +64,9 @@ class TypeOrmConfigService implements TypeOrmOptionsFactory {
           InstallationTypeEntity,
           WindowProfileEntity,
           WindowConstructionEntity,
+          WindowGlassUnitEntity,
+          WindowLaminationEntity,
+          WindowGlassEntity,
         ],
         synchronize: true,
     };
