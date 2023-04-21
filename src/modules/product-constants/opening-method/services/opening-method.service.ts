@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OpeningMethodEntity } from '../opening-method.entity';
 import { Repository } from 'typeorm';
-import { CreateFabricMaterialDto } from '../../fabric-material/dto/create-fabric-material.dto';
-import { UpdateFabricMaterialDto } from '../../fabric-material/dto/update-fabric-material.dto';
+import { CreateOpeningMethodDto } from '../dto/create-opening-method.dto';
+import { UpdateOpeningMethodDto } from '../dto/update-opening-method.dto';
 
 @Injectable()
 export class OpeningMethodService {
@@ -25,7 +25,7 @@ export class OpeningMethodService {
     return curItem;
   }
 
-  async createOne(body: CreateFabricMaterialDto){
+  async createOne(body: CreateOpeningMethodDto){
 
     const { isUsing } = body;
 
@@ -37,7 +37,7 @@ export class OpeningMethodService {
     return await this.openingMethodRepository.save(newEntity);
   }
 
-  async updateById(id: number, body: UpdateFabricMaterialDto){
+  async updateById(id: number, body: UpdateOpeningMethodDto){
 
     const curItem = await this.findById(id);
 

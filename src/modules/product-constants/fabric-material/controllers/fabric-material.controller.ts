@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
 import { FabricMaterialService } from '../services/fabric-material.service';
-import { CreateAmountOfSealingMaterialDto } from '../../amount-of-sealing-materials/dto/create-amount-of-sealing-material.dto';
-import { UpdateAmountOfSealingMaterialDto } from '../../amount-of-sealing-materials/dto/update-amount-of-sealing-material.dto';
 import { Response } from 'express';
+import { CreateFabricMaterialDto } from '../dto/create-fabric-material.dto';
+import { UpdateFabricMaterialDto } from '../dto/update-fabric-material.dto';
 
 @Controller('fabric-material')
 export class FabricMaterialController {
@@ -25,7 +25,7 @@ export class FabricMaterialController {
 
   @Post()
   async createOne(
-    @Body() body: CreateAmountOfSealingMaterialDto,
+    @Body() body: CreateFabricMaterialDto,
     @Res() res: Response
     ){
     try {
@@ -39,7 +39,7 @@ export class FabricMaterialController {
   @Put(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateAmountOfSealingMaterialDto,
+    @Body() body: UpdateFabricMaterialDto,
     @Res() res: Response){
     try {
       const updatedEntity = await this.fabricMaterialService.updateById(id, body);

@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
 import { FinishingTheSurfaceService } from '../services/finishing-the-surface.service';
-import { CreateAmountOfSealingMaterialDto } from '../../amount-of-sealing-materials/dto/create-amount-of-sealing-material.dto';
-import { UpdateAmountOfSealingMaterialDto } from '../../amount-of-sealing-materials/dto/update-amount-of-sealing-material.dto';
 import { Response } from 'express';
+import { CreateFinishingTheSurfaceDto } from '../dto/create-finishing-the-surface.dto';
+import { UpdateFinishingTheSurfaceDto } from '../dto/update-finishing-the-surface.dto';
 
 @Controller('finishing-the-surface')
 export class FinishingTheSurfaceController {
@@ -25,7 +25,7 @@ export class FinishingTheSurfaceController {
 
   @Post()
   async createOne(
-    @Body() body: CreateAmountOfSealingMaterialDto,
+    @Body() body: CreateFinishingTheSurfaceDto,
     @Res() res: Response
     ){
     try {
@@ -39,7 +39,7 @@ export class FinishingTheSurfaceController {
   @Put(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateAmountOfSealingMaterialDto,
+    @Body() body: UpdateFinishingTheSurfaceDto,
     @Res() res: Response){
     try {
       const updatedEntity = await this.finishingTheSurfaceService.updateById(id, body);

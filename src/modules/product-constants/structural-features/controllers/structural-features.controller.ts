@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
 import { StructuralFeaturesService } from '../services/structural-features.service';
-import { CreateAmountOfSealingMaterialDto } from '../../amount-of-sealing-materials/dto/create-amount-of-sealing-material.dto';
-import { UpdateAmountOfSealingMaterialDto } from '../../amount-of-sealing-materials/dto/update-amount-of-sealing-material.dto';
 import { Response } from 'express';
+import { CreateStructuralFeatureDto } from '../dto/create-structural-feature.dto';
+import { UpdateStructuralFeatureDto } from '../dto/update-structural-feature.dto';
 
 @Controller('structural-features')
 export class StructuralFeaturesController {
@@ -26,7 +26,7 @@ export class StructuralFeaturesController {
 
   @Post()
   async createOne(
-    @Body() body: CreateAmountOfSealingMaterialDto,
+    @Body() body: CreateStructuralFeatureDto,
     @Res() res: Response
     ){
     try {
@@ -40,7 +40,7 @@ export class StructuralFeaturesController {
   @Put(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateAmountOfSealingMaterialDto,
+    @Body() body: UpdateStructuralFeatureDto,
     @Res() res: Response){
     try {
       const updatedEntity = await this.structuralFeaturesService.updateById(id, body);

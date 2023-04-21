@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FrameMaterialEntity } from '../frame-material.entity';
 import { Repository } from 'typeorm';
-import { CreateFabricMaterialDto } from '../../fabric-material/dto/create-fabric-material.dto';
-import { UpdateFabricMaterialDto } from '../../fabric-material/dto/update-fabric-material.dto';
+import { CreateFrameMaterialDto } from '../dto/create-frame-material.dto';
+import { UpdateFrameMaterialDto } from '../dto/update-frame-material.dto';
 
 @Injectable()
 export class FrameMaterialService {
@@ -25,7 +25,7 @@ export class FrameMaterialService {
     return curItem;
   }
 
-  async createOne(body: CreateFabricMaterialDto){
+  async createOne(body: CreateFrameMaterialDto){
 
     const { isUsing } = body;
 
@@ -37,7 +37,7 @@ export class FrameMaterialService {
     return await this.frameMaterialRepository.save(newEntity);
   }
 
-  async updateById(id: number, body: UpdateFabricMaterialDto){
+  async updateById(id: number, body: UpdateFrameMaterialDto){
 
     const curItem = await this.findById(id);
 

@@ -2,8 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FinishingTheSurfaceEntity } from '../finishing-the-surface.entity';
 import { Repository } from 'typeorm';
-import { CreateFabricMaterialDto } from '../../fabric-material/dto/create-fabric-material.dto';
-import { UpdateFabricMaterialDto } from '../../fabric-material/dto/update-fabric-material.dto';
+import { CreateFinishingTheSurfaceDto } from '../dto/create-finishing-the-surface.dto';
+import { UpdateFinishingTheSurfaceDto } from '../dto/update-finishing-the-surface.dto';
 
 @Injectable()
 export class FinishingTheSurfaceService {
@@ -25,7 +25,7 @@ export class FinishingTheSurfaceService {
     return curItem;
   }
 
-  async createOne(body: CreateFabricMaterialDto){
+  async createOne(body: CreateFinishingTheSurfaceDto){
 
     const { isUsing } = body;
 
@@ -37,7 +37,7 @@ export class FinishingTheSurfaceService {
     return await this.finishingTheSurfaceRepository.save(newEntity);
   }
 
-  async updateById(id: number, body: UpdateFabricMaterialDto){
+  async updateById(id: number, body: UpdateFinishingTheSurfaceDto){
 
     const curItem = await this.findById(id);
 
