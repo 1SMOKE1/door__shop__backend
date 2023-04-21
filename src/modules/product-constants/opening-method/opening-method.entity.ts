@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity({name: 'amount_of_sealing_materials'})
-export class AmountOfSealingMaterialEntity {
+
+@Entity({name: 'opening_method'})
+export class OpeningMethodEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -13,5 +14,4 @@ export class AmountOfSealingMaterialEntity {
 
   @Column({type: 'bool', default: false})
   is_using: boolean;
-
 }
