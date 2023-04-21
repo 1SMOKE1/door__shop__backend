@@ -1,14 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductProducersModule } from './modules/product-producers/product-producers.module';
-import { ProductProducerEntity } from './modules/product-producers/product-producer.entity';
 import { TypeOfProductsModule } from './modules/type-of-products/type-of-products.module';
-import { TypeOfProductEntity } from './modules/type-of-products/type-of-product.entity';
-import { EntranceDoorEntity } from './modules/products/entrance-door/entrance-door.entity';
-import { InteriorDoorEntity } from './modules/products/interior-door/interior-door.entity';
-import { WindowEntity } from './modules/products/window/window.entity';
-import { FurnitureEntity } from './modules/products/furniture/furniture.entity';
 import { EntranceDoorModule } from './modules/products/entrance-door/entrance-door.module';
 import { InteriorDoorModule } from './modules/products/interior-door/interior-door.module';
 import { WindowModule } from './modules/products/window/window.module';
@@ -17,11 +11,25 @@ import { MulterModule } from '@nestjs/platform-express';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ProductsModule } from './modules/products/products.module';
 import { OrdersModule } from './modules/orders/orders.module';
-import { OrderEntity } from './modules/orders/order.entity';
 import { OurWorksModule } from './modules/our-works/our-works.module';
-import { OurWorkEntity } from './modules/our-works/our-work.entity';
 import { OurCommentsModule } from './modules/our-comments/our-comments.module';
-import { OurCommentEntity } from './modules/our-comments/our-comment.entity';
+import { AmountOfSealingMaterialsModule } from './modules/product-constants/amount-of-sealing-materials/amount-of-sealing-materials.module';
+import { FabricMaterialModule } from './modules/product-constants/fabric-material/fabric-material.module';
+import { PurposeModule } from './modules/product-constants/purpose/purpose.module';
+import { OpeningMethodModule } from './modules/product-constants/opening-method/opening-method.module';
+import { CoveringModule } from './modules/product-constants/covering/covering.module';
+import { FrameMaterialModule } from './modules/product-constants/frame-material/frame-material.module';
+import { FinishingTheSurfaceModule } from './modules/product-constants/finishing-the-surface/finishing-the-surface.module';
+import { StructuralFeaturesModule } from './modules/product-constants/structural-features/structural-features.module';
+import { OpeningTypeModule } from './modules/product-constants/opening-type/opening-type.module';
+import { InstallationTypeModule } from './modules/product-constants/installation-type/installation-type.module';
+import { WindowProfileModule } from './modules/product-constants/window-profile/window-profile.module';
+import { WindowConstructionModule } from './modules/product-constants/window-construction/window-construction.module';
+import { WindowGlassUnitModule } from './modules/product-constants/window-glass-unit/window-glass-unit.module';
+import { WindowLaminationModule } from './modules/product-constants/window-lamination/window-lamination.module';
+import { WindowGlassesModule } from './modules/product-constants/window-glasses/window-glasses.module';
+import TypeOrmConfigService from './configurations/typeorm-config/typeorm.config';
+import MailerConfigService from './configurations/mailer-config/mailer.config';
 
 
 @Module({
@@ -30,44 +38,13 @@ import { OurCommentEntity } from './modules/our-comments/our-comment.entity';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('POSTGRES_HOST'),
-        port: +configService.get<string>('POSTGRES_PORT'),
-        username: configService.get<string>('POSTGRES_USER'),
-        password: configService.get<string>('POSTGRES_PASSWORD'),
-        database: configService.get<string>('POSTGRES_DATABASE'),
-        entities: [
-          ProductProducerEntity,
-          TypeOfProductEntity,
-          EntranceDoorEntity,
-          InteriorDoorEntity,
-          WindowEntity,
-          FurnitureEntity,
-          OrderEntity,
-          OurWorkEntity,
-          OurCommentEntity
-        ],
-        synchronize: true,
-      }),
+      useClass: TypeOrmConfigService
     }),
     MulterModule.register({
       dest: './uploads',
     }),
     MailerModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        transport: {
-          service: configService.get('MAILER_SERVICE'),
-          host: configService.get('MAILER_HOST'),
-          auth: {
-            user: configService.get('MAILER_USER'),
-            pass: configService.get('MAILER_PASS')
-          }
-        }
-      }),
-      inject: [ConfigService]
+      useClass: MailerConfigService
     }),
     ProductProducersModule,
     TypeOfProductsModule,
@@ -80,6 +57,22 @@ import { OurCommentEntity } from './modules/our-comments/our-comment.entity';
     OurWorksModule,
     OurCommentsModule,
     OurCommentsModule,
+    
+    AmountOfSealingMaterialsModule,
+    FabricMaterialModule,
+    PurposeModule,
+    OpeningMethodModule,
+    CoveringModule,
+    FrameMaterialModule,
+    FinishingTheSurfaceModule,
+    StructuralFeaturesModule,
+    OpeningTypeModule,
+    InstallationTypeModule,
+    WindowProfileModule,
+    WindowConstructionModule,
+    WindowGlassUnitModule,
+    WindowLaminationModule,
+    WindowGlassesModule,
   ],
   controllers: [],
   providers: [],
