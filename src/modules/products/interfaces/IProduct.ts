@@ -47,10 +47,6 @@ export interface IProduct{
   installation_type?: InstallationTypeEnum[], // Тип монтажу
   opening_method?: OpeningMethodEnum[], // Спосіб відкривання
   home_page?: boolean,
-  img_main?: string,
-  img_1?: string,
-  img_2?: string,
-  img_3?: string,
-  img_4?: string,
+  images: string[],
   description?: string, // Опис
 }

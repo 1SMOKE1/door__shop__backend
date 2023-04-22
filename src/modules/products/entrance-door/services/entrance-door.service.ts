@@ -14,6 +14,7 @@ import { UpdateEntranceDoorDto } from "../dto/update-entrance-door.dto";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 import { AmountOfSealingMaterialEntity } from "src/modules/product-constants/amount-of-sealing-materials/amount-of-sealing-material.entity";
 import { IImages } from "src/interfaces/IImages";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 
 @Injectable()
@@ -95,6 +96,9 @@ export class EntranceDoorService {
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
+    if(typeOfProductName !== TypeOfProductEnum.entranceDoor)
+    throw new HttpException(`typeOfProductName must be 'Двері вхідні'`, HttpStatus.CONFLICT);
+
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
 
@@ -131,9 +135,14 @@ export class EntranceDoorService {
 
     // frameMaterial: string[] // Матеріал дверної коробки
 
+    // IMAGES
+
     const { images } = files;
+
+    let imagesPathes: string[] = [];
     
-    const imagesPathes = images.map((el) => el ? el.path : null);
+    if(images)
+    imagesPathes = images.map((el) => el ? el.path : null);
 
     const newProduct = this.entranceDoorRepository.create({
       name,
@@ -186,6 +195,10 @@ export class EntranceDoorService {
       description,
     } = body;
 
+    const productProducers = await this.productProducerRepository.find();
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
     if (product_producer == null) {
@@ -202,6 +215,9 @@ export class EntranceDoorService {
       throw new HttpException(`Incorrect typeOfProrduct you could choose from: ${typeOfProducts
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
+
+    if(typeOfProductName !== TypeOfProductEnum.entranceDoor)
+    throw new HttpException(`typeOfProductName must be 'Двері вхідні'`, HttpStatus.CONFLICT);
 
 
     if (!(await checkEnum(CountryEnum, country))) {
@@ -241,14 +257,15 @@ export class EntranceDoorService {
 
     // frameMaterial: string[] // Матеріал дверної коробки
   
-    // IMAGES
+     // IMAGES
 
-    const { images } = files;
+     const { images } = files;
+
+     let imagesPathes: string[] = [];
+     
+     if(images)
+     imagesPathes = images.map((el) => el ? el.path : null);
     
-    const imagesPathes = images.map((el) => el ? el.path : null);
-
-    
-
     return await this.entranceDoorRepository
       .update(id, {
         name,

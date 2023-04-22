@@ -55,6 +55,10 @@ export class FurnitureService {
       description
     } = body;
 
+    const productProducers = await this.productProducerRepository.find();
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
     if (product_producer == null) {
@@ -73,10 +77,7 @@ export class FurnitureService {
     }
 
     if(typeOfProductName !== TypeOfProductEnum.furniture)
-    throw new HttpException('typeOfProductName must be furniture type', HttpStatus.CONFLICT);
-
-    
-    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
+    throw new HttpException(`typeOfProductName must be 'Фурнітура'`, HttpStatus.CONFLICT);
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
@@ -84,24 +85,16 @@ export class FurnitureService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
       throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
-    if (!inStock) {
-      throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
     }
 
     if (!(await checkEnum(InStockEnum, inStock))) {
@@ -110,11 +103,14 @@ export class FurnitureService {
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    // IMAGES
+     // IMAGES
 
-    const { images } = files;
-    
-    const imagesPathes = images.map((el) => el ? el.path : null);
+     const { images } = files;
+
+     let imagesPathes: string[] = [];
+     
+     if(images)
+     imagesPathes = images.map((el) => el ? el.path : null);
 
     const newProduct = this.furnitureRepository.create({
       name,
@@ -133,7 +129,7 @@ export class FurnitureService {
     return await this.furnitureRepository.save(newProduct);
   }
 
-  async updateById(id: number, body: UpdateFurnitureDto, images: IImages) {
+  async updateById(id: number, body: UpdateFurnitureDto, files: IImages) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
     const curProduct = await this.findById(id);
@@ -154,11 +150,9 @@ export class FurnitureService {
       typeOfProductName
     } = body;
 
-    if (!name) throw new HttpException("No name", HttpStatus.FORBIDDEN);
+    const productProducers = await this.productProducerRepository.find();
 
-    if (name.trim() == "") throw new HttpException(`Name can't be empty`, HttpStatus.CONFLICT);
-
-    if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
 
     const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
@@ -167,8 +161,6 @@ export class FurnitureService {
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
-
-    if(!typeOfProductName) throw new HttpException('Ho typeOfProductName', HttpStatus.FORBIDDEN);
 
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
@@ -179,7 +171,8 @@ export class FurnitureService {
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
-    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
+    if(typeOfProductName !== TypeOfProductEnum.furniture)
+    throw new HttpException(`typeOfProductName must be 'Фурнітура'`, HttpStatus.CONFLICT);
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
@@ -187,23 +180,17 @@ export class FurnitureService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee,you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
       throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
-
-    if (!inStock) throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
 
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
@@ -213,7 +200,12 @@ export class FurnitureService {
 
     // IMAGES
 
-    console.log(images)
+    const { images } = files;
+
+    let imagesPathes: string[] = [];
+    
+    if(images)
+    imagesPathes = images.map((el) => el ? el.path : null);
 
     return await this.furnitureRepository
       .update(id, {
@@ -227,7 +219,8 @@ export class FurnitureService {
         product_producer: productProducer,
         type_of_product,
         home_page: homePage,
-        description
+        description,
+        images: imagesPathes
       })
       .then(() => this.findById(id));
   }

@@ -13,6 +13,7 @@ import { InStockEnum } from "src/enums/in-stock.enum";
 import { UpdateInteriorDoorDto } from "../dto/update-interior-door.dto";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 import { IImages } from "src/interfaces/IImages";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 @Injectable()
 export class InteriorDoorService {
@@ -60,7 +61,9 @@ export class InteriorDoorService {
       description,
     } = body;
 
-    if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+    const productProducers = await this.productProducerRepository.find();
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
 
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
@@ -69,8 +72,6 @@ export class InteriorDoorService {
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
-
-    if(!typeOfProductName) throw new HttpException('Ho typeOfProductName', HttpStatus.FORBIDDEN);
 
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
@@ -81,7 +82,8 @@ export class InteriorDoorService {
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
-    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
+    if(typeOfProductName !== TypeOfProductEnum.interiorDoor)
+    throw new HttpException(`typeOfProductName must be 'Двері міжкімнатні'`, HttpStatus.CONFLICT);
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
@@ -89,23 +91,17 @@ export class InteriorDoorService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
       throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
-
-    if (!inStock) throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
 
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
@@ -126,9 +122,14 @@ export class InteriorDoorService {
     // openingMethod: string[] // Спосіб відкривання
     
 
+    // IMAGES
+
     const { images } = files;
+
+    let imagesPathes: string[] = [];
     
-    const imagesPathes = images.map((el) => el ? el.path : null);
+    if(images)
+    imagesPathes = images.map((el) => el ? el.path : null);
 
     const newProduct = this.interiorDoorRepository.create({
       name,
@@ -180,7 +181,10 @@ export class InteriorDoorService {
       description,
     } = body;
 
-    if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+    const productProducers = await this.productProducerRepository.find();
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
     if (product_producer == null) {
@@ -200,7 +204,8 @@ export class InteriorDoorService {
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
-    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
+    if(typeOfProductName !== TypeOfProductEnum.interiorDoor)
+    throw new HttpException(`typeOfProductName must be 'Двері міжкімнатні'`, HttpStatus.CONFLICT);
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
@@ -208,24 +213,16 @@ export class InteriorDoorService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
       throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
-    if (!inStock) {
-      throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
     }
 
     if (!(await checkEnum(InStockEnum, inStock))) {
@@ -249,8 +246,11 @@ export class InteriorDoorService {
     // IMAGES
 
     const { images } = files;
+
+    let imagesPathes: string[] = [];
     
-    const imagesPathes = images.map((el) => el ? el.path : null);
+    if(images)
+    imagesPathes = images.map((el) => el ? el.path : null);
 
     return await this.interiorDoorRepository
       .update(id, {

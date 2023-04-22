@@ -13,6 +13,7 @@ import generateErrorArr from "src/utils/generateErrorArr";
 import { UpdateWindowDto } from "../dto/update-window.dto";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 import { IImages } from "src/interfaces/IImages";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 @Injectable()
 export class WindowService {
@@ -59,7 +60,10 @@ export class WindowService {
       description,
     } = body;
 
-    if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+    const productProducers = await this.productProducerRepository.find();
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+    
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
     if (product_producer == null) {
@@ -67,8 +71,6 @@ export class WindowService {
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
-
-    if(!typeOfProductName) throw new HttpException('Ho typeOfProductName', HttpStatus.FORBIDDEN);
 
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
@@ -79,7 +81,8 @@ export class WindowService {
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
-    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
+    if(typeOfProductName !== TypeOfProductEnum.windows)
+    throw new HttpException(`typeOfProductName must be 'Вікна'`, HttpStatus.CONFLICT);
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
@@ -87,24 +90,16 @@ export class WindowService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
       throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
-    if (!inStock) {
-      throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
     }
 
     if (!(await checkEnum(InStockEnum, inStock))) {
@@ -125,8 +120,11 @@ export class WindowService {
     // glasses: string[] // Стекла
 
     const { images } = files;
+
+    let imagesPathes: string[] = [];
     
-    const imagesPathes = images.map((el) => el ? el.path : null);
+    if(images)
+    imagesPathes = images.map((el) => el ? el.path : null);
 
     const newProduct = this.windowRepository.create({
       name,
@@ -178,7 +176,10 @@ export class WindowService {
       description,
     } = body;
 
-    if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+    const productProducers = await this.productProducerRepository.find();
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
     if (product_producer == null) {
@@ -186,8 +187,6 @@ export class WindowService {
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
-
-    if(!typeOfProductName) throw new HttpException('Ho typeOfProductName', HttpStatus.FORBIDDEN);
 
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
@@ -198,7 +197,8 @@ export class WindowService {
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
-    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
+    if(typeOfProductName !== TypeOfProductEnum.windows)
+    throw new HttpException(`typeOfProductName must be 'Вікна'`, HttpStatus.CONFLICT);
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
@@ -206,24 +206,16 @@ export class WindowService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
       throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
-    if (!inStock) {
-      throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
     }
 
     if (!(await checkEnum(InStockEnum, inStock))) {
@@ -243,11 +235,12 @@ export class WindowService {
   
     // glasses: string[] // Стекла
 
-    // IMAGES
-
     const { images } = files;
+
+    let imagesPathes: string[] = [];
     
-    const imagesPathes = images.map((el) => el ? el.path : null);
+    if(images)
+    imagesPathes = images.map((el) => el ? el.path : null);
 
     return await this.windowRepository
       .update(id, {

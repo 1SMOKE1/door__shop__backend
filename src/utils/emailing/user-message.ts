@@ -16,9 +16,6 @@ const userMessage = (name: string, email: string, totalCost: number, phone: stri
   }
 
 
-
-  console.log(getCartLinesImages(cartLines))
-
   // <div style="display: flex; width: 140px; justify-content: space-between; align-items: center;">
   //   <a href="" target="_blank">
   //     <img src="assets/inst.png" alt="" /></a>
@@ -71,7 +68,7 @@ const userMessage = (name: string, email: string, totalCost: number, phone: stri
             font-family: Arial,Helvetica, sans-serif;
             font-size: 32px;
             line-height: 45px;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.15em;
             font-weight: 900;
             "
             >
@@ -109,7 +106,7 @@ const userMessage = (name: string, email: string, totalCost: number, phone: stri
             </p>
             <a 
             style="
-              width: 200px;
+              width: 170px;
               display: block;
               margin: 50px auto 200px;
               padding: 20px 63px;
