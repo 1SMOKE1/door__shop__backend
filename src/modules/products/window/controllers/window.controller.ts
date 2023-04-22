@@ -5,17 +5,13 @@ import { CreateWindowDto } from "../dto/create-window.dto";
 import { UpdateWindowDto } from "../dto/update-window.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
-import { IImageFiles } from "src/interfaces/IImageFile";
+import { IImages } from "src/interfaces/IImages";
 
 @Controller("window")
 @UseInterceptors(
   FileFieldsInterceptor(
     [
-      { name: "img_main", maxCount: 1 },
-      { name: "img_1", maxCount: 1 },
-      { name: "img_2", maxCount: 1 },
-      { name: "img_3", maxCount: 1 },
-      { name: "img_4", maxCount: 1 },
+      {name: 'images', maxCount: 30}
     ],
     {
       storage: imageStorage,
@@ -47,9 +43,9 @@ export class WindowController {
   }
 
   @Post()
-  async createOne(@Body() body: CreateWindowDto, @UploadedFiles() files: IImageFiles, @Res() res: Response) {
+  async createOne(@Body() body: CreateWindowDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
-      const newWindow = await this.windowService.createOne(body, files);
+      const newWindow = await this.windowService.createOne(body, images);
       return res.status(HttpStatus.CREATED).json(newWindow);
     } catch (err) {
       throw new BadRequestException(err);
@@ -57,9 +53,9 @@ export class WindowController {
   }
 
   @Put(":id")
-  async updateOne(@Param("id", ParseIntPipe) id: number, @UploadedFiles() files: IImageFiles, @Body() body: UpdateWindowDto, @Res() res: Response) {
+  async updateOne(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateWindowDto, @Res() res: Response) {
     try {
-      const updatedWindow = await this.windowService.updateById(id, body, files);
+      const updatedWindow = await this.windowService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(updatedWindow);
     } catch (err) {
       throw new BadRequestException(err);

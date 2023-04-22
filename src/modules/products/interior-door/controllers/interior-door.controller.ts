@@ -20,17 +20,13 @@ import { CreateInteriorDoorDto } from "../dto/create-interior-door.dto";
 import { UpdateInteriorDoorDto } from "../dto/update-interior-door.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
-import { IImageFiles } from "src/interfaces/IImageFile";
+import { IImages } from "src/interfaces/IImages";
 
 @Controller("interior-door")
 @UseInterceptors(
   FileFieldsInterceptor(
     [
-      { name: "img_main", maxCount: 1 },
-      { name: "img_1", maxCount: 1 },
-      { name: "img_2", maxCount: 1 },
-      { name: "img_3", maxCount: 1 },
-      { name: "img_4", maxCount: 1 },
+      {name: 'images', maxCount: 30}
     ],
     {
       storage: imageStorage,
@@ -62,9 +58,9 @@ export class InteriorDoorController {
   }
 
   @Post()
-  async createOne(@Body() body: CreateInteriorDoorDto, @UploadedFiles() files: IImageFiles, @Res() res: Response) {
+  async createOne(@Body() body: CreateInteriorDoorDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
-      const newInteriorDoor = await this.interiorDoorService.createOne(body, files);
+      const newInteriorDoor = await this.interiorDoorService.createOne(body, images);
       return res.status(HttpStatus.CREATED).json(newInteriorDoor);
     } catch (err) {
       throw new BadGatewayException(err);
@@ -72,9 +68,9 @@ export class InteriorDoorController {
   }
 
   @Put(":id")
-  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() files: IImageFiles, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
+  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
     try {
-      const updatedInteriorDoor = await this.interiorDoorService.updateById(id, body, files);
+      const updatedInteriorDoor = await this.interiorDoorService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(updatedInteriorDoor);
     } catch (err) {
       throw new BadGatewayException(err);

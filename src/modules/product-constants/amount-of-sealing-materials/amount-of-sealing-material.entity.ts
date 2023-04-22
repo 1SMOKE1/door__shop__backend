@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name: 'amount_of_sealing_materials'})
 export class AmountOfSealingMaterialEntity {
@@ -6,6 +6,7 @@ export class AmountOfSealingMaterialEntity {
   id!: number;
 
   @Column({type: 'varchar'})
+  @Index({ unique: true })
   name: string;
 
   @Column({type: 'bigint'})

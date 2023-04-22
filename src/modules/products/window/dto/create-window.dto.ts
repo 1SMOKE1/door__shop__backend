@@ -1,3 +1,5 @@
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsNumber, IsInt, IsArray, IsOptional } from "class-validator";
 import { ConstructionWindowEnum } from "src/enums/construction-window.enum";
 import { CountryEnum } from "src/enums/country.enum";
 import { GlassUnitWindowEnum } from "src/enums/glass-unit-window.enum";
@@ -11,45 +13,59 @@ import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 export class CreateWindowDto {
 
+  @IsNotEmpty()
   name: string;
 
   productProducerName: string;
 
+  @IsNotEmpty()
   typeOfProductName: TypeOfProductEnum;
 
+  @IsNotEmpty()
   country: CountryEnum;
 
+  @IsNotEmpty()
   guarantee: GuaranteeEnum;
 
+  @IsNotEmpty()
   state: StateEnum;
 
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
   price: number;
 
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
   installationPrice: number;
 
+  @IsNotEmpty()
   inStock: InStockEnum;
 
+  @IsArray()
   profile: ProfileWindowEnum[];
 
+  @IsArray()
   construction: ConstructionWindowEnum[];
 
+  @IsArray()
   glassUnit: GlassUnitWindowEnum[];
 
+  @IsArray()
   lamination: LaminationWindowEnum[];
 
+  @IsArray()
   glasses: GlassesWindowEnum[];
 
+  @IsOptional()
   homePage?: boolean;
 
-  img_main?: string;
+  @IsOptional()
+  images: string[];
 
-  img_1?: string;
-
-  img_2?: string;
-
-  img_3?: string;
-
-  img_4?: string;
-
+  @IsOptional()
   description?: string;
 }

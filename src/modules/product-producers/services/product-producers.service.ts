@@ -17,7 +17,12 @@ export class ProductProducersService {
   }
 
   async findById(id: number) {
-    return await this.productProducerRepository.findOneBy({id});
+
+    const curItem = await this.productProducerRepository.findOneBy({id})
+
+    if(curItem == null) throw new HttpException(`Such element by id: ${id} doesn't exists`, HttpStatus.NOT_FOUND); 
+
+    return curItem;
   }
 
   async createOne(body: CreateProductProducerDto) {

@@ -1,12 +1,6 @@
-import { AmountOfSealingMaterialsEnum } from "src/enums/amount-of-sealing-materials.enum";
 import { CountryEnum } from "src/enums/country.enum";
-import { CoveringEnum } from "src/enums/covering.enum";
-import { FabricMaterialEnum } from "src/enums/fabric-material.enum";
-import { FrameMaterialEntranceDoorEnum } from "src/enums/frame-material-entrance-door.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { OpeningMethodEnum } from "src/enums/opening-method.enum";
-import { PuproseEnum } from "src/enums/purpose.enum";
 import { StateEnum } from "src/enums/state.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
@@ -45,40 +39,28 @@ export class EntranceDoorEntity {
   in_stock: InStockEnum;
 
   @Column("text", { array: true, default: []})
-  amount_of_sealing_materials: AmountOfSealingMaterialsEnum[];
+  amount_of_sealing_materials: string[];
 
   @Column("text", { array: true, default: []})
-  fabric_material: FabricMaterialEnum[];
+  fabric_material: string[];
 
   @Column("text", { array: true, default: [] })
-  purpose: PuproseEnum[];
+  purpose: string[];
 
   @Column("text", { array: true, default: [] })
-  opening_method: OpeningMethodEnum[];
+  opening_method: string[];
 
   @Column("text", { array: true, default: [] })
-  covering: CoveringEnum[];
+  covering: string[];
 
   @Column("text", { array: true, default: [] })
-  frame_material: FrameMaterialEntranceDoorEnum[];
+  frame_material: string[];
 
   @Column("boolean", { default: false })
   home_page?: boolean;
 
-  @Column("varchar", { nullable: true })
-  img_main?: string;
-
-  @Column("varchar", { nullable: true })
-  img_1?: string;
-
-  @Column("varchar", { nullable: true })
-  img_2?: string;
-
-  @Column("varchar", { nullable: true })
-  img_3?: string;
-
-  @Column("varchar", { nullable: true })
-  img_4?: string;
+  @Column("text", { array: true, default: [] })
+  images: string[];
 
   @Column({ type: "varchar", length: 500, default: "Немає опису" })
   description?: string;

@@ -1,58 +1,71 @@
-import { AmountOfSealingMaterialsEnum } from "src/enums/amount-of-sealing-materials.enum";
 import { CountryEnum } from "src/enums/country.enum";
-import { CoveringEnum } from "src/enums/covering.enum";
-import { FabricMaterialEnum } from "src/enums/fabric-material.enum";
-import { FrameMaterialEntranceDoorEnum } from "src/enums/frame-material-entrance-door.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { OpeningMethodEnum } from "src/enums/opening-method.enum";
 import { StateEnum } from "src/enums/state.enum";
-import { PuproseEnum } from "src/enums/purpose.enum";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
+import { IsArray, IsInt, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { Type } from "class-transformer";
 
 export class CreateEntranceDoorDto{
 
+  @IsNotEmpty()
   name: string;
 
   productProducerName: string;
 
+  @IsNotEmpty() 
   typeOfProductName: TypeOfProductEnum;
 
+  @IsNotEmpty()
   country: CountryEnum;
 
+  @IsNotEmpty()
   guarantee: GuaranteeEnum;
 
+  @IsNotEmpty()
   state: StateEnum;
 
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
   price: number | string;
 
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
   installationPrice: number | string;
 
+  @IsNotEmpty()
   inStock: InStockEnum;
 
-  amountOfSealingMaterials: AmountOfSealingMaterialsEnum[];
+  @IsArray()  
+  amountOfSealingMaterials: string[];
 
-  fabricMaterial: FabricMaterialEnum[];
+  @IsArray()  
+  fabricMaterial: string[];
 
-  purpose: PuproseEnum[];
+  @IsArray()  
+  purpose: string[];
 
-  openingMethod: OpeningMethodEnum[];
+  @IsArray()  
+  openingMethod: string[];
 
-  covering: CoveringEnum[];
+  @IsArray()  
+  covering: string[];
 
-  frameMaterial: FrameMaterialEntranceDoorEnum[];
+  @IsArray()  
+  frameMaterial: string[];
 
+  @IsOptional()
   homePage?: boolean;
 
-  img_main?: string;
+  @IsOptional()
+  images?: string[];
 
-  img_1?: string;
-
-  img_2?: string;
-
-  img_3?: string;
-
-  img_4?: string;
-
+  @IsOptional()
   description?: string;
 }
+
+
