@@ -1,13 +1,8 @@
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsNumber, IsInt, IsArray, IsOptional } from "class-validator";
-import { ConstructionWindowEnum } from "src/enums/construction-window.enum";
 import { CountryEnum } from "src/enums/country.enum";
-import { GlassUnitWindowEnum } from "src/enums/glass-unit-window.enum";
-import { GlassesWindowEnum } from "src/enums/glasses-window.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { LaminationWindowEnum } from "src/enums/lamination-window.enum";
-import { ProfileWindowEnum } from "src/enums/profile-window.enum";
 import { StateEnum } from "src/enums/state.enum";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
@@ -46,19 +41,19 @@ export class CreateWindowDto {
   inStock: InStockEnum;
 
   @IsArray()
-  profile: ProfileWindowEnum[];
+  profile: string[];
 
   @IsArray()
-  construction: ConstructionWindowEnum[];
+  construction: string[];
 
   @IsArray()
-  glassUnit: GlassUnitWindowEnum[];
+  glassUnit: string[];
 
   @IsArray()
-  lamination: LaminationWindowEnum[];
+  lamination: string[];
 
   @IsArray()
-  glasses: GlassesWindowEnum[];
+  glasses: string[];
 
   @IsOptional()
   homePage?: boolean;

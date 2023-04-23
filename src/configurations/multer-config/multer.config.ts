@@ -8,6 +8,13 @@ export const imageFileFilter = (req, file, callback) => {
   callback(null, true);
 };
 
+export const excelFileFilter = (req, file, callback) => {
+  if (!file.originalname.match(/\.(xls|xlsx)$/)) {
+    return callback(new HttpException('Only image files are allowed!', HttpStatus.FORBIDDEN), false);
+  }
+  callback(null, true);
+}
+
 export const imageStorage = diskStorage({
     destination: './uploads/images',
     filename: (req: any, file: any, cb: any) => {
@@ -28,3 +35,12 @@ export const ourCommentStorage = diskStorage({
       cb(null, `${file.originalname}`);
    },
 })
+
+export const excelStorage = diskStorage({
+  destination: './uploads/excel',
+    filename: (req: any, file: any, cb: any) => {
+      cb(null, `${file.originalname}`);
+   },
+})
+
+
