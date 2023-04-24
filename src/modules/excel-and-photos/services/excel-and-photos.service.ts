@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IImages } from 'src/interfaces/IImages';
 import * as Excel from 'exceljs';
 
 @Injectable()
 export class ExcelAndPhotosService {
 
-  async readExcelAndPhotos(excel: Express.Multer.File, files?: IImages){
+  async readExcelAndPhotos(excel: Express.Multer.File){
     return new Promise((res, rej) => {
       const workBook = new Excel.Workbook();
       workBook.xlsx.readFile(`./uploads/excel/${excel.originalname}`)
