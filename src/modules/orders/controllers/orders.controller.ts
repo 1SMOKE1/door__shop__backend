@@ -45,7 +45,6 @@ export class OrdersController {
       const newOrder = await this.ordersService.createOne(body);
       return res.status(HttpStatus.CREATED).json(newOrder);
     } catch (err) {
-      console.log(err);
       throw new BadRequestException(err);
     }
   }

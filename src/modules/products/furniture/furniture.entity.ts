@@ -44,18 +44,6 @@ export class FurnitureEntity {
   @Column("boolean", { default: false })
   home_page?: boolean;
 
-  @Column("varchar", { nullable: true })
-  img_main?: string;
-
-  @Column("varchar", { nullable: true })
-  img_1?: string;
-
-  @Column("varchar", { nullable: true })
-  img_2?: string;
-
-  @Column("varchar", { nullable: true })
-  img_3?: string;
-
-  @Column("varchar", { nullable: true })
-  img_4?: string;
+  @Column({type: "text", array: true})
+  images: string[];
 }

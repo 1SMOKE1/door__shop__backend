@@ -10,18 +10,11 @@ import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { StateEnum } from "src/enums/state.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
-import checkArrFieldByEnum from "src/utils/checkArrFieldByEnum";
-import { AmountOfSealingMaterialsEnum } from "src/enums/amount-of-sealing-materials.enum";
-import fieldTypeOfArr from "src/utils/fieldTypeOfArr";
-import { OpeningMethodEnum } from "src/enums/opening-method.enum";
-import { PuproseEnum } from "src/enums/purpose.enum";
-import { CoveringEnum } from "src/enums/covering.enum";
-import { FrameMaterialEntranceDoorEnum } from "src/enums/frame-material-entrance-door.enum";
 import { UpdateEntranceDoorDto } from "../dto/update-entrance-door.dto";
-import { FabricMaterialEnum } from "src/enums/fabric-material.enum";
-import { IImageFiles } from "src/interfaces/IImageFile";
-import { updateImage } from "src/utils/updateImage";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
+import { AmountOfSealingMaterialEntity } from "src/modules/product-constants/amount-of-sealing-materials/amount-of-sealing-material.entity";
+import { IImages } from "src/interfaces/IImages";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 
 @Injectable()
@@ -32,22 +25,33 @@ export class EntranceDoorService {
     @InjectRepository(ProductProducerEntity)
     private readonly productProducerRepository: Repository<ProductProducerEntity>,
     @InjectRepository(TypeOfProductEntity)
-    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>
+    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>,
+    @InjectRepository(AmountOfSealingMaterialEntity)
+    private readonly amountOfSealingMaterialsRepository: Repository<AmountOfSealingMaterialEntity>
   ) {}
 
   async findAll() {
-    return await this.entranceDoorRepository.find({ relations: { product_producer: true } });
+    return await this.entranceDoorRepository.find({ relations: { 
+      product_producer: true,
+      type_of_product: true
+    } });
   }
 
   async findById(id: number) {
-    const currentProduct = await this.entranceDoorRepository.findOne({ where: { id }, relations: { product_producer: true } });
+    const currentProduct = await this.entranceDoorRepository.findOne({
+      where: { id },
+      relations: {
+        product_producer: true,
+        type_of_product: true
+      }
+    });
 
     if (currentProduct == null) throw new HttpException(`entrance_door with id: ${id}, doesn't exists`, HttpStatus.FORBIDDEN);
 
     return currentProduct;
   }
 
-  async createOne(body: CreateEntranceDoorDto, files: IImageFiles) {
+  async createOne(body: CreateEntranceDoorDto, files: IImages) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
     const {
@@ -70,11 +74,9 @@ export class EntranceDoorService {
       description,
     } = body;
 
-    if (!name) throw new HttpException("No name", HttpStatus.FORBIDDEN);
+    const productProducers = await this.productProducerRepository.find();
 
-    if (name.trim() == "") throw new HttpException(`Name can't be empty`, HttpStatus.CONFLICT);
-
-    if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
 
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
@@ -85,8 +87,6 @@ export class EntranceDoorService {
         .map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if(!typeOfProductName) throw new HttpException('Ho typeOfProductName', HttpStatus.FORBIDDEN);
-
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
     if(type_of_product == null){
@@ -96,7 +96,8 @@ export class EntranceDoorService {
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
-    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
+    if(typeOfProductName !== TypeOfProductEnum.entranceDoor)
+    throw new HttpException(`typeOfProductName must be 'Двері вхідні'`, HttpStatus.CONFLICT);
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
@@ -104,24 +105,16 @@ export class EntranceDoorService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
       throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
-    if (!inStock) {
-      throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
     }
 
     if (!(await checkEnum(InStockEnum, inStock))) {
@@ -130,57 +123,26 @@ export class EntranceDoorService {
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (typeof +price != "number") throw new HttpException("price must be typeof number", HttpStatus.CONFLICT);
-
-    if (+price < 0) throw new HttpException("Incorrect price", HttpStatus.CONFLICT);
-
-    if (typeof +installationPrice != "number") throw new HttpException("installationPrice must be typeof number", HttpStatus.CONFLICT);
-
-    if (+installationPrice < 0) throw new HttpException("Incorrect installationPrice", HttpStatus.CONFLICT);
-
     // amountOfSealingMaterials: string[] // Кількість ущільнюючих контурів
-    if (!amountOfSealingMaterials) throw new HttpException("No amountOfSealingMaterials", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(amountOfSealingMaterials);
-
-    const emptyAmountOfSealingMaterials = await checkArrFieldByEnum(AmountOfSealingMaterialsEnum, amountOfSealingMaterials, "amountOfSealingMaterials");
 
     // fabricMaterial: string[] // Матеріл дверного полотна
-    if (!fabricMaterial) throw new HttpException("No fabricMaterial", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(fabricMaterial);
-
-    const emptyFabricMaterial = await checkArrFieldByEnum(FabricMaterialEnum, fabricMaterial, "fabricMaterial");
 
     // purpose: string[] // Призначення двері
-    if (!purpose) throw new HttpException("No purpose", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(purpose);
-
-    const emptyPurpose = await checkArrFieldByEnum(PuproseEnum, purpose, "purpose");
 
     // openingMethod: string[] // Спосіб відкривання
-    if (!openingMethod) throw new HttpException("No openingMethod", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(openingMethod);
-
-    const emptyOpeningMethod = await checkArrFieldByEnum(OpeningMethodEnum, openingMethod, "openingMethod");
 
     // covering: string[] // Покриття
-    if (!covering) throw new HttpException("No covering", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(covering);
-
-    const emptyCovering = await checkArrFieldByEnum(CoveringEnum, covering, "covering");
 
     // frameMaterial: string[] // Матеріал дверної коробки
-    if (!frameMaterial) throw new HttpException("No frameMaterial", HttpStatus.FORBIDDEN);
 
-    await fieldTypeOfArr(frameMaterial);
+    // IMAGES
 
-    const emptyFrameMaterial = await checkArrFieldByEnum(FrameMaterialEntranceDoorEnum, frameMaterial, "frameMaterial");
+    const { images } = files;
 
-    const { img_main, img_1, img_2, img_3, img_4 } = files;
+    let imagesPathes: string[] = [];
+    
+    if(images)
+    imagesPathes = images.map((el) => el ? el.path : null);
 
     const newProduct = this.entranceDoorRepository.create({
       name,
@@ -192,24 +154,21 @@ export class EntranceDoorService {
       installation_price: +installationPrice,
       product_producer,
       type_of_product,
-      amount_of_sealing_materials: emptyAmountOfSealingMaterials === null ? amountOfSealingMaterials : [],
-      fabric_material: emptyFabricMaterial === null ? fabricMaterial : [],
-      opening_method: emptyOpeningMethod === null ? openingMethod : [],
-      covering: emptyCovering === null ? covering : [],
-      purpose: emptyPurpose === null ? purpose : [],
-      frame_material: emptyFrameMaterial === null ? frameMaterial : [],
+      amount_of_sealing_materials: amountOfSealingMaterials,
+      fabric_material: fabricMaterial,
+      opening_method: openingMethod,
+      covering: covering,
+      purpose: purpose,
+      frame_material: frameMaterial,
       home_page: homePage,
       description,
-      img_main: img_main ? img_main[0].path : null,
-      img_1: img_1 ? img_1[0].path : null,
-      img_2: img_2 ? img_2[0].path : null,
-      img_3: img_3 ? img_3[0].path : null,
-      img_4: img_4 ? img_4[0].path : null,
+      images: imagesPathes
     });
     return await this.entranceDoorRepository.save(newProduct);
+    
   }
 
-  async updateById(id: number, body: UpdateEntranceDoorDto, files: IImageFiles) {
+  async updateById(id: number, body: UpdateEntranceDoorDto, files: IImages) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
     const curProduct = await this.findById(id);
@@ -236,11 +195,9 @@ export class EntranceDoorService {
       description,
     } = body;
 
-    if (!name) throw new HttpException("No name", HttpStatus.FORBIDDEN);
+    const productProducers = await this.productProducerRepository.find();
 
-    if (name.trim() == "") throw new HttpException(`Name can't be empty`, HttpStatus.CONFLICT);
-
-    if (!productProducerName) throw new HttpException("No productProducerName", HttpStatus.FORBIDDEN);
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
 
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
 
@@ -249,8 +206,6 @@ export class EntranceDoorService {
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
-
-    if(!typeOfProductName) throw new HttpException('No typeOfProduct', HttpStatus.FORBIDDEN);
 
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
@@ -261,8 +216,9 @@ export class EntranceDoorService {
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
+    if(typeOfProductName !== TypeOfProductEnum.entranceDoor)
+    throw new HttpException(`typeOfProductName must be 'Двері вхідні'`, HttpStatus.CONFLICT);
 
-    if (!country) throw new HttpException("No country", HttpStatus.FORBIDDEN);
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
@@ -270,25 +226,18 @@ export class EntranceDoorService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!guarantee) throw new HttpException("No guarantee", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!state) throw new HttpException("No state", HttpStatus.FORBIDDEN);
-
     if (!(await checkEnum(StateEnum, state))) {
       const states = await generateErrorArr(StateEnum);
 
       throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
-
-    if (!inStock) {
-      throw new HttpException("No inStock", HttpStatus.FORBIDDEN);
-    }
+    
 
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
@@ -296,60 +245,27 @@ export class EntranceDoorService {
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (typeof +price != "number") throw new HttpException("price must be typeof number", HttpStatus.CONFLICT);
-
-    if (+price < 0) throw new HttpException("Incorrect price", HttpStatus.CONFLICT);
-
-    if (typeof +installationPrice != "number") throw new HttpException("installationPrice must be typeof number", HttpStatus.CONFLICT);
-
-    if (+installationPrice < 0) throw new HttpException("Incorrect installationPrice", HttpStatus.CONFLICT);
-
     // amountOfSealingMaterials: string[] // Кількість ущільнюючих контурів
-    if (!amountOfSealingMaterials) throw new HttpException("No amountOfSealingMaterials", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(amountOfSealingMaterials);
-
-    const emptyAmountOfSealingMaterials = await checkArrFieldByEnum(AmountOfSealingMaterialsEnum, amountOfSealingMaterials, "amountOfSealingMaterials");
 
     // fabricMaterial: string[] // Матеріл дверного полотна
-    if (!fabricMaterial) throw new HttpException("No fabricMaterial", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(fabricMaterial);
-
-    const emptyFabricMaterial = await checkArrFieldByEnum(FabricMaterialEnum, fabricMaterial, "fabricMaterial");
 
     // purpose: string[] // Призначення двері
-    if (!purpose) throw new HttpException("No purpose", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(purpose);
-
-    const emptyPurpose = await checkArrFieldByEnum(PuproseEnum, purpose, "purpose");
-
+  
     // openingMethod: string[] // Спосіб відкривання
-    if (!openingMethod) throw new HttpException("No openingMethod", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(openingMethod);
-
-    const emptyOpeningMethod = await checkArrFieldByEnum(OpeningMethodEnum, openingMethod, "openingMethod");
 
     // covering: string[] // Покриття
-    if (!covering) throw new HttpException("No covering", HttpStatus.FORBIDDEN);
-
-    await fieldTypeOfArr(covering);
-
-    const emptyCovering = await checkArrFieldByEnum(CoveringEnum, covering, "covering");
 
     // frameMaterial: string[] // Матеріал дверної коробки
-    if (!frameMaterial) throw new HttpException("No frameMaterial", HttpStatus.FORBIDDEN);
+  
+     // IMAGES
 
-    await fieldTypeOfArr(frameMaterial);
+     const { images } = files;
 
-    const emptyFrameMaterial = await checkArrFieldByEnum(FrameMaterialEntranceDoorEnum, frameMaterial, "frameMaterial");
-
-    // IMAGES
-
-    const { img_main, img_1, img_2, img_3, img_4 } = files;
-
+     let imagesPathes: string[] = [];
+     
+     if(images)
+     imagesPathes = images.map((el) => el ? el.path : null);
+    
     return await this.entranceDoorRepository
       .update(id, {
         name,
@@ -358,22 +274,18 @@ export class EntranceDoorService {
         state,
         in_stock: inStock,
         price: +price,
-        installation_price: installationPrice,
+        installation_price: +installationPrice,
         type_of_product,
         product_producer,
-        amount_of_sealing_materials: emptyAmountOfSealingMaterials === null ? amountOfSealingMaterials : [],
-        fabric_material: emptyFabricMaterial === null ? fabricMaterial : [],
-        opening_method: emptyOpeningMethod === null ? openingMethod : [],
-        covering: emptyCovering === null ? covering : [],
-        purpose: emptyPurpose === null ? purpose : [],
-        frame_material: emptyFrameMaterial === null ? frameMaterial : [],
+        amount_of_sealing_materials: amountOfSealingMaterials,
+        fabric_material: fabricMaterial,
+        opening_method: openingMethod,
+        covering,
+        purpose,
+        frame_material: frameMaterial,
         home_page: homePage,
         description,
-        img_main: updateImage(curProduct, img_main, "img_main"),
-        img_1: updateImage(curProduct, img_1, "img_1"),
-        img_2: updateImage(curProduct, img_2, "img_2"),
-        img_3: updateImage(curProduct, img_3, "img_3"),
-        img_4: updateImage(curProduct, img_4, "img_4"),
+        images: imagesPathes
       })
       .then(() => this.findById(id));
   }

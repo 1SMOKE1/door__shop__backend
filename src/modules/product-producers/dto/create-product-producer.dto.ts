@@ -1,6 +1,8 @@
-import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class CreateProductProducerDto {
+  @IsNotEmpty()
+  @IsString()
   name: string;
-  type_of_product_name: TypeOfProductEnum;
+
 }

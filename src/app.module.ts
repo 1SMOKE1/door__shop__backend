@@ -28,6 +28,7 @@ import { WindowConstructionModule } from './modules/product-constants/window-con
 import { WindowGlassUnitModule } from './modules/product-constants/window-glass-unit/window-glass-unit.module';
 import { WindowLaminationModule } from './modules/product-constants/window-lamination/window-lamination.module';
 import { WindowGlassesModule } from './modules/product-constants/window-glasses/window-glasses.module';
+import { ExcelAndPhotosModule } from './modules/excel-and-photos/excel-and-photos.module';
 import TypeOrmConfigService from './configurations/typeorm-config/typeorm.config';
 import MailerConfigService from './configurations/mailer-config/mailer.config';
 
@@ -73,6 +74,7 @@ import MailerConfigService from './configurations/mailer-config/mailer.config';
     WindowGlassUnitModule,
     WindowLaminationModule,
     WindowGlassesModule,
+    ExcelAndPhotosModule,
   ],
   controllers: [],
   providers: [],

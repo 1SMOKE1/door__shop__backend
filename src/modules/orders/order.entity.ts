@@ -24,7 +24,7 @@ export class OrderEntity {
   @Column({type: 'jsonb'})
   cart_lines: JSON;
 
-  @Column({type: 'boolean'})
+  @Column({type: 'boolean', default: false})
   shiped: boolean;
 
   @Column({type: 'int'})

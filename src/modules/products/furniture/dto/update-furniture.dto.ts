@@ -1,3 +1,5 @@
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsOptional, IsNumber, IsInt } from "class-validator";
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
@@ -6,35 +8,45 @@ import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 export class UpdateFurnitureDto {
 
+  @IsNotEmpty()
   name: string;
 
+  @IsOptional()
   productProducerName: string;
 
+  @IsOptional()
   typeOfProductName: TypeOfProductEnum;
 
+  @IsNotEmpty()
   country: CountryEnum;
 
+  @IsNotEmpty()
   guarantee: GuaranteeEnum;
 
+  @IsNotEmpty()
   state: StateEnum;
 
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
   price: number;
 
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
   installationPrice: number;
 
+  @IsNotEmpty()
   inStock: InStockEnum;
 
+  @IsOptional()
   homePage?: boolean;
 
-  img_main?: string;
+  @IsOptional()
+  images?: string[];
 
-  img_1?: string;
-
-  img_2?: string;
-
-  img_3?: string;
-
-  img_4?: string;
-
+  @IsOptional()
   description?: string;
 }

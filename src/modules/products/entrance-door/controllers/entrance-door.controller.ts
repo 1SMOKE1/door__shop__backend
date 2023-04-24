@@ -5,17 +5,13 @@ import { CreateEntranceDoorDto } from "../dto/create-entrance-door.dto";
 import { UpdateEntranceDoorDto } from "../dto/update-entrance-door.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
-import { IImageFiles } from "src/interfaces/IImageFile";
+import { IImages } from "src/interfaces/IImages";
 
 @Controller("entrance-door")
 @UseInterceptors(
   FileFieldsInterceptor(
     [
-      { name: "img_main", maxCount: 1 },
-      { name: "img_1", maxCount: 1 },
-      { name: "img_2", maxCount: 1 },
-      { name: "img_3", maxCount: 1 },
-      { name: "img_4", maxCount: 1 },
+      { name: "images", maxCount: 30 },
     ],
     {
       storage: imageStorage,
@@ -47,19 +43,20 @@ export class EntranceDoorController {
   }
 
   @Post()
-  async createOne(@Body() body: CreateEntranceDoorDto, @UploadedFiles() files: IImageFiles, @Res() res: Response) {
+  async createOne(@Body() body: CreateEntranceDoorDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
-      const newEntranceDoor = await this.entranceDoorService.createOne(body, files);
+      const newEntranceDoor = await this.entranceDoorService.createOne(body, images);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
     } catch (err) {
+      console.log(err);
       throw new BadRequestException(err);
     }
   }
 
   @Put(":id")
-  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() files: IImageFiles, @Body() body: UpdateEntranceDoorDto, @Res() res: Response) {
+  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateEntranceDoorDto, @Res() res: Response) {
     try {
-      const newEntranceDoor = await this.entranceDoorService.updateById(id, body, files);
+      const newEntranceDoor = await this.entranceDoorService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
     } catch (err) {
       throw new BadRequestException(err);

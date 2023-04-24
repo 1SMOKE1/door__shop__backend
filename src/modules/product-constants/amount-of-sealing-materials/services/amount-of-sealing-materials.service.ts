@@ -22,9 +22,13 @@ export class AmountOfSealingMaterialsService {
 
   async createOne(body: CreateAmountOfSealingMaterialDto) {
 
-    const { isUsing } = body;
+    const { name, price, isUsing } = body;
 
-    const newEntity = this.amountOfSealingMaterialsRepository.create({ ...body, is_using: isUsing });
+    const newEntity = this.amountOfSealingMaterialsRepository.create({
+      name: `${name} (+${price} грн)`,
+      price,
+      is_using: isUsing
+    });
 
     return await this.amountOfSealingMaterialsRepository.save(newEntity);
   }
@@ -34,9 +38,12 @@ export class AmountOfSealingMaterialsService {
 
     if (curItem == null) throw new HttpException(`This item doesn't exists`, HttpStatus.FORBIDDEN);
 
-    const { isUsing } = body;
+    const { name, price, isUsing } = body;
 
-    return await this.amountOfSealingMaterialsRepository.update(id, { ...body, is_using: isUsing })
+    return await this.amountOfSealingMaterialsRepository.update(id, { 
+      name: `${name ? name : curItem.name} (+${price ? price : curItem.price} грн)`,
+      price,
+      is_using: isUsing})
     .then(() => this.findById(id));
   }
 

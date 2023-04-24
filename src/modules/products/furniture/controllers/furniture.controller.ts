@@ -5,17 +5,13 @@ import { CreateFurnitureDto } from "../dto/create-furniture.dto";
 import { UpdateFurnitureDto } from "../dto/update-furniture.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
-import { IImageFiles } from "src/interfaces/IImageFile";
+import { IImages } from "src/interfaces/IImages";
 
 @Controller("furniture")
 @UseInterceptors(
   FileFieldsInterceptor(
     [
-      { name: "img_main", maxCount: 1 },
-      { name: "img_1", maxCount: 1 },
-      { name: "img_2", maxCount: 1 },
-      { name: "img_3", maxCount: 1 },
-      { name: "img_4", maxCount: 1 },
+      {name: 'images', maxCount: 30},
     ],
     {
       storage: imageStorage,
@@ -47,9 +43,9 @@ export class FurnitureController {
   }
 
   @Post()
-  async createOne(@Body() body: CreateFurnitureDto, @UploadedFiles() files: IImageFiles, @Res() res: Response) {
+  async createOne(@Body() body: CreateFurnitureDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
-      const newFurniture = await this.furnitureService.createOne(body, files);
+      const newFurniture = await this.furnitureService.createOne(body, images);
       return res.status(HttpStatus.CREATED).json(newFurniture);
     } catch (err) {
       throw new BadRequestException(err);
@@ -57,9 +53,9 @@ export class FurnitureController {
   }
 
   @Put(":id")
-  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() files: IImageFiles, @Body() body: UpdateFurnitureDto, @Res() res: Response) {
+  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateFurnitureDto, @Res() res: Response) {
     try {
-      const updatedFurniture = await this.furnitureService.updateById(id, body, files);
+      const updatedFurniture = await this.furnitureService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(updatedFurniture);
     } catch (err) {
       throw new BadRequestException(err);

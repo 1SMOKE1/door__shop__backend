@@ -36,21 +36,30 @@ export class OrdersService {
       email,
       cartLines, 
       totalCost,
-      kindOfPayvment
+      kindOfPayvment,
+      shiped
     } = body
 
     const newOrderBody: OrderEntity = {
-      ...body,
+      name,
+      phone,
+      address,
+      email,
       total_cost: totalCost,
       kind_of_payvment: kindOfPayvment,
-      cart_lines: cartLines
+      cart_lines: cartLines,
+      shiped
     }
+
+
+    
 
     // client email
 
     try{
       await this.mailerService.sendMail(userMessage(name, email, totalCost, phone, cartLines));
     } catch (err) {
+      console.log(err);
       throw new HttpException('Incorrect user email', HttpStatus.CONFLICT);
     }
 
@@ -74,8 +83,6 @@ export class OrdersService {
     if(updatedItem == null)
     throw new HttpException(`No such item with id: ${id}`, HttpStatus.FORBIDDEN);
     
-    
-
     const {
       name,
       phone, 
@@ -86,8 +93,6 @@ export class OrdersService {
       kindOfPayvment,
       shiped
     } = body
-
-
 
     const updatedOrderBody = {
       name,

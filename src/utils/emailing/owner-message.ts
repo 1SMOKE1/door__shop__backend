@@ -48,7 +48,7 @@ const ownerMessage = (name: string, email: string, totalCost: number, phone: str
           </div>
         </div>
   
-        <div style="background-color: #033579; min-height: 675px; text-align: center; font-weight: 400;">
+        <div style="background-color: #033579; min-height: 475px; text-align: center; font-weight: 400;">
           <div
             style="
               max-width: 1346px;
