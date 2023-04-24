@@ -69,6 +69,7 @@ export class ProductProducersController {
       const updatedProductProducer = await this.productProducersService.updateOne(id, body);
       return res.status(HttpStatus.OK).json(updatedProductProducer);
     } catch (err) {
+      console.log(err);
       throw new BadRequestException(err);
     }
   }

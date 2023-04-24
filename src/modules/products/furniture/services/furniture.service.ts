@@ -55,18 +55,6 @@ export class FurnitureService {
       description
     } = body;
 
-    const productProducers = await this.productProducerRepository.find();
-
-    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
-
-    const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName });
-
-    if (product_producer == null) {
-      const producers = await this.productProducerRepository.find();
-
-      throw new HttpException(`Incorrect productProducer you could choose from: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
-    }
-
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
     if(type_of_product == null){
@@ -84,6 +72,20 @@ export class FurnitureService {
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
+
+    const productProducers = await this.productProducerRepository.find();
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+
+    const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
+
+    if (product_producer == null) {
+      const producers = await this.productProducerRepository.find();
+
+      throw new HttpException(`Incorrect productProducer you could choose from: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+    }
+
+    
 
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
@@ -150,18 +152,6 @@ export class FurnitureService {
       typeOfProductName
     } = body;
 
-    const productProducers = await this.productProducerRepository.find();
-
-    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
-
-    const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName });
-
-    if (productProducer == null) {
-      const producers = await this.productProducerRepository.find();
-
-      throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
-    }
-
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
     if(type_of_product == null){
@@ -173,6 +163,18 @@ export class FurnitureService {
 
     if(typeOfProductName !== TypeOfProductEnum.furniture)
     throw new HttpException(`typeOfProductName must be 'Фурнітура'`, HttpStatus.CONFLICT);
+
+    const productProducers = await this.productProducerRepository.find();
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+
+    const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
+
+    if (productProducer == null) {
+      const producers = await this.productProducerRepository.find();
+
+      throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+    }
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);

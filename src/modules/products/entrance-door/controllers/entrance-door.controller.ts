@@ -48,7 +48,6 @@ export class EntranceDoorController {
       const newEntranceDoor = await this.entranceDoorService.createOne(body, images);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
     } catch (err) {
-      console.log(err);
       throw new BadRequestException(err);
     }
   }

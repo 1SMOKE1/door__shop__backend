@@ -16,7 +16,10 @@ export class WindowEntity {
   @Column("varchar")
   name: string;
 
-  @ManyToOne(() => ProductProducerEntity)
+  @ManyToOne(() => ProductProducerEntity, {
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  })
   product_producer: ProductProducerEntity;
 
   @ManyToOne(() => TypeOfProductEntity)
