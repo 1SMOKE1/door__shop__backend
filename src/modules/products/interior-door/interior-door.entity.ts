@@ -18,7 +18,10 @@ export class InteriorDoorEntity {
   @ManyToOne(() => ProductProducerEntity)
   product_producer: ProductProducerEntity;
 
-  @ManyToOne(() => TypeOfProductEntity)
+  @ManyToOne(() => TypeOfProductEntity, {
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  })
   type_of_product: TypeOfProductEntity;
 
   @Column("varchar")
