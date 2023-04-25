@@ -11,6 +11,7 @@ export class CreateFurnitureDto {
   @IsNotEmpty()
   name: string;
 
+  @IsNotEmpty() 
   productProducerName: string;
 
   @IsNotEmpty() 

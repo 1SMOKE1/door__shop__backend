@@ -11,6 +11,7 @@ export class CreateInteriorDoorDto {
   @IsNotEmpty()
   name: string;
 
+  @IsNotEmpty() 
   productProducerName: string;
 
   @IsNotEmpty() 

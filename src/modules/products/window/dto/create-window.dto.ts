@@ -11,6 +11,7 @@ export class CreateWindowDto {
   @IsNotEmpty()
   name: string;
 
+  @IsNotEmpty() 
   productProducerName: string;
 
   @IsNotEmpty()

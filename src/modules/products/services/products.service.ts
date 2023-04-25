@@ -24,7 +24,7 @@ export class ProductsService {
   ) {}
 
   async findAll() {
-    const relations = { relations: { product_producer: true } };
+    const relations = { relations: { product_producer: true, type_of_product: true } };
 
     return Promise.all([
       this.entranceDoorRepository.find(relations),
@@ -49,6 +49,51 @@ export class ProductsService {
     }
 
     return await this.filtrationAlgorithm(checkboxArr, sliderMinValue, sliderMaxValue, searchValue);
+  }
+
+  async deleteAll(){
+    
+    const entrandeDoorIds = await this.entranceDoorRepository.find()
+    .then((data: EntranceDoorEntity[]) => 
+      data.map((item: EntranceDoorEntity): number => 
+        (item.id)
+      )
+    );
+
+    if(entrandeDoorIds.length !== 0)
+    await this.entranceDoorRepository.delete(entrandeDoorIds);
+
+    const interiorDoorIds = await this.interiorDoorRepository.find()
+    .then((data: InteriorDoorEntity[]) => 
+      data.map((item: InteriorDoorEntity): number => 
+        (item.id)
+      )
+    );
+
+    if(interiorDoorIds.length !== 0)
+    await this.interiorDoorRepository.delete(interiorDoorIds);
+
+    const funitureIds = await this.furnitureRepository.find()
+    .then((data: FurnitureEntity[]) => 
+      data.map((item: FurnitureEntity): number => 
+        (item.id)
+      )
+    );
+
+    if(funitureIds.length !== 0)
+    await this.furnitureRepository.delete(funitureIds);
+
+    const windowIds = await this.windowRepository.find()
+    .then((data: WindowEntity[]) => 
+      data.map((item: WindowEntity): number => 
+        (item.id)
+      )
+    );
+
+    if(windowIds.length !== 0)
+    await this.windowRepository.delete(windowIds);
+
+    return `items were deleted successfuly`
   }
 
   private async filtrationAlgorithm(checkboxArr: ProductProducerEntity[], sliderMinValue: number, sliderMaxValue: number, searchValue: string) {
@@ -108,7 +153,7 @@ export class ProductsService {
 
     const answer = [];
     for (const item of checkboxArr) {
-      answer.push(products.filter((el: productMultiType) => el.product_producer.name === item.name));
+      answer.push(products.filter((el: productMultiType) => el.product_producer != null ? el.product_producer.name === item.name : false));
     }
 
     return answer.flat();
@@ -132,4 +177,6 @@ export class ProductsService {
   private async pagination(products: productMultiType[], pageNumber: number, itemsPerPage: number){
     return products.slice((pageNumber - 1) * itemsPerPage, pageNumber * itemsPerPage);
   }
+
+  
 }

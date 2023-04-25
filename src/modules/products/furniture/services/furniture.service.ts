@@ -73,14 +73,16 @@ export class FurnitureService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    const productProducers = await this.productProducerRepository.find();
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
 
-    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+    const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer for furniture`, HttpStatus.NOT_FOUND);
 
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
 
     if (product_producer == null) {
-      const producers = await this.productProducerRepository.find();
+      const producers = await this.productProducerRepository.find(typeOfProductRelations);
 
       throw new HttpException(`Incorrect productProducer you could choose from: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
@@ -164,14 +166,16 @@ export class FurnitureService {
     if(typeOfProductName !== TypeOfProductEnum.furniture)
     throw new HttpException(`typeOfProductName must be 'Фурнітура'`, HttpStatus.CONFLICT);
 
-    const productProducers = await this.productProducerRepository.find();
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product}
 
-    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+    const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer for funtiture`, HttpStatus.NOT_FOUND);
 
     const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
 
     if (productProducer == null) {
-      const producers = await this.productProducerRepository.find();
+      const producers = await this.productProducerRepository.find(typeOfProductRelations);
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
@@ -185,7 +189,7 @@ export class FurnitureService {
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
-      throw new HttpException(`Incorrect guarantee,you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!(await checkEnum(StateEnum, state))) {
@@ -230,6 +234,21 @@ export class FurnitureService {
   async deleteById(id: number) {
     if ((await this.findById(id)) == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
 
-    return await this.furnitureRepository.delete(id);
+    return await this.furnitureRepository.delete(id)
+    .then(() => `furniture by id: ${id} was deleted successfuly`);
+  }
+
+  async deleteAll(){
+    const funitureIds = await this.furnitureRepository.find()
+    .then((data: FurnitureEntity[]) => 
+      data.map((item: FurnitureEntity): number => 
+        (item.id)
+      )
+    );
+
+    if(funitureIds.length !== 0)
+    await this.furnitureRepository.delete(funitureIds);
+
+    return `items were deleted successfuly`
   }
 }

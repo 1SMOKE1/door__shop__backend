@@ -65,8 +65,18 @@ export class EntranceDoorController {
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
-      await this.entranceDoorService.deleteById(id);
-      return res.status(HttpStatus.OK).json(`entrance_door by id: ${id} was deleted successfuly`);
+      const answer = await this.entranceDoorService.deleteById(id);
+      return res.status(HttpStatus.OK).json(answer);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Delete()
+  async deleteAll(@Res() res: Response){
+    try {
+      const answer = await this.entranceDoorService.deleteAll();
+      return res.status(HttpStatus.OK).json(answer);
     } catch (err) {
       throw new BadRequestException(err);
     }

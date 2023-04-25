@@ -50,8 +50,6 @@ export class OrdersService {
       cart_lines: cartLines,
       shiped
     }
-
-
     
 
     // client email
