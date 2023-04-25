@@ -21,7 +21,7 @@ export class EntranceDoorEntity {
   product_producer: ProductProducerEntity;
 
   @ManyToOne(() => TypeOfProductEntity)
-  type_of_product: TypeOfProductEntity;
+  type_of_product: TypeOfProductEntity | null;
 
   @Column("varchar")
   country: CountryEnum;

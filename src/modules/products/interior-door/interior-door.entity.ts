@@ -15,13 +15,13 @@ export class InteriorDoorEntity {
   @Column("varchar")
   name: string;
 
-  @ManyToOne(() => ProductProducerEntity)
-  product_producer: ProductProducerEntity;
-
-  @ManyToOne(() => TypeOfProductEntity, {
+  @ManyToOne(() => ProductProducerEntity, {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   })
+  product_producer: ProductProducerEntity | null;
+
+  @ManyToOne(() => TypeOfProductEntity)
   type_of_product: TypeOfProductEntity;
 
   @Column("varchar")

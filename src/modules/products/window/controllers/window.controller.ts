@@ -65,8 +65,18 @@ export class WindowController {
   @Delete(":id")
   async deleteOne(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
-      await this.windowService.deleteById(id);
-      return res.status(HttpStatus.OK).json(`window by id: ${id} was deleted successfuly`);
+      const answer = await this.windowService.deleteById(id);
+      return res.status(HttpStatus.OK).json(answer);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Delete()
+  async deleteAll(@Res() res: Response){
+    try {
+      const answer = await this.windowService.deleteAll();
+      return res.status(HttpStatus.OK).json(answer);
     } catch (err) {
       throw new BadRequestException(err);
     }

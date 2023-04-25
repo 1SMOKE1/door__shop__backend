@@ -72,14 +72,16 @@ export class WindowService {
     if(typeOfProductName !== TypeOfProductEnum.windows)
     throw new HttpException(`typeOfProductName must be 'Вікна'`, HttpStatus.CONFLICT);
 
-    const productProducers = await this.productProducerRepository.find();
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}};
 
-    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+    const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer for window`, HttpStatus.NOT_FOUND);
     
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
 
     if (product_producer == null) {
-      const producers = await this.productProducerRepository.find();
+      const producers = await this.productProducerRepository.find(typeOfProductRelations);
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
@@ -188,15 +190,16 @@ export class WindowService {
     if(typeOfProductName !== TypeOfProductEnum.windows)
     throw new HttpException(`typeOfProductName must be 'Вікна'`, HttpStatus.CONFLICT);
 
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
 
-    const productProducers = await this.productProducerRepository.find();
+    const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 
-    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer for window`, HttpStatus.NOT_FOUND);
 
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
 
     if (product_producer == null) {
-      const producers = await this.productProducerRepository.find();
+      const producers = await this.productProducerRepository.find(typeOfProductRelations);
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
@@ -271,6 +274,21 @@ export class WindowService {
     throw new HttpException(`window with current id: ${id} doesn't exists`,
     HttpStatus.NOT_FOUND);
 
-    return await this.windowRepository.delete(id);
+    return await this.windowRepository.delete(id)
+    .then(() => `window by id: ${id} was deleted successfuly`);
+  }
+
+  async deleteAll(){
+    const windowIds = await this.windowRepository.find()
+    .then((data: WindowEntity[]) => 
+      data.map((item: WindowEntity): number => 
+        (item.id)
+      )
+    );
+
+    if(windowIds.length !== 0)
+    await this.windowRepository.delete(windowIds);
+
+    return `items were deleted successfuly`
   }
 }

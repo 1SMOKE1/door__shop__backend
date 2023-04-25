@@ -29,8 +29,9 @@ const ownerMessage = (name: string, email: string, totalCost: number, phone: str
         to: 'kamyshan19@gmail.com', // chumak.dp.ua@gmail.com
         subject: `Замовлення З door_shop`,
         html: `
-        <body style="margin: 0">
-        <div style="min-height: 80px; background-color: #fff;">
+        <body style="margin: 0;">
+        <div style="background-color: #033579;">
+        <div style="min-height: 80px; background-color: ##778899;">
           <div
             style="
               max-width: 1346px;
@@ -40,8 +41,8 @@ const ownerMessage = (name: string, email: string, totalCost: number, phone: str
             "
           >
           <div style="padding: 20px 0;">
-            <a style="display: block; width: 146px;" href="https://yakdveri.com.ua" target="_blank">
-              <img src="cid:${logo.cid}" alt="" />
+            <a style="display: block; width: 125px;" href="https://yakdveri.com.ua" target="_blank">
+              <img style="width: 100%;" src="cid:${logo.cid}" alt="" />
             </a>
           </div>
             
@@ -60,7 +61,6 @@ const ownerMessage = (name: string, email: string, totalCost: number, phone: str
             "
           >
             <h1 style="
-            padding-top: 81px;
             color: #fff;
             font-family: Arial,Helvetica, sans-serif;
             font-size: 32px;
@@ -112,6 +112,7 @@ const ownerMessage = (name: string, email: string, totalCost: number, phone: str
               Тип оплати замовлення: ${kindOfPayvment}
             </p>
           </div>
+        </div>
         </div>
         <div style="
           max-width: 960px;

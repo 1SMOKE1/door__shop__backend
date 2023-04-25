@@ -18,7 +18,7 @@ export class FurnitureEntity {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   })
-  product_producer: ProductProducerEntity;
+  product_producer: ProductProducerEntity | null;
 
   @ManyToOne(() => TypeOfProductEntity)
   type_of_product: TypeOfProductEntity;

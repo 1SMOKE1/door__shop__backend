@@ -81,8 +81,18 @@ export class InteriorDoorController {
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
-      await this.interiorDoorService.deleteById(id);
-      return res.status(HttpStatus.OK).json(`interior_door by id: ${id} was deleted successfuly`);
+      const answer = await this.interiorDoorService.deleteById(id);
+      return res.status(HttpStatus.OK).json(answer);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  @Delete()
+  async deleteAll(@Res() res: Response){
+    try {
+      const answer = await this.interiorDoorService.deleteAll();
+      return res.status(HttpStatus.OK).json(answer);
     } catch (err) {
       throw new BadRequestException(err);
     }

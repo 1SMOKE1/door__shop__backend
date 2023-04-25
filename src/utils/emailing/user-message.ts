@@ -31,105 +31,107 @@ const userMessage = (name: string, email: string, totalCost: number, phone: stri
         to: email, // chumak.dp.ua@gmail.com
         subject: `Замовлення З door_shop`,
         html: `
-        <body style="margin: 0">
-        <div style="min-height: 80px; background-color: #fff;">
-          <div
-            style="
-              max-width: 1346px;
-              padding: 0 15px;
-              margin: 0 auto;
-              box-sizing: border-box;
-            "
-          >
-          <div style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center;">
-            <a style="display: block; width: 146px;" href="https://yakdveri.com.ua" target="_blank">
-              <img src="cid:${logo.cid}" alt="" />
-            </a>
-          </div>
-            
-          </div>
+        <body style="margin: 0;">
+
+        <div style="min-height: 80px; background-color: #033579;">
+        <div
+          style="
+            max-width: 1346px;
+            padding: 0 15px;
+            margin: 0 auto;
+            box-sizing: border-box;
+          "
+        >
+        <div style="padding: 20px 0; display: flex; justify-content: space-between; align-items: center;">
+          <a style="display: block; width: 125px;" href="https://yakdveri.com.ua" target="_blank">
+            <img style="width: 100%;" src="cid:${logo.cid}" alt="" />
+          </a>
         </div>
-  
-  
-        <div style="background-color: #033579; min-height: 675px; text-align: center; font-weight: 400;">
-          <div
-            style="
-              max-width: 1346px;
-              padding: 0 15px;
-              margin: 0 auto;
-              box-sizing: border-box;
-              position: relative;
-              z-index: 100;
-            "
-          >
-            <h1 style="
-            padding-top: 81px;
-            color: #fff;
-            font-family: Arial,Helvetica, sans-serif;
-            font-size: 32px;
-            line-height: 45px;
-            letter-spacing: 0.15em;
-            font-weight: 900;
-            "
-            >
-              ЩИРО ВДЯЧНІ ЗА ЗАМВОЛЕННЯ!
-            </h1>
-            <p style="
-            font-family: Arial,Helvetica, sans-serif;
-            font-size: 24px;
-            line-height: 27px;
-            color: #fff;
-            margin: 40px 0;
-            "
-            >
-              Шановний, <span style="text-decoration: underline;">${name}</span>
-            </p>
-            <p style="
-            font-family: Arial,Helvetica, sans-serif;
-            font-size: 24px;
-            line-height: 27px;
-            color: #fff;
-            margin: 40px 0;
-            "
-            >
-              Ви залишили цей телефон ${phone} для зв’язку
-            </p>
-            <p style="
-            font-family: Arial,Helvetica, sans-serif;
-            font-size: 24px;
-            line-height: 27px;
-            color: #fff;
-            margin-bottom: 40px;
-            "
-            >
-              Наш менеджер зв’яжеться з Вами найближчим часом
-            </p>
-            <a 
-            style="
-              width: 170px;
-              display: block;
-              margin: 50px auto 200px;
-              padding: 20px 63px;
-              font-family: Arial,Helvetica, sans-serif;
-              font-size: 20px;
-              line-height: 23px;
-              color: #033579;
-              background-color: #fffeb8;
-              font-weight: 700;
-              border-radius: 8px;
-              cursor: pointer;
-              transition: background-color .3s ease;
-              text-decoration: none;
-              "
-            href="https://yakdveri.com.ua"
-            target="_blank"
-              >
-              Повернутися на сайт
-            </a>
-            <img src="assets/bg_main_left.png" style=" left: 0; top: 140%; position: absolute; display: block; z-index: 1; transform: translate(0, -140%);" alt="">
-            <img src="assets/bg_main_right.png" style=" right: 0; top: 140%; position: absolute; display: block; z-index: 1; transform: translate(0, -140%);" alt="">
-          </div>
+          
         </div>
+    
+
+
+      <div style="background-color: #033579; min-height: 675px; text-align: center; font-weight: 400;">
+        <div
+          style="
+            max-width: 1346px;
+            padding: 0 15px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 100;
+          "
+        >
+          <h1 style="
+          color: #fff;
+          font-family: Arial,Helvetica, sans-serif;
+          font-size: 32px;
+          line-height: 45px;
+          letter-spacing: 0.15em;
+          font-weight: 900;
+          "
+          >
+            ЩИРО ВДЯЧНІ ЗА ЗАМВОЛЕННЯ!
+          </h1>
+          <p style="
+          font-family: Arial,Helvetica, sans-serif;
+          font-size: 24px;
+          line-height: 27px;
+          color: #fff;
+          margin: 40px 0;
+          "
+          >
+            Шановний, <span style="text-decoration: underline;">${name}</span>
+          </p>
+          <p style="
+          font-family: Arial,Helvetica, sans-serif;
+          font-size: 24px;
+          line-height: 27px;
+          color: #fff;
+          margin: 40px 0;
+          "
+          >
+            Ви залишили цей телефон ${phone} для зв’язку
+          </p>
+          <p style="
+          font-family: Arial,Helvetica, sans-serif;
+          font-size: 24px;
+          line-height: 27px;
+          color: #fff;
+          margin-bottom: 40px;
+          "
+          >
+            Наш менеджер зв’яжеться з Вами найближчим часом
+          </p>
+          <a 
+          style="
+            width: 170px;
+            display: block;
+            margin: 50px auto 200px;
+            padding: 20px 63px;
+            font-family: Arial,Helvetica, sans-serif;
+            font-size: 20px;
+            line-height: 23px;
+            color: #033579;
+            background-color: #fffeb8;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color .3s ease;
+            text-decoration: none;
+            "
+          href="https://yakdveri.com.ua"
+          target="_blank"
+            >
+            Повернутися на сайт
+          </a>
+          <img src="assets/bg_main_left.png" style=" left: 0; top: 140%; position: absolute; display: block; z-index: 1; transform: translate(0, -140%);" alt="">
+          <img src="assets/bg_main_right.png" style=" right: 0; top: 140%; position: absolute; display: block; z-index: 1; transform: translate(0, -140%);" alt="">
+        </div>
+      </div>
+        </div>
+        
         <div style="
           max-width: 960px;
           padding: 0 15px;

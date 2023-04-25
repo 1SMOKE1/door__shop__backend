@@ -86,14 +86,16 @@ export class EntranceDoorService {
     if(typeOfProductName !== TypeOfProductEnum.entranceDoor)
     throw new HttpException(`typeOfProductName must be 'Двері вхідні'`, HttpStatus.CONFLICT);
 
-    const productProducers = await this.productProducerRepository.find();
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
 
-    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+    const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
+
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer for entranceDoor`, HttpStatus.NOT_FOUND);
 
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
 
     if (product_producer == null) {
-      const producers = await this.productProducerRepository.find();
+      const producers = await this.productProducerRepository.find(typeOfProductRelations);
 
       throw new HttpException(`Incorrect productProducer you could choose from: ${producers
         .map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
@@ -207,15 +209,16 @@ export class EntranceDoorService {
     if(typeOfProductName !== TypeOfProductEnum.entranceDoor)
     throw new HttpException(`typeOfProductName must be 'Двері вхідні'`, HttpStatus.CONFLICT);
 
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
 
-    const productProducers = await this.productProducerRepository.find();
+    const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 
-    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer`, HttpStatus.CONFLICT);
+    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer for entranceDoor`, HttpStatus.NOT_FOUND);
 
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product});
 
     if (product_producer == null) {
-      const producers = await this.productProducerRepository.find();
+      const producers = await this.productProducerRepository.find(typeOfProductRelations);
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
@@ -294,6 +297,21 @@ export class EntranceDoorService {
   async deleteById(id: number) {
     if ((await this.findById(id)) == null) throw new HttpException(`entrance_door with current id: ${id} doesn't exists`, HttpStatus.FORBIDDEN);
 
-    return await this.entranceDoorRepository.delete(id);
+    return await this.entranceDoorRepository.delete(id)
+    .then(() => `entrance_door by id: ${id} was deleted successfuly`)
+  }
+
+  async deleteAll(){
+    const entrandeDoorIds = await this.entranceDoorRepository.find()
+    .then((data: EntranceDoorEntity[]) => 
+      data.map((item: EntranceDoorEntity): number => 
+        (item.id)
+      )
+    );
+
+    if(entrandeDoorIds.length !== 0)
+    await this.entranceDoorRepository.delete(entrandeDoorIds);
+
+    return `items were deleted successfuly`
   }
 }
