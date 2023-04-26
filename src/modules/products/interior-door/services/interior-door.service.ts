@@ -79,7 +79,7 @@ export class InteriorDoorService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}};
 
     const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 
@@ -195,7 +195,7 @@ export class InteriorDoorService {
     if(typeOfProductName !== TypeOfProductEnum.interiorDoor)
     throw new HttpException(`typeOfProductName must be 'Двері міжкімнатні'`, HttpStatus.CONFLICT);
 
-    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}};
 
     const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 

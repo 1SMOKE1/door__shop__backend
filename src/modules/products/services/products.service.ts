@@ -9,9 +9,13 @@ import { ProductProducerEntity } from "src/modules/product-producers/product-pro
 import { productMultiType } from "src/types/productMultiType";
 import { IHoleFiltrationBody } from "../interfaces/IHoleFiltrationBody";
 import { IPagination } from "../interfaces/IPagination";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 @Injectable()
 export class ProductsService {
+
+  private productRelations = { relations: { product_producer: true, type_of_product: true } };
+
   constructor(
     @InjectRepository(EntranceDoorEntity)
     private readonly entranceDoorRepository: Repository<EntranceDoorEntity>,
@@ -24,14 +28,28 @@ export class ProductsService {
   ) {}
 
   async findAll() {
-    const relations = { relations: { product_producer: true, type_of_product: true } };
-
     return Promise.all([
-      this.entranceDoorRepository.find(relations),
-      this.furnitureRepository.find(relations),
-      this.interiorDoorRepository.find(relations),
-      this.windowRepository.find(relations),
+      this.entranceDoorRepository.find(this.productRelations),
+      this.furnitureRepository.find(this.productRelations),
+      this.interiorDoorRepository.find(this.productRelations),
+      this.windowRepository.find(this.productRelations),
     ]).then(products => products.flat());
+  }
+
+  async findOne(id: number, typeOfProductName: string){
+
+    const relations = {where: {id} ,...this.productRelations}
+
+    switch(true){
+      case typeOfProductName === TypeOfProductEnum.entranceDoor:
+        return await this.entranceDoorRepository.findOne(relations);
+      case typeOfProductName === TypeOfProductEnum.interiorDoor:
+        return await this.interiorDoorRepository.findOne(relations);
+      case typeOfProductName === TypeOfProductEnum.furniture:
+        return await this.furnitureRepository.findOne(relations);
+      case typeOfProductName === TypeOfProductEnum.windows:
+        return await this.windowRepository.findOne(relations);
+    }
   }
 
   async filtration(body: IHoleFiltrationBody, pagination: IPagination) {
