@@ -73,7 +73,7 @@ export class FurnitureService {
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}};
 
     const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 
@@ -166,7 +166,7 @@ export class FurnitureService {
     if(typeOfProductName !== TypeOfProductEnum.furniture)
     throw new HttpException(`typeOfProductName must be 'Фурнітура'`, HttpStatus.CONFLICT);
 
-    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product}
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}}
 
     const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 

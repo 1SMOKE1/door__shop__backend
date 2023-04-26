@@ -86,7 +86,7 @@ export class EntranceDoorService {
     if(typeOfProductName !== TypeOfProductEnum.entranceDoor)
     throw new HttpException(`typeOfProductName must be 'Двері вхідні'`, HttpStatus.CONFLICT);
 
-    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}};
 
     const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 
@@ -209,7 +209,7 @@ export class EntranceDoorService {
     if(typeOfProductName !== TypeOfProductEnum.entranceDoor)
     throw new HttpException(`typeOfProductName must be 'Двері вхідні'`, HttpStatus.CONFLICT);
 
-    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}};
 
     const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 

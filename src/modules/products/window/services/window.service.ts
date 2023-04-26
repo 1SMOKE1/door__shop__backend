@@ -190,7 +190,7 @@ export class WindowService {
     if(typeOfProductName !== TypeOfProductEnum.windows)
     throw new HttpException(`typeOfProductName must be 'Вікна'`, HttpStatus.CONFLICT);
 
-    const typeOfProductRelations = {relations: {type_of_product: true}, where: type_of_product};
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}};
 
     const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 
