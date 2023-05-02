@@ -5,11 +5,12 @@ import { FurnitureEntity } from "../furniture/furniture.entity";
 import { Repository } from "typeorm";
 import { InteriorDoorEntity } from "../interior-door/interior-door.entity";
 import { WindowEntity } from "../window/window.entity";
-import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { productMultiType } from "src/types/productMultiType";
 import { IHoleFiltrationBody } from "../interfaces/IHoleFiltrationBody";
 import { IPagination } from "../interfaces/IPagination";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
+import { IProductProducer } from "src/interfaces/IProductProducer";
+import { IGetProducts } from "src/interfaces/IGetProducts";
 
 @Injectable()
 export class ProductsService {
@@ -114,7 +115,7 @@ export class ProductsService {
     return `items were deleted successfuly`
   }
 
-  private async filtrationAlgorithm(checkboxArr: ProductProducerEntity[], sliderMinValue: number, sliderMaxValue: number, searchValue: string) {
+  private async filtrationAlgorithm(checkboxArr: IProductProducer[], sliderMinValue: number, sliderMaxValue: number, searchValue: string) {
 
     const products = await this.findAll();
 
@@ -167,11 +168,14 @@ export class ProductsService {
     }
   }
 
-  private async filtrationByCheckboxes(products: productMultiType[], checkboxArr: ProductProducerEntity[]) {
-
+  private async filtrationByCheckboxes(products: productMultiType[], checkboxArr: IProductProducer[]) {
     const answer = [];
     for (const item of checkboxArr) {
-      answer.push(products.filter((el: productMultiType) => el.product_producer != null ? el.product_producer.name === item.name : false));
+      answer.push(products.filter((el: productMultiType) => 
+        el.product_producer != null ? 
+          (el.product_producer.name === item.name && el.type_of_product.name === item.typeOfProduct.name)  
+        : 
+          false));
     }
 
     return answer.flat();
@@ -192,8 +196,11 @@ export class ProductsService {
       el.name.toLowerCase().includes(searchValue.toLowerCase()));
   }
 
-  private async pagination(products: productMultiType[], pageNumber: number, itemsPerPage: number){
-    return products.slice((pageNumber - 1) * itemsPerPage, pageNumber * itemsPerPage);
+  private async pagination(products: productMultiType[], pageNumber: number, itemsPerPage: number): Promise<IGetProducts>{
+
+    const paginatedProducts = products.slice((pageNumber - 1) * itemsPerPage, pageNumber * itemsPerPage);
+
+    return {products: paginatedProducts, productsLength: products.length};
   }
 
   

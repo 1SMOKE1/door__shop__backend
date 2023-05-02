@@ -1,7 +1,6 @@
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
@@ -31,32 +30,50 @@ export class WindowEntity {
   @Column("varchar")
   guarantee: GuaranteeEnum;
 
-  @Column("varchar")
-  state: StateEnum;
-
   @Column("bigint", {default: 0})
   price: number;
-
-  @Column("bigint", {default: 0})
-  installation_price: number;
 
   @Column("varchar")
   in_stock: InStockEnum;
 
   @Column("text", {array: true})
-  profile: string[];
+  mosquito_net: string[];
 
   @Column("text", {array: true})
-  construction: string[];
+  window_sill: string[];
 
   @Column("text", {array: true})
-  glass_unit: string[];
+  window_hand: string[];
+
+  @Column("text", {array: true})
+  child_lock: string[];
+
+  @Column("text", {array: true})
+  housewife_stub: string[];
+
+  @Column("text", {array: true})
+  glass_pocket_add: string[];
 
   @Column("text", {array: true})
   lamination: string[];
 
   @Column("text", {array: true})
-  glasses: string[];
+  profile: string[];
+
+  @Column("bigint", {default: 0})
+  window_height: number;
+
+  @Column("bigint", {default: 0})
+  window_width: number;
+  
+  @Column("text", {array: true})
+  cameras_count: string[];
+
+  @Column("text", {array: true})
+  features: string[];
+
+  @Column("text", {array: true})
+  sections_count: string[];
 
   @Column({ type: "varchar", length: 500, default: "Немає опису" })
   description?: string;

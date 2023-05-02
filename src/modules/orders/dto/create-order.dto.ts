@@ -1,9 +1,8 @@
-import { ArrayNotEmpty, IsArray, IsBoolean, IsEmail, IsMobilePhone, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength} from "class-validator";
-import { KindOfPayvmentEnum } from "../enum/kind-of-payvment.enum";
+import { ArrayNotEmpty, IsArray, IsBoolean, IsEmail, IsMobilePhone, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from "class-validator";
+import { kindOfPaymentEnum } from "../enum/kind-of-payvment.enum";
 import { ICartLine } from "../interfaces/ICartLine";
 
 export class CreateOrderDto {
-
   @IsNotEmpty()
   @IsString()
   @MinLength(2)
@@ -11,7 +10,7 @@ export class CreateOrderDto {
 
   @IsNotEmpty()
   @IsString()
-  @IsMobilePhone('uk-UA')
+  @IsMobilePhone("uk-UA")
   @MinLength(10)
   phone: string;
 
@@ -27,14 +26,14 @@ export class CreateOrderDto {
   @IsArray()
   @ArrayNotEmpty()
   cartLines: ICartLine[] & JSON;
-  
+
   @IsOptional()
   @IsBoolean()
   shiped: boolean;
-  
+
   @IsNumber()
   totalCost: number;
-  
+
   @IsString()
-  kindOfPayvment: KindOfPayvmentEnum;
+  kindOfPayment: kindOfPaymentEnum;
 }

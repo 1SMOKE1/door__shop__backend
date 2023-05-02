@@ -1,4 +1,4 @@
-import { IsOptional, IsNotEmpty, IsString, IsNumber, IsPositive, IsBoolean } from "class-validator";
+import { IsOptional, IsNotEmpty, IsString, IsNumber, IsPositive } from "class-validator";
 
 export class UpdateWindowProfileDto {
   @IsOptional()
@@ -11,8 +11,4 @@ export class UpdateWindowProfileDto {
   @IsNumber()
   @IsPositive()
   price: number;
-
-  @IsOptional()
-  @IsBoolean()
-  isUsing: boolean;
 }

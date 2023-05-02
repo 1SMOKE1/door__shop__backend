@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { InteriorDoorEntity } from './interior-door.entity';
 import { ProductProducersModule } from 'src/modules/product-producers/product-producers.module';
 import { TypeOfProductsModule } from 'src/modules/type-of-products/type-of-products.module';
+import { FurnitureModule } from '../furniture/furniture.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([InteriorDoorEntity]),
     ProductProducersModule,
-    TypeOfProductsModule
+    TypeOfProductsModule,
+    FurnitureModule
   ],
   providers: [InteriorDoorService],
   controllers: [InteriorDoorController],

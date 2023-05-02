@@ -1,4 +1,4 @@
-import { IsOptional, IsNotEmpty, IsString, IsNumber, IsPositive, IsBoolean } from "class-validator";
+import { IsOptional, IsNotEmpty, IsString } from "class-validator";
 
 export class UpdateOpeningTypeDto {
   @IsOptional()
@@ -6,13 +6,4 @@ export class UpdateOpeningTypeDto {
   @IsString()
   name: string;
 
-  @IsNotEmpty()
-  @IsOptional()
-  @IsNumber()
-  @IsPositive()
-  price: number;
-
-  @IsOptional()
-  @IsBoolean()
-  isUsing: boolean;
 }

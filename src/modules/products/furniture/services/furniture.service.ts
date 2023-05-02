@@ -6,7 +6,6 @@ import { CreateFurnitureDto } from "../dto/create-furniture.dto";
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import checkEnum from "src/utils/checkEnum";
 import generateErrorArr from "src/utils/generateErrorArr";
@@ -38,6 +37,14 @@ export class FurnitureService {
     return currentProduct;
   }
 
+  async findByName(name: string) {
+    const currentProduct = await this.furnitureRepository.findOne({ where: { name }, relations: { product_producer: true } });
+
+    if (currentProduct == null) throw new HttpException(`furniture with name: ${name}, doesn't exists`, HttpStatus.FORBIDDEN);
+
+    return currentProduct;
+  }
+
   async createOne(body: CreateFurnitureDto, files: IImages) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
@@ -45,15 +52,19 @@ export class FurnitureService {
       name,
       country, 
       guarantee,
-      state,
       inStock,
       price,
-      installationPrice,
       productProducerName,
       typeOfProductName,
       homePage,
       description
     } = body;
+
+    const exists = await this.findByName(name);
+
+    if(exists !== null){
+      throw new HttpException(`Item with current name: ${name} already exists`, HttpStatus.CONFLICT);
+    }
 
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
@@ -95,12 +106,6 @@ export class FurnitureService {
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(StateEnum, state))) {
-      const states = await generateErrorArr(StateEnum);
-
-      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
 
@@ -120,10 +125,8 @@ export class FurnitureService {
       name,
       country,
       guarantee,
-      state,
       in_stock: inStock,
       price,
-      installation_price: installationPrice,
       product_producer,
       type_of_product,
       home_page: homePage,
@@ -144,15 +147,19 @@ export class FurnitureService {
       name,
       country,
       guarantee,
-      state,
       inStock,
       price,
-      installationPrice,
       productProducerName,
       homePage,
       description,
       typeOfProductName
     } = body;
+
+    const exists = await this.findByName(name);
+
+    if(exists !== null){
+      throw new HttpException(`Item with current name: ${name} already exists`, HttpStatus.CONFLICT);
+    }
 
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
@@ -172,9 +179,9 @@ export class FurnitureService {
 
     if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer for funtiture`, HttpStatus.NOT_FOUND);
 
-    const productProducer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
+    const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
 
-    if (productProducer == null) {
+    if (product_producer == null) {
       const producers = await this.productProducerRepository.find(typeOfProductRelations);
 
       throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
@@ -190,12 +197,6 @@ export class FurnitureService {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
-    if (!(await checkEnum(StateEnum, state))) {
-      const states = await generateErrorArr(StateEnum);
-
-      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!(await checkEnum(InStockEnum, inStock))) {
@@ -218,12 +219,10 @@ export class FurnitureService {
         name,
         country,
         guarantee,
-        state,
+        product_producer,
+        type_of_product,
         in_stock: inStock,
         price,
-        installation_price: installationPrice,
-        product_producer: productProducer,
-        type_of_product,
         home_page: homePage,
         description,
         images: imagesPathes

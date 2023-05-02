@@ -1,9 +1,10 @@
-import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
+
 import { ISliderValue } from "./ISliderValue";
+import { IProductProducer } from "src/interfaces/IProductProducer";
 
 export interface IHoleFiltrationBody{
 
-  checkboxArr: ProductProducerEntity[],
+  checkboxArr: IProductProducer[],
   sliderValue: ISliderValue,
   searchValue: string
 

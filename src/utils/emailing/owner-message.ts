@@ -4,15 +4,12 @@ import { ICartLine } from "src/modules/orders/interfaces/ICartLine";
 import getCartLinesHTML from "./cartLinesHTML";
 import getCartLinesImages from "./cartLinesImages";
 
-const ownerMessage = (name: string, email: string, totalCost: number, phone: string, address: string, kindOfPayvment: string, cartLines: ICartLine[] & JSON): ISendMailOptions => {
-
-
+const ownerMessage = (name: string, email: string, totalCost: number, phone: string, address: string, kindOfPayment: string, cartLines: ICartLine[] & JSON): ISendMailOptions => {
   const logo: ICartLineImage = {
-    filename: 'logo.png',
-    path: 'assets/logo.png',
-    cid: 'logo'
-  }
-
+    filename: "logo.png",
+    path: "assets/logo.png",
+    cid: "logo",
+  };
 
   // <div style="display: flex; width: 140px; justify-content: space-between; align-items: center;">
   //   <a href="" target="_blank">
@@ -23,12 +20,11 @@ const ownerMessage = (name: string, email: string, totalCost: number, phone: str
   //     <img src="assets/youtube.png" alt="" /></a>
   // </div>
 
-
   return {
-        from: 'Doorshop.dp.ua@gmail.com',
-        to: 'kamyshan19@gmail.com', // chumak.dp.ua@gmail.com
-        subject: `Замовлення З door_shop`,
-        html: `
+    from: "Doorshop.dp.ua@gmail.com",
+    to: "kamyshan19@gmail.com", // chumak.dp.ua@gmail.com
+    subject: `Замовлення З door_shop`,
+    html: `
         <body style="margin: 0;">
         <div style="background-color: #033579;">
         <div style="min-height: 80px; background-color: ##778899;">
@@ -109,7 +105,7 @@ const ownerMessage = (name: string, email: string, totalCost: number, phone: str
             margin-bottom: 40px;
             "
             >
-              Тип оплати замовлення: ${kindOfPayvment}
+              Тип оплати замовлення: ${kindOfPayment}
             </p>
           </div>
         </div>
@@ -157,11 +153,8 @@ const ownerMessage = (name: string, email: string, totalCost: number, phone: str
         </div>  
       </body>
     `,
-        attachments: [
-          ...getCartLinesImages(cartLines),
-          logo
-        ]
-    }
-}
+    attachments: [...getCartLinesImages(cartLines), logo],
+  };
+};
 
 export default ownerMessage;

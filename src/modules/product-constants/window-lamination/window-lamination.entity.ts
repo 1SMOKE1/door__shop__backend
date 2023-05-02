@@ -11,6 +11,4 @@ export class WindowLaminationEntity {
   @Column({type: 'bigint'})
   price: number;
 
-  @Column({type: 'bool', default: false})
-  is_using: boolean;
 }

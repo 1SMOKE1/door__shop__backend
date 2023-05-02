@@ -8,12 +8,12 @@ import checkEnum from "src/utils/checkEnum";
 import { CountryEnum } from "src/enums/country.enum";
 import generateErrorArr from "src/utils/generateErrorArr";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
 import { UpdateInteriorDoorDto } from "../dto/update-interior-door.dto";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 import { IImages } from "src/interfaces/IImages";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
+import { FurnitureEntity } from "../../furniture/furniture.entity";
 
 @Injectable()
 export class InteriorDoorService {
@@ -23,15 +23,17 @@ export class InteriorDoorService {
     @InjectRepository(ProductProducerEntity)
     private readonly productProducerRepository: Repository<ProductProducerEntity>,
     @InjectRepository(TypeOfProductEntity)
-    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>
+    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>,
+    @InjectRepository(FurnitureEntity)
+    private readonly furnitureRepository: Repository<FurnitureEntity>
   ) {}
 
   async findAll() {
-    return await this.interiorDoorRepository.find({ relations: { product_producer: true } });
+    return await this.interiorDoorRepository.find({ relations: { product_producer: true, type_of_product: true } });
   }
 
   async findById(id: number) {
-    const currentProduct = await this.interiorDoorRepository.findOne({ where: { id }, relations: { product_producer: true } });
+    const currentProduct = await this.interiorDoorRepository.findOne({ where: { id }, relations: { product_producer: true, type_of_product: true } });
 
     if (currentProduct == null) throw new HttpException(`interiorDoor with id: ${id}, doesn't exists`, HttpStatus.FORBIDDEN);
 
@@ -43,20 +45,24 @@ export class InteriorDoorService {
 
     const {
       name,
-      country,
-      guarantee,
-      state,
-      inStock,
-      price,
-      installationPrice,
       productProducerName,
       typeOfProductName,
-      finishingTheSurface,
-      frameMaterial,
-      structuralFeatures,
-      openingType,
-      installationType,
-      openingMethod,
+      country,
+      guarantee,
+      inStock,
+      price,
+      fabricMaterialThickness,
+      fabricMaterialHeight,
+      fabricMaterialWidth,
+      doorIsolation,
+      doorFrameMaterial,
+      doorSelectionBoard,
+      doorWelt,
+      doorSlidingSystem,
+      doorHand,
+      doorMechanism,
+      doorLoops,
+      doorStopper,
       homePage,
       description,
     } = body;
@@ -99,29 +105,20 @@ export class InteriorDoorService {
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(StateEnum, state))) {
-      const states = await generateErrorArr(StateEnum);
-
-      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    // finishingTheSurface: string[] // Оздоблення поверхні
 
-    // frameMaterial: string[] // Матеріали дверної коробки
-
-    // structuralFeatures: string[] // Конструктивні особливості
-
-    // installationType: string[], // Тип монтажу
-
-    // openingType: string[] // Тип відкривання
-
-    // openingMethod: string[] // Спосіб відкривання
+    
+    const door_hand = await this.findAllByCond(doorHand);
+    const door_mechanism = await this.findAllByCond(doorMechanism);
+    const door_loops = await this.findAllByCond(doorLoops);
+    const door_stopper = await this.findAllByCond(doorStopper);
+  
+    console.log(door_hand);
     
 
     // IMAGES
@@ -139,16 +136,20 @@ export class InteriorDoorService {
       type_of_product,
       country,
       guarantee,
-      state,
       price: +price, 
-      installation_price: +installationPrice,
       in_stock: inStock,
-      finishing_the_surface: finishingTheSurface,
-      frame_material: frameMaterial,
-      structural_features: structuralFeatures,
-      opening_type: openingType,
-      installation_type: installationType,
-      opening_method: openingMethod,
+      fabric_material_thickness: fabricMaterialThickness,
+      fabric_material_height: fabricMaterialHeight,
+      fabric_material_width: fabricMaterialWidth,
+      door_isolation: doorIsolation,
+      door_frame_material: doorFrameMaterial,
+      door_selection_board: doorSelectionBoard,
+      door_welt: doorWelt,
+      door_sliding_system: doorSlidingSystem,
+      door_hand,
+      door_mechanism,
+      door_loops,
+      door_stopper,
       description,
       home_page: homePage,
       images: imagesPathes,
@@ -165,20 +166,16 @@ export class InteriorDoorService {
 
     const {
       name,
-      country,
-      guarantee,
-      state,
-      inStock,
-      price,
-      installationPrice,
       productProducerName,
       typeOfProductName,
-      finishingTheSurface,
-      frameMaterial,
-      structuralFeatures,
-      openingType,
-      installationType,
-      openingMethod,
+      country,
+      guarantee,
+      inStock,
+      price,
+      doorHand,
+      doorMechanism,
+      doorLoops,
+      doorStopper,
       homePage,
       description,
     } = body;
@@ -221,29 +218,16 @@ export class InteriorDoorService {
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(StateEnum, state))) {
-      const states = await generateErrorArr(StateEnum);
-
-      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    // finishingTheSurface: string[] // Оздоблення поверхні
-
-    // frameMaterial: string[] // Матеріали дверної коробки
-
-    // structuralFeatures: string[] // Конструктивні особливості
-  
-    // openingType: string[] // Тип відкривання
-
-    // installationType: string[], // Тип монтажу
-
-    // openingMethod: string[] // Спосіб відкривання
+    const door_hand = await this.findAllByCond(doorHand);
+    const door_mechanism = await this.findAllByCond(doorMechanism);
+    const door_loops = await this.findAllByCond(doorLoops);
+    const door_stopper = await this.findAllByCond(doorStopper);
    
     // IMAGES
 
@@ -259,18 +243,14 @@ export class InteriorDoorService {
         name,
         country,
         guarantee,
-        state,
         in_stock: inStock,
         price,
-        installation_price: installationPrice,
         product_producer,
         type_of_product,
-        finishing_the_surface: finishingTheSurface,
-        frame_material: frameMaterial,
-        structural_features: structuralFeatures,
-        opening_type: openingType,
-        installation_type: installationType,
-        opening_method: openingMethod,
+        door_hand, 
+        door_mechanism,
+        door_loops,
+        door_stopper,
         home_page: homePage,
         description,
         images: imagesPathes
@@ -297,5 +277,15 @@ export class InteriorDoorService {
     await this.interiorDoorRepository.delete(interiorDoorIds);
 
     return `items were deleted successfuly`
+  }
+
+  private async findAllByCond(obj: string[]): Promise<FurnitureEntity[]>{
+    return await Promise.all(
+      obj.map(p =>  
+        new Promise((res) => res(p))
+          .then((el: string) => 
+            this.furnitureRepository.findOneByOrFail({name: el})))
+    );
+    
   }
 }

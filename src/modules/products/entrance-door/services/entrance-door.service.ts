@@ -7,18 +7,28 @@ import checkEnum from "src/utils/checkEnum";
 import { CountryEnum } from "src/enums/country.enum";
 import generateErrorArr from "src/utils/generateErrorArr";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { UpdateEntranceDoorDto } from "../dto/update-entrance-door.dto";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
-import { AmountOfSealingMaterialEntity } from "src/modules/product-constants/amount-of-sealing-materials/amount-of-sealing-material.entity";
 import { IImages } from "src/interfaces/IImages";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 
+
 @Injectable()
 export class EntranceDoorService {
+
+  private getRelations = { relations: { 
+      product_producer: true,
+      type_of_product: true,
+      door_hand: true,
+      door_mechanism: true,
+      door_loops: true,
+      door_stopper: true,
+    } 
+  }
+
   constructor(
     @InjectRepository(EntranceDoorEntity)
     private readonly entranceDoorRepository: Repository<EntranceDoorEntity>,
@@ -26,25 +36,14 @@ export class EntranceDoorService {
     private readonly productProducerRepository: Repository<ProductProducerEntity>,
     @InjectRepository(TypeOfProductEntity)
     private readonly typeOfProductRepository: Repository<TypeOfProductEntity>,
-    @InjectRepository(AmountOfSealingMaterialEntity)
-    private readonly amountOfSealingMaterialsRepository: Repository<AmountOfSealingMaterialEntity>
   ) {}
 
   async findAll() {
-    return await this.entranceDoorRepository.find({ relations: { 
-      product_producer: true,
-      type_of_product: true
-    } });
+    return await this.entranceDoorRepository.find(this.getRelations);
   }
 
   async findById(id: number) {
-    const currentProduct = await this.entranceDoorRepository.findOne({
-      where: { id },
-      relations: {
-        product_producer: true,
-        type_of_product: true
-      }
-    });
+    const currentProduct = await this.entranceDoorRepository.findOne(this.getRelations);
 
     if (currentProduct == null) throw new HttpException(`entrance_door with id: ${id}, doesn't exists`, HttpStatus.FORBIDDEN);
 
@@ -56,20 +55,13 @@ export class EntranceDoorService {
 
     const {
       name,
-      country,
-      guarantee,
-      state,
-      inStock,
-      price,
-      installationPrice,
       productProducerName,
       typeOfProductName,
-      amountOfSealingMaterials,
-      fabricMaterial,
-      openingMethod,
-      covering,
-      purpose,
-      frameMaterial,
+      country,
+      guarantee,
+      inStock,
+      price,
+
       homePage,
       description,
     } = body;
@@ -113,29 +105,15 @@ export class EntranceDoorService {
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(StateEnum, state))) {
-      const states = await generateErrorArr(StateEnum);
-
-      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    // amountOfSealingMaterials: string[] // Кількість ущільнюючих контурів
 
-    // fabricMaterial: string[] // Матеріл дверного полотна
 
-    // purpose: string[] // Призначення двері
 
-    // openingMethod: string[] // Спосіб відкривання
-
-    // covering: string[] // Покриття
-
-    // frameMaterial: string[] // Матеріал дверної коробки
 
     // IMAGES
 
@@ -150,18 +128,11 @@ export class EntranceDoorService {
       name,
       country,
       guarantee,
-      state,
       in_stock: inStock,
       price: +price,
-      installation_price: +installationPrice,
       product_producer,
       type_of_product,
-      amount_of_sealing_materials: amountOfSealingMaterials,
-      fabric_material: fabricMaterial,
-      opening_method: openingMethod,
-      covering: covering,
-      purpose: purpose,
-      frame_material: frameMaterial,
+
       home_page: homePage,
       description,
       images: imagesPathes
@@ -179,20 +150,15 @@ export class EntranceDoorService {
 
     const {
       name,
-      country,
-      guarantee,
-      state,
-      inStock,
-      price,
-      installationPrice,
       productProducerName,
       typeOfProductName,
-      amountOfSealingMaterials,
-      fabricMaterial,
-      openingMethod,
-      covering,
-      purpose,
-      frameMaterial,
+      country,
+      guarantee,
+      inStock,
+      price,
+
+
+
       homePage,
       description,
     } = body;
@@ -236,13 +202,6 @@ export class EntranceDoorService {
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(StateEnum, state))) {
-      const states = await generateErrorArr(StateEnum);
-
-      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-    
-
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
 
@@ -275,18 +234,10 @@ export class EntranceDoorService {
         name,
         country,
         guarantee,
-        state,
         in_stock: inStock,
         price: +price,
-        installation_price: +installationPrice,
         type_of_product,
         product_producer,
-        amount_of_sealing_materials: amountOfSealingMaterials,
-        fabric_material: fabricMaterial,
-        opening_method: openingMethod,
-        covering,
-        purpose,
-        frame_material: frameMaterial,
         home_page: homePage,
         description,
         images: imagesPathes
