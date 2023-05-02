@@ -3,7 +3,6 @@ import { IsNotEmpty, IsNumber, IsInt, IsArray, IsOptional } from "class-validato
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 export class CreateWindowDto {
@@ -22,9 +21,6 @@ export class CreateWindowDto {
 
   @IsNotEmpty()
   guarantee: GuaranteeEnum;
-
-  @IsNotEmpty()
-  state: StateEnum;
 
   @IsNotEmpty()
   @IsNumber()

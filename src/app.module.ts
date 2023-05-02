@@ -13,6 +13,9 @@ import { ProductConstantsModule } from './modules/product-constants/product-cons
 import { CarouselsModule } from './modules/carousels/carousels.module';
 import TypeOrmConfigService from './configurations/typeorm-config/typeorm.config';
 import MailerConfigService from './configurations/mailer-config/mailer.config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 
 
 @Module({
@@ -40,6 +43,13 @@ import MailerConfigService from './configurations/mailer-config/mailer.config';
     FormsModule,
     ProductConstantsModule,
     CarouselsModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads', 'images'),
+      serveRoot: '/uploads/images',
+      serveStaticOptions: {
+        index: false
+      }
+    }),
   ],
   controllers: [],
   providers: [],

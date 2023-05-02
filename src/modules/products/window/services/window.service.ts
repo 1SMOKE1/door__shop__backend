@@ -7,7 +7,6 @@ import { ProductProducerEntity } from "src/modules/product-producers/product-pro
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { StateEnum } from "src/enums/state.enum";
 import checkEnum from "src/utils/checkEnum";
 import generateErrorArr from "src/utils/generateErrorArr";
 import { UpdateWindowDto } from "../dto/update-window.dto";
@@ -45,17 +44,12 @@ export class WindowService {
       name,
       country,
       guarantee,
-      state,
       inStock,
       price,
-      installationPrice,
+
       productProducerName,
       typeOfProductName,
-      profile,
-      construction,
-      glassUnit,
-      lamination,
-      glasses,
+
       homePage,
       description,
     } = body;
@@ -96,12 +90,6 @@ export class WindowService {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
-    if (!(await checkEnum(StateEnum, state))) {
-      const states = await generateErrorArr(StateEnum);
-
-      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!(await checkEnum(InStockEnum, inStock))) {
@@ -130,19 +118,14 @@ export class WindowService {
 
     const newProduct = this.windowRepository.create({
       name,
-      country,
-      guarantee,
-      state,
-      in_stock: inStock,
-      price,
-      installation_price: installationPrice,
       product_producer,
       type_of_product,
-      profile: profile,
-      construction: construction,
-      glass_unit: glassUnit,
-      lamination: lamination,
-      glasses: glasses,
+      country,
+      guarantee,
+      in_stock: inStock,
+      price,
+     
+
       home_page: homePage,
       description,
       images: imagesPathes
@@ -163,17 +146,11 @@ export class WindowService {
       name,
       country,
       guarantee,
-      state,
       inStock,
       price,
-      installationPrice,
       productProducerName,
       typeOfProductName,
-      profile,
-      construction,
-      glassUnit,
-      lamination,
-      glasses,
+
       homePage,
       description,
     } = body;
@@ -214,12 +191,6 @@ export class WindowService {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
-    }
-
-    if (!(await checkEnum(StateEnum, state))) {
-      const states = await generateErrorArr(StateEnum);
-
-      throw new HttpException(`Incorrect state, you could choose from: ${states.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!(await checkEnum(InStockEnum, inStock))) {
@@ -251,17 +222,9 @@ export class WindowService {
         name,
         country,
         guarantee,
-        state,
         in_stock: inStock,
         price,
-        installation_price: installationPrice,
-        product_producer,
-        type_of_product,
-        profile: profile ,
-        construction: construction,
-        glass_unit: glassUnit,
-        lamination: lamination,
-        glasses: glasses,
+
         home_page: homePage,
         description,
         images: imagesPathes

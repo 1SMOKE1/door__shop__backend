@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({name: 'window_lamination'})
+@Entity('window_lamination')
 export class WindowLaminationEntity {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -11,6 +11,4 @@ export class WindowLaminationEntity {
   @Column({type: 'bigint'})
   price: number;
 
-  @Column({type: 'bool', default: false})
-  is_using: boolean;
 }

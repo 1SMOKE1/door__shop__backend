@@ -3,7 +3,6 @@ import { IsNotEmpty, IsNumber, IsInt, IsArray, IsOptional } from "class-validato
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 export class CreateInteriorDoorDto {
@@ -24,40 +23,53 @@ export class CreateInteriorDoorDto {
   guarantee: GuaranteeEnum;
 
   @IsNotEmpty()
-  state: StateEnum;
-
-  @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
   @IsInt()
   price: number | string;
 
   @IsNotEmpty()
+  inStock: InStockEnum;
+
   @IsNumber()
   @Type(() => Number)
   @IsInt()
-  installationPrice: number | string;
+  fabricMaterialThickness: number;
 
-  @IsNotEmpty()
-  inStock: InStockEnum;
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
+  fabricMaterialHeight: number;
 
-  @IsArray()  
-  finishingTheSurface: string[];
+  @IsArray()
+  fabricMaterialWidth: string[];
 
-  @IsArray()  
-  frameMaterial: string[];
+  @IsArray()
+  doorIsolation: string[];
 
-  @IsArray()  
-  structuralFeatures: string[];
+  @IsArray()
+  doorFrameMaterial: string[];
 
-  @IsArray()  
-  openingType: string[];
+  @IsArray()
+  doorSelectionBoard: string[];
 
-  @IsArray()  
-  installationType: string[];
+  @IsArray()
+  doorWelt: string[];
 
-  @IsArray()  
-  openingMethod: string[];
+  @IsArray()
+  doorHand: string[];
+
+  @IsArray()
+  doorLoops: string[];
+
+  @IsArray()
+  doorMechanism: string[];
+
+  @IsArray()
+  doorStopper: string[];
+
+  @IsArray()
+  doorSlidingSystem: string[];
 
   @IsOptional()
   homePage?: boolean;

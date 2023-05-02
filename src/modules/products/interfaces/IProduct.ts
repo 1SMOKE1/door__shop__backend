@@ -1,18 +1,17 @@
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
+import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 
 export interface IProduct{
   id: number;
   name: string, // Назва
   product_producer: ProductProducerEntity,
+  type_of_product: TypeOfProductEntity
   country: CountryEnum, // Країна виробник
   guarantee: GuaranteeEnum, // Гарантійний термін
-  state: StateEnum, // Стан
   price: number, // Ціна
-  installation_price: number, // Ціна з установкою
   in_stock: InStockEnum, // На складі
   amount_of_sealing_materials?: string[], // Кількість ущільнюючих контурів
   fabric_material?: string[], // Матеріл дверного полотна

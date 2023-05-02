@@ -5,14 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EntranceDoorEntity } from './entrance-door.entity';
 import { ProductProducersModule } from 'src/modules/product-producers/product-producers.module';
 import { TypeOfProductsModule } from 'src/modules/type-of-products/type-of-products.module';
-import { AmountOfSealingMaterialsModule } from 'src/modules/product-constants/amount-of-sealing-materials/amount-of-sealing-materials.module';
+
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([EntranceDoorEntity]),
     ProductProducersModule,
-    TypeOfProductsModule,
-    AmountOfSealingMaterialsModule
+    TypeOfProductsModule
   ],
   providers: [EntranceDoorService],
   controllers: [EntranceDoorController],

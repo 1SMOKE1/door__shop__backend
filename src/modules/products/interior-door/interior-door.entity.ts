@@ -1,10 +1,10 @@
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { FurnitureEntity } from "../furniture/furniture.entity";
 
 @Entity({ name: "interior_door" })
 export class InteriorDoorEntity {
@@ -30,35 +30,63 @@ export class InteriorDoorEntity {
   @Column("varchar")
   guarantee: GuaranteeEnum;
 
-  @Column("varchar")
-  state: StateEnum;
-
   @Column("bigint", {default: 0})
   price: number;
-
-  @Column("bigint", {default: 0})
-  installation_price: number;
 
   @Column("varchar")
   in_stock: InStockEnum;
 
-  @Column("text", { array: true })
-  finishing_the_surface: string[];
+  @Column("bigint", {default: 0})
+  fabric_material_thickness: number;
 
-  @Column("text", { array: true })
-  frame_material: string[];
-
-  @Column("text", { array: true })
-  structural_features: string[];
+  @Column("bigint", {default: 0})
+  fabric_material_height: number;
 
   @Column("text", {array: true})
-  opening_type: string[];
+  fabric_material_width: string[];
 
   @Column("text", {array: true})
-  installation_type: string[];
+  door_isolation: string[];
 
   @Column("text", {array: true})
-  opening_method: string[];
+  door_frame_material: string[];
+
+  @Column("text", {array: true})
+  door_selection_board: string[];
+
+  @Column("text", {array: true})
+  door_welt: string[];
+
+  @ManyToMany(() => FurnitureEntity, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE'
+  })
+  @JoinTable()
+  door_hand: FurnitureEntity[];
+
+  @ManyToMany(() => FurnitureEntity, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE'
+  })
+  @JoinTable()
+  door_mechanism: FurnitureEntity[];
+
+  @ManyToMany(() => FurnitureEntity, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE'
+  })
+  @JoinTable()
+  door_loops: FurnitureEntity[];
+
+  @ManyToMany(() => FurnitureEntity, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE'
+  })
+  @JoinTable()
+  door_stopper: FurnitureEntity[];
+
+  @Column("text", {array: true})
+  door_sliding_system: string[];
 
   @Column({ type: "varchar", length: 500, default: "Немає опису" })
   description?: string;

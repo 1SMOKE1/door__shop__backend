@@ -1,11 +1,11 @@
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+@Index(['name'], {unique: true})
 @Entity({name: "funiture"})
 export class FurnitureEntity {
   @PrimaryGeneratedColumn()
@@ -29,14 +29,8 @@ export class FurnitureEntity {
   @Column("varchar")
   guarantee: GuaranteeEnum;
 
-  @Column("varchar")
-  state: StateEnum;
-
   @Column("bigint", {default: 0})
   price: number;
-
-  @Column("bigint", {default: 0})
-  installation_price: number;
 
   @Column("varchar")
   in_stock: InStockEnum;

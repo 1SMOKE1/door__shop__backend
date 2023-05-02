@@ -27,12 +27,7 @@ export class OpeningTypeService {
 
   async createOne(body: CreateOpeningTypeDto){
 
-    const { isUsing } = body;
-
-    const newEntity = this.openingTypeRepository.create({
-      ...body,
-      is_using: isUsing
-    })
+    const newEntity = this.openingTypeRepository.create(body)
 
     return await this.openingTypeRepository.save(newEntity);
   }
@@ -43,9 +38,7 @@ export class OpeningTypeService {
 
     if (curItem == null) throw new HttpException(`This item doesn't exists`, HttpStatus.FORBIDDEN);
 
-    const { isUsing } = body;
-
-    return await this.openingTypeRepository.update(id, {...body, is_using: isUsing})
+    return await this.openingTypeRepository.update(id, body)
     .then(() => this.findById(id));
   }
 

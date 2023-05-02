@@ -27,12 +27,7 @@ export class WindowProfileService {
 
   async createOne(body: CreateWindowProfileDto){
 
-    const { isUsing } = body;
-
-    const newEntity = this.windowProfileRepository.create({
-      ...body,
-      is_using: isUsing
-    })
+    const newEntity = this.windowProfileRepository.create(body)
 
     return await this.windowProfileRepository.save(newEntity);
   }
@@ -43,9 +38,7 @@ export class WindowProfileService {
 
     if (curItem == null) throw new HttpException(`This item doesn't exists`, HttpStatus.FORBIDDEN);
 
-    const { isUsing } = body;
-
-    return await this.windowProfileRepository.update(id, {...body, is_using: isUsing})
+    return await this.windowProfileRepository.update(id, body)
     .then(() => this.findById(id));
   }
 

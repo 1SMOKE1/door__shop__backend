@@ -1,12 +1,13 @@
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
-import { StateEnum } from "src/enums/state.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne,  PrimaryGeneratedColumn } from "typeorm";
+import { FurnitureEntity } from "../furniture/furniture.entity";
 
-@Entity({ name: "entrance_door" })
+
+@Entity("entrance_door")
 export class EntranceDoorEntity {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -18,10 +19,10 @@ export class EntranceDoorEntity {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   })
-  product_producer: ProductProducerEntity;
+  product_producer: ProductProducerEntity | null;
 
   @ManyToOne(() => TypeOfProductEntity)
-  type_of_product: TypeOfProductEntity | null;
+  type_of_product: TypeOfProductEntity;
 
   @Column("varchar")
   country: CountryEnum;
@@ -29,35 +30,56 @@ export class EntranceDoorEntity {
   @Column("varchar")
   guarantee: GuaranteeEnum;
 
-  @Column("varchar")
-  state: StateEnum;
-
   @Column("bigint", {default: 0})
   price: number;
-
-  @Column("bigint", {default: 0})
-  installation_price: number;
 
   @Column("varchar")
   in_stock: InStockEnum;
 
-  @Column("text", { array: true, default: []})
-  amount_of_sealing_materials: string[];
+  @Column("bigint", {default: 0})
+  fabric_material_thickness: number;
 
-  @Column("text", { array: true, default: []})
-  fabric_material: string[];
+  @Column("bigint", {default: 0})
+  frame_material_thickness: number;
 
-  @Column("text", { array: true, default: [] })
-  purpose: string[];
+  @Column("text", {array: true})
+  door_insulation: string[];
 
-  @Column("text", { array: true, default: [] })
-  opening_method: string[];
-
-  @Column("text", { array: true, default: [] })
+  @Column("text", {array: true})
   covering: string[];
 
-  @Column("text", { array: true, default: [] })
-  frame_material: string[];
+  @Column("bool", {default: false})
+  door_peephole: boolean;
+
+  @Column("text", {array: true})
+  opening_type: string[];
+
+  @Column("text", {array: true})
+  size: string[];
+
+  @ManyToOne(() => FurnitureEntity, {
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  })
+  lower_lock: FurnitureEntity | null;
+
+  @ManyToOne(() => FurnitureEntity, {
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  })
+  upper_lock: FurnitureEntity | null;
+
+  @Column("text", {array: true})
+  weight: string[];
+
+  @Column("double precision", {default: 0})
+  metal_thickness: number;
+
+  @Column("text", {array: true})
+  frame_material_construction?: string[];
+
+  @Column("text", {array: true})
+  sealer_circuit?: string[];
 
   @Column("boolean", { default: false })
   home_page?: boolean;

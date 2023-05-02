@@ -27,12 +27,7 @@ export class WindowLaminationService {
 
   async createOne(body: CreateWindowLaminationDto){
 
-    const { isUsing } = body;
-
-    const newEntity = this.windowLaminationRepository.create({
-      ...body,
-      is_using: isUsing
-    })
+    const newEntity = this.windowLaminationRepository.create(body,)
 
     return await this.windowLaminationRepository.save(newEntity);
   }
@@ -43,9 +38,7 @@ export class WindowLaminationService {
 
     if (curItem == null) throw new HttpException(`This item doesn't exists`, HttpStatus.FORBIDDEN);
 
-    const { isUsing } = body;
-
-    return await this.windowLaminationRepository.update(id, {...body, is_using: isUsing})
+    return await this.windowLaminationRepository.update(id, body)
     .then(() => this.findById(id));
   }
 

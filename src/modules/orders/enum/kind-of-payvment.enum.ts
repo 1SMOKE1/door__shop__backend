@@ -1,4 +1,4 @@
-export enum KindOfPayvmentEnum{
-  CASH = 'Готівка',
-  CARD = 'Карта'
+export enum kindOfPaymentEnum {
+  CASH = "Готівка",
+  CARD = "Карта",
 }
