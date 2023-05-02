@@ -131,12 +131,7 @@ export class InteriorDoorService {
     if(this.checkOnNotEmpty(doorStopper).length !== 0)
       door_stopper = await this.findAllByCond(doorStopper);
     
-    
-
-    
-
-
-    
+  
 
     // IMAGES
 
@@ -242,16 +237,26 @@ export class InteriorDoorService {
     }
 
 
-    const door_hand = await this.findAllByCond(doorHand);
-    const door_mechanism = await this.findAllByCond(doorMechanism);
-    const door_loops = await this.findAllByCond(doorLoops);
-    const door_stopper = await this.findAllByCond(doorStopper);
+    let door_hand: FurnitureEntity[] = [];
+    let door_mechanism: FurnitureEntity[] = []
+    let door_loops: FurnitureEntity[] = [];
+    let door_stopper: FurnitureEntity[] = [];
+
+
+    if(this.checkOnNotEmpty(doorHand).length !== 0)
+      door_hand =  await this.findAllByCond(doorHand);
+    if(this.checkOnNotEmpty(doorMechanism).length !== 0)
+      door_mechanism = await this.findAllByCond(doorMechanism);
+    if(this.checkOnNotEmpty(doorLoops).length !== 0)
+      door_loops = await this.findAllByCond(doorMechanism);
+    if(this.checkOnNotEmpty(doorStopper).length !== 0)
+      door_stopper = await this.findAllByCond(doorStopper);
    
     // IMAGES
 
     const { images } = files;
 
-    let imagesPathes: string[] = [];
+    let imagesPathes: string[] = [...curProduct.images];
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);

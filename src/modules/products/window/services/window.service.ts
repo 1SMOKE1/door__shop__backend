@@ -212,7 +212,7 @@ export class WindowService {
 
     const { images } = files;
 
-    let imagesPathes: string[] = [];
+    let imagesPathes: string[] = [...curProduct.images];
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
