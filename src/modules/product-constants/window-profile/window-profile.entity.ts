@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity({name: 'window_profile'})
+@Entity('window_profile')
 export class WindowProfileEntity {
   @PrimaryGeneratedColumn()
   id!: number;

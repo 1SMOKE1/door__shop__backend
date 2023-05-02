@@ -38,11 +38,7 @@ export class FurnitureService {
   }
 
   async findByName(name: string) {
-    const currentProduct = await this.furnitureRepository.findOne({ where: { name }, relations: { product_producer: true } });
-
-    if (currentProduct == null) throw new HttpException(`furniture with name: ${name}, doesn't exists`, HttpStatus.FORBIDDEN);
-
-    return currentProduct;
+    return await this.furnitureRepository.findOne({ where: { name }, relations: { product_producer: true } });
   }
 
   async createOne(body: CreateFurnitureDto, files: IImages) {
@@ -155,12 +151,6 @@ export class FurnitureService {
       typeOfProductName
     } = body;
 
-    const exists = await this.findByName(name);
-
-    if(exists !== null){
-      throw new HttpException(`Item with current name: ${name} already exists`, HttpStatus.CONFLICT);
-    }
-
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 
     if(type_of_product == null){
@@ -209,7 +199,7 @@ export class FurnitureService {
 
     const { images } = files;
 
-    let imagesPathes: string[] = [];
+    let imagesPathes: string[] = [...curProduct.images];
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);

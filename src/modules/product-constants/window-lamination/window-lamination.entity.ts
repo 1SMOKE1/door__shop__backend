@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({name: 'window_lamination'})
+@Entity('window_lamination')
 export class WindowLaminationEntity {
   @PrimaryGeneratedColumn()
   id!: number;

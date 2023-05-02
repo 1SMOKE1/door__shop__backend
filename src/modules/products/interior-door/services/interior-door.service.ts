@@ -111,14 +111,31 @@ export class InteriorDoorService {
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
+    const allFurniture = await this.furnitureRepository.find();
+
+    if(allFurniture.length === 0)
+    throw new HttpException('Create at least 1 furniture item', HttpStatus.CONFLICT);
+
+    let door_hand: FurnitureEntity[] = [];
+    let door_mechanism: FurnitureEntity[] = []
+    let door_loops: FurnitureEntity[] = [];
+    let door_stopper: FurnitureEntity[] = [];
+
+
+    if(this.checkOnNotEmpty(doorHand).length !== 0)
+      door_hand =  await this.findAllByCond(doorHand);
+    if(this.checkOnNotEmpty(doorMechanism).length !== 0)
+      door_mechanism = await this.findAllByCond(doorMechanism);
+    if(this.checkOnNotEmpty(doorLoops).length !== 0)
+      door_loops = await this.findAllByCond(doorMechanism);
+    if(this.checkOnNotEmpty(doorStopper).length !== 0)
+      door_stopper = await this.findAllByCond(doorStopper);
+    
+    
 
     
-    const door_hand = await this.findAllByCond(doorHand);
-    const door_mechanism = await this.findAllByCond(doorMechanism);
-    const door_loops = await this.findAllByCond(doorLoops);
-    const door_stopper = await this.findAllByCond(doorStopper);
-  
-    console.log(door_hand);
+
+
     
 
     // IMAGES
@@ -138,8 +155,8 @@ export class InteriorDoorService {
       guarantee,
       price: +price, 
       in_stock: inStock,
-      fabric_material_thickness: fabricMaterialThickness,
-      fabric_material_height: fabricMaterialHeight,
+      fabric_material_thickness: +fabricMaterialThickness,
+      fabric_material_height: +fabricMaterialHeight,
       fabric_material_width: fabricMaterialWidth,
       door_isolation: doorIsolation,
       door_frame_material: doorFrameMaterial,
@@ -224,6 +241,7 @@ export class InteriorDoorService {
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
+
     const door_hand = await this.findAllByCond(doorHand);
     const door_mechanism = await this.findAllByCond(doorMechanism);
     const door_loops = await this.findAllByCond(doorLoops);
@@ -286,6 +304,19 @@ export class InteriorDoorService {
           .then((el: string) => 
             this.furnitureRepository.findOneByOrFail({name: el})))
     );
-    
   }
+
+  private checkOnNotEmpty(val: string[] | null | undefined): string[] | null{
+    if(val)
+      switch(true){
+        case val[0] === '':
+          return [];
+        case val[0] !== '':
+          return [...val];
+        default: 
+          return null;
+      }
+    return null
+  }
+
 }

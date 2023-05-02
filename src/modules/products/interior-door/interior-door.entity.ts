@@ -42,7 +42,7 @@ export class InteriorDoorEntity {
   @Column("bigint", {default: 0})
   fabric_material_height: number;
 
-  @Column("bigint", {array: true})
+  @Column("text", {array: true})
   fabric_material_width: string[];
 
   @Column("text", {array: true})
