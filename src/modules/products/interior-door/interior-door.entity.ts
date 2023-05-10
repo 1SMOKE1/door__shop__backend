@@ -5,6 +5,12 @@ import { ProductProducerEntity } from "src/modules/product-producers/product-pro
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { FurnitureEntity } from "../furniture/furniture.entity";
+import { FabricMaterialWidthEntity } from "src/modules/product-constants/fabric-material-width/fabric-material-width.entity";
+import { DoorIsolationEntity } from "src/modules/product-constants/door-isolation/door-isolation.entity";
+import { DoorFrameMaterialEntity } from "src/modules/product-constants/door-frame-material/door-frame-material.entity";
+import { DoorSelectionBoardEntity } from "src/modules/product-constants/door-selection-board/door-selection-board.entity";
+import { DoorWeltEntity } from "src/modules/product-constants/door-welt/door-welt.entity";
+import { DoorSlidingSystemEntity } from "src/modules/product-constants/door-sliding-system/door-sliding-system.entity";
 
 @Entity({ name: "interior_door" })
 export class InteriorDoorEntity {
@@ -17,7 +23,7 @@ export class InteriorDoorEntity {
 
   @ManyToOne(() => ProductProducerEntity, {
     onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
+    onDelete: 'SET NULL',
   })
   product_producer: ProductProducerEntity | null;
 
@@ -42,52 +48,66 @@ export class InteriorDoorEntity {
   @Column("bigint", {default: 0})
   fabric_material_height: number;
 
-  @Column("text", {array: true})
-  fabric_material_width: string[];
+  @ManyToMany(() => FabricMaterialWidthEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  fabric_material_width: FabricMaterialWidthEntity[];
 
-  @Column("text", {array: true})
-  door_isolation: string[];
+  @ManyToMany(() => DoorIsolationEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  door_isolation: DoorIsolationEntity[];
 
-  @Column("text", {array: true})
-  door_frame_material: string[];
+  @ManyToMany(() => DoorFrameMaterialEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  door_frame_material: DoorFrameMaterialEntity[];
 
-  @Column("text", {array: true})
-  door_selection_board: string[];
+  @ManyToMany(() => DoorSelectionBoardEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  door_selection_board: DoorSelectionBoardEntity[];
 
-  @Column("text", {array: true})
-  door_welt: string[];
+  @ManyToMany(() => DoorWeltEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  door_welt: DoorWeltEntity[];
 
   @ManyToMany(() => FurnitureEntity, {
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE'
+    onUpdate:"CASCADE", cascade: true, eager: true
   })
   @JoinTable()
   door_hand: FurnitureEntity[];
 
   @ManyToMany(() => FurnitureEntity, {
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE'
+    onUpdate:"CASCADE", cascade: true, eager: true
   })
   @JoinTable()
   door_mechanism: FurnitureEntity[];
 
   @ManyToMany(() => FurnitureEntity, {
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE'
+    onUpdate:"CASCADE", cascade: true, eager: true
   })
   @JoinTable()
   door_loops: FurnitureEntity[];
 
   @ManyToMany(() => FurnitureEntity, {
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE'
+    onUpdate:"CASCADE", cascade: true, eager: true
   })
   @JoinTable()
   door_stopper: FurnitureEntity[];
 
-  @Column("text", {array: true})
-  door_sliding_system: string[];
-
+  @ManyToMany(() => DoorSlidingSystemEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  door_sliding_system: DoorSlidingSystemEntity[];
+  
   @Column({ type: "varchar", length: 500, default: "Немає опису" })
   description?: string;
 

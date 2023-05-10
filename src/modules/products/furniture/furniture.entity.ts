@@ -6,7 +6,7 @@ import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-produc
 import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Index(['name'], {unique: true})
-@Entity({name: "funiture"})
+@Entity({name: "furniture"})
 export class FurnitureEntity {
   @PrimaryGeneratedColumn()
   id!: number;

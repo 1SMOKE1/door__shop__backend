@@ -14,9 +14,32 @@ import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-produc
 import { IImages } from "src/interfaces/IImages";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 import { FurnitureEntity } from "../../furniture/furniture.entity";
+import { FabricMaterialWidthEntity } from "src/modules/product-constants/fabric-material-width/fabric-material-width.entity";
+import { DoorIsolationEntity } from "src/modules/product-constants/door-isolation/door-isolation.entity";
+import { DoorFrameMaterialEntity } from "src/modules/product-constants/door-frame-material/door-frame-material.entity";
+import { DoorSelectionBoardEntity } from "src/modules/product-constants/door-selection-board/door-selection-board.entity";
+import { DoorWeltEntity } from "src/modules/product-constants/door-welt/door-welt.entity";
+import { DoorSlidingSystemEntity } from "src/modules/product-constants/door-sliding-system/door-sliding-system.entity";
 
 @Injectable()
 export class InteriorDoorService {
+
+  getRelations = { relations: [
+    'product_producer',
+    'type_of_product',
+    'fabric_material_width',
+    'door_isolation',
+    'door_frame_material',
+    'door_selection_board',
+    'door_welt',
+    'door_hand',
+    'door_mechanism',
+    'door_loops',
+    'door_stopper',
+    'door_sliding_system'
+  ]
+}
+
   constructor(
     @InjectRepository(InteriorDoorEntity)
     private readonly interiorDoorRepository: Repository<InteriorDoorEntity>,
@@ -25,15 +48,27 @@ export class InteriorDoorService {
     @InjectRepository(TypeOfProductEntity)
     private readonly typeOfProductRepository: Repository<TypeOfProductEntity>,
     @InjectRepository(FurnitureEntity)
-    private readonly furnitureRepository: Repository<FurnitureEntity>
+    private readonly furnitureRepository: Repository<FurnitureEntity>,
+    @InjectRepository(FabricMaterialWidthEntity)
+    private readonly fabricMaterialWidthRepository: Repository<FabricMaterialWidthEntity>,
+    @InjectRepository(DoorIsolationEntity)
+    private readonly doorIsolationRepository: Repository<DoorIsolationEntity>,
+    @InjectRepository(DoorFrameMaterialEntity)
+    private readonly doorFrameMaterialRepository: Repository<DoorFrameMaterialEntity>,
+    @InjectRepository(DoorSelectionBoardEntity)
+    private readonly doorSelectionBoardRepository: Repository<DoorSelectionBoardEntity>,
+    @InjectRepository(DoorWeltEntity)
+    private readonly doorWeltRepository: Repository<DoorWeltEntity>,
+    @InjectRepository(DoorSlidingSystemEntity)
+    private readonly doorSlidingSystemRepository: Repository<DoorSlidingSystemEntity>
   ) {}
 
   async findAll() {
-    return await this.interiorDoorRepository.find({ relations: { product_producer: true, type_of_product: true } });
+    return await this.interiorDoorRepository.find(this.getRelations);
   }
 
   async findById(id: number) {
-    const currentProduct = await this.interiorDoorRepository.findOne({ where: { id }, relations: { product_producer: true, type_of_product: true } });
+    const currentProduct = await this.interiorDoorRepository.findOne({where: {id}, ...this.getRelations});
 
     if (currentProduct == null) throw new HttpException(`interiorDoor with id: ${id}, doesn't exists`, HttpStatus.FORBIDDEN);
 
@@ -116,22 +151,53 @@ export class InteriorDoorService {
     if(allFurniture.length === 0)
     throw new HttpException('Create at least 1 furniture item', HttpStatus.CONFLICT);
 
+    let fabric_material_width: FabricMaterialWidthEntity[] = [];
+
+    if(this.checkOnNotEmpty(fabricMaterialWidth).length !== 0)
+      fabric_material_width = await this.findAllByCond(this.fabricMaterialWidthRepository, fabricMaterialWidth);
+
+    let door_isolation: DoorIsolationEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorIsolation).length !== 0)
+      door_isolation = await this.findAllByCond(this.doorIsolationRepository, doorIsolation);
+
+    let door_frame_material: DoorFrameMaterialEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorFrameMaterial).length !== 0)
+     door_frame_material = await this.findAllByCond(this.doorFrameMaterialRepository, doorFrameMaterial);
+
+    let door_selection_board: DoorSelectionBoardEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorSelectionBoard).length !== 0)
+      door_selection_board = await this.findAllByCond(this.doorSelectionBoardRepository, doorSelectionBoard);
+
+    let door_welt: DoorWeltEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorWelt).length !== 0)
+      door_welt = await this.findAllByCond(this.doorWeltRepository, doorWelt);
+
     let door_hand: FurnitureEntity[] = [];
-    let door_mechanism: FurnitureEntity[] = []
+    let door_mechanism: FurnitureEntity[] = [];
     let door_loops: FurnitureEntity[] = [];
     let door_stopper: FurnitureEntity[] = [];
 
 
     if(this.checkOnNotEmpty(doorHand).length !== 0)
-      door_hand =  await this.findAllByCond(doorHand);
+      door_hand =  await this.findAllByCond(this.furnitureRepository, doorHand);
     if(this.checkOnNotEmpty(doorMechanism).length !== 0)
-      door_mechanism = await this.findAllByCond(doorMechanism);
+      door_mechanism = await this.findAllByCond(this.furnitureRepository, doorMechanism);
     if(this.checkOnNotEmpty(doorLoops).length !== 0)
-      door_loops = await this.findAllByCond(doorMechanism);
+      door_loops = await this.findAllByCond(this.furnitureRepository, doorMechanism);
     if(this.checkOnNotEmpty(doorStopper).length !== 0)
-      door_stopper = await this.findAllByCond(doorStopper);
+      door_stopper = await this.findAllByCond(this.furnitureRepository, doorStopper);
+
+    let door_sliding_system: DoorSlidingSystemEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorSlidingSystem).length !== 0)
+      door_sliding_system = await this.findAllByCond(this.doorSlidingSystemRepository, doorSlidingSystem);
     
-  
+    
+
 
     // IMAGES
 
@@ -152,16 +218,16 @@ export class InteriorDoorService {
       in_stock: inStock,
       fabric_material_thickness: +fabricMaterialThickness,
       fabric_material_height: +fabricMaterialHeight,
-      fabric_material_width: fabricMaterialWidth,
-      door_isolation: doorIsolation,
-      door_frame_material: doorFrameMaterial,
-      door_selection_board: doorSelectionBoard,
-      door_welt: doorWelt,
-      door_sliding_system: doorSlidingSystem,
+      fabric_material_width,
+      door_isolation,
+      door_frame_material,
+      door_selection_board,
+      door_welt,
       door_hand,
       door_mechanism,
       door_loops,
       door_stopper,
+      door_sliding_system,
       description,
       home_page: homePage,
       images: imagesPathes,
@@ -184,6 +250,14 @@ export class InteriorDoorService {
       guarantee,
       inStock,
       price,
+      fabricMaterialThickness,
+      fabricMaterialHeight,
+      fabricMaterialWidth,
+      doorIsolation,
+      doorFrameMaterial,
+      doorSelectionBoard,
+      doorWelt,
+      doorSlidingSystem,
       doorHand,
       doorMechanism,
       doorLoops,
@@ -237,20 +311,51 @@ export class InteriorDoorService {
     }
 
 
+    let fabric_material_width: FabricMaterialWidthEntity[] = [];
+
+    if(this.checkOnNotEmpty(fabricMaterialWidth).length !== 0)
+      fabric_material_width = await this.findAllByCond(this.fabricMaterialWidthRepository, fabricMaterialWidth);
+
+    let door_isolation: DoorIsolationEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorIsolation).length !== 0)
+      door_isolation = await this.findAllByCond(this.doorIsolationRepository, doorIsolation);
+
+    let door_frame_material: DoorFrameMaterialEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorFrameMaterial).length !== 0)
+     door_frame_material = await this.findAllByCond(this.doorFrameMaterialRepository, doorFrameMaterial);
+
+    let door_selection_board: DoorSelectionBoardEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorSelectionBoard).length !== 0)
+      door_selection_board = await this.findAllByCond(this.doorSelectionBoardRepository, doorSelectionBoard);
+
+    let door_welt: DoorWeltEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorWelt).length !== 0)
+      door_welt = await this.findAllByCond(this.doorWeltRepository, doorWelt);
+
     let door_hand: FurnitureEntity[] = [];
-    let door_mechanism: FurnitureEntity[] = []
+    let door_mechanism: FurnitureEntity[] = [];
     let door_loops: FurnitureEntity[] = [];
     let door_stopper: FurnitureEntity[] = [];
 
 
     if(this.checkOnNotEmpty(doorHand).length !== 0)
-      door_hand =  await this.findAllByCond(doorHand);
+      door_hand =  await this.findAllByCond(this.furnitureRepository, doorHand);
     if(this.checkOnNotEmpty(doorMechanism).length !== 0)
-      door_mechanism = await this.findAllByCond(doorMechanism);
+      door_mechanism = await this.findAllByCond(this.furnitureRepository, doorMechanism);
     if(this.checkOnNotEmpty(doorLoops).length !== 0)
-      door_loops = await this.findAllByCond(doorMechanism);
+      door_loops = await this.findAllByCond(this.furnitureRepository, doorMechanism);
     if(this.checkOnNotEmpty(doorStopper).length !== 0)
-      door_stopper = await this.findAllByCond(doorStopper);
+      door_stopper = await this.findAllByCond(this.furnitureRepository, doorStopper);
+
+    let door_sliding_system: DoorSlidingSystemEntity[] = [];
+
+    if(this.checkOnNotEmpty(doorSlidingSystem).length !== 0)
+      door_sliding_system = await this.findAllByCond(this.doorSlidingSystemRepository, doorSlidingSystem);
+
    
     // IMAGES
 
@@ -261,24 +366,38 @@ export class InteriorDoorService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    return await this.interiorDoorRepository
-      .update(id, {
-        name,
-        country,
-        guarantee,
-        in_stock: inStock,
-        price,
-        product_producer,
-        type_of_product,
-        door_hand, 
-        door_mechanism,
-        door_loops,
-        door_stopper,
-        home_page: homePage,
-        description,
-        images: imagesPathes
-      })
-      .then(() => this.findById(id));
+    const updatedInteriorDoor = this.interiorDoorRepository.create({
+      name,
+      country,
+      guarantee,
+      in_stock: inStock,
+      price,
+      fabric_material_thickness: +fabricMaterialThickness,
+      fabric_material_height: +fabricMaterialHeight,
+      fabric_material_width,
+      door_isolation,
+      door_frame_material,
+      door_selection_board,
+      door_welt,
+      door_sliding_system,
+      product_producer,
+      type_of_product,
+      door_hand, 
+      door_mechanism,
+      door_loops,
+      door_stopper,
+      home_page: homePage,
+      description,
+      images: imagesPathes
+    })
+
+    const [,newItem]= await Promise.all([
+      this.interiorDoorRepository.delete(id),
+      this.interiorDoorRepository.save(updatedInteriorDoor)
+    ])
+
+    return newItem
+    
   }
 
   async deleteById(id: number) {
@@ -302,16 +421,16 @@ export class InteriorDoorService {
     return `items were deleted successfuly`
   }
 
-  private async findAllByCond(obj: string[]): Promise<FurnitureEntity[]>{
+  private async findAllByCond(repository: Repository<any>, obj: string[]): Promise<FurnitureEntity[]>{
     return await Promise.all(
       obj.map(p =>  
         new Promise((res) => res(p))
           .then((el: string) => 
-            this.furnitureRepository.findOneByOrFail({name: el})))
-    );
+            repository.findOneByOrFail({name: el})))
+    )
   }
 
-  private checkOnNotEmpty(val: string[] | null | undefined): string[] | null{
+  private checkOnNotEmpty(val: string[]| null | undefined): string[]{
     if(val)
       switch(true){
         case val[0] === '':
@@ -319,9 +438,9 @@ export class InteriorDoorService {
         case val[0] !== '':
           return [...val];
         default: 
-          return null;
+          return [];
       }
-    return null
+    return []
   }
 
 }

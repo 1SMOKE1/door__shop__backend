@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
+import { AdminEntity } from "src/modules/authorization/admin/admin.entity";
 import { OurCommentEntity } from "src/modules/carousels/our-comments/our-comment.entity";
 import { OurWorkEntity } from "src/modules/carousels/our-works/our-work.entity";
 import { FreeConsultationEntity } from "src/modules/forms/free-consultation/free-consultation.entity";
@@ -96,6 +97,8 @@ class TypeOrmConfigService implements TypeOrmOptionsFactory {
         WindowLaminationEntity,
         FreeZamirEntity,
         FreeConsultationEntity,
+
+        AdminEntity
       ],
       synchronize: true,
     };
