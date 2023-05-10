@@ -24,6 +24,7 @@ import { GlassPocketAddModule } from './glass-pocket-add/glass-pocket-add.module
 import { CamerasCountModule } from './cameras-count/cameras-count.module';
 import { FeaturesModule } from './features/features.module';
 import { SectionCountModule } from './section-count/section-count.module';
+import { DoorFrameMaterialModule } from "./door-frame-material/door-frame-material.module";
 
 
 
@@ -33,6 +34,7 @@ import { SectionCountModule } from './section-count/section-count.module';
     WindowLaminationModule,
     DoorIsolationModule,
     DoorSelectionBoardModule,
+    DoorFrameMaterialModule,
     DoorWeltModule,
     DoorSlidingSystemModule,
     DoorInsulationModule,

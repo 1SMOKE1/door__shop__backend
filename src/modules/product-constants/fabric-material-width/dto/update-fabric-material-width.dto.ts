@@ -1,3 +1,4 @@
+import { Type } from "class-transformer";
 import { IsNotEmpty, IsString, IsOptional, IsNumber, IsPositive } from "class-validator";
 
 export class UpdateFabricMaterialWidthDto {
@@ -9,5 +10,6 @@ export class UpdateFabricMaterialWidthDto {
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
+  @Type(() => Number)
   price: number;
 }

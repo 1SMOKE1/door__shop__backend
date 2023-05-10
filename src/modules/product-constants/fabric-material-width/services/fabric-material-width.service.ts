@@ -26,6 +26,7 @@ export class FabricMaterialWidthService {
   }
 
   async createOne(body: CreateFabricMaterialWidthDto) {
+
     const newEntity = this.fabricMaterialWidthRepository.create(body);
 
     return await this.fabricMaterialWidthRepository.save(newEntity);

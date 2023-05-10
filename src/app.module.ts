@@ -15,6 +15,8 @@ import TypeOrmConfigService from './configurations/typeorm-config/typeorm.config
 import MailerConfigService from './configurations/mailer-config/mailer.config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AuthorizationModule } from './modules/authorization/authorization.module';
+
 
 
 
@@ -50,8 +52,8 @@ import { join } from 'path';
         index: false
       }
     }),
+    AuthorizationModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: []
 })
 export class AppModule {}

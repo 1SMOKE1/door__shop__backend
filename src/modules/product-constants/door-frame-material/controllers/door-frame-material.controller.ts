@@ -4,7 +4,7 @@ import { Response } from "express";
 import { CreateDoorFrameMaterialDto } from "../dto/create-door-frame-material.dto";
 import { UpdateDoorFrameMaterialDto } from "../dto/update-door-frame-material.dto";
 
-@Controller("frame-material")
+@Controller("door-frame-material")
 export class FrameMaterialController {
   constructor(private readonly doorFrameMaterialService: DoorFrameMaterialService) {}
 
