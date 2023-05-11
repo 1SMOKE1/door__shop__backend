@@ -366,38 +366,28 @@ export class InteriorDoorService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    const updatedInteriorDoor = this.interiorDoorRepository.create({
-      name,
-      country,
-      guarantee,
-      in_stock: inStock,
-      price,
-      fabric_material_thickness: +fabricMaterialThickness,
-      fabric_material_height: +fabricMaterialHeight,
-      fabric_material_width,
-      door_isolation,
-      door_frame_material,
-      door_selection_board,
-      door_welt,
-      door_sliding_system,
-      product_producer,
-      type_of_product,
-      door_hand, 
-      door_mechanism,
-      door_loops,
-      door_stopper,
-      home_page: homePage,
-      description,
-      images: imagesPathes
-    })
-
-    const [,newItem]= await Promise.all([
-      this.interiorDoorRepository.delete(id),
-      this.interiorDoorRepository.save(updatedInteriorDoor)
-    ])
-
-    return newItem
-    
+    curProduct.name = name;
+    curProduct.country = country;
+    curProduct.in_stock = inStock;
+    curProduct.price = +price;
+    curProduct.fabric_material_thickness = +fabricMaterialThickness;
+    curProduct.fabric_material_height = +fabricMaterialHeight;
+    curProduct.fabric_material_width = fabric_material_width;
+    curProduct.door_isolation = door_isolation;
+    curProduct.door_frame_material = door_frame_material;
+    curProduct.door_selection_board = door_selection_board;
+    curProduct.door_welt = door_welt;
+    curProduct.door_sliding_system = door_sliding_system;
+    curProduct.product_producer = product_producer;
+    curProduct.type_of_product = type_of_product;
+    curProduct.door_hand = door_hand;
+    curProduct.door_mechanism = door_mechanism;
+    curProduct.door_loops = door_loops;
+    curProduct.door_stopper = door_stopper;
+    curProduct.home_page = homePage;
+    curProduct.description = description;
+    curProduct.images = imagesPathes;
+    return await this.interiorDoorRepository.save(curProduct);
   }
 
   async deleteById(id: number) {

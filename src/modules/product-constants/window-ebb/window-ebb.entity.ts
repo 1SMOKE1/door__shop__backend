@@ -1,6 +1,7 @@
-import { PrimaryGeneratedColumn, Column } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity } from "typeorm";
 
 // Відлив
+@Entity('window_ebb')
 export class WindowEbbEntity {
   @PrimaryGeneratedColumn()
   id!: number;

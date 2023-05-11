@@ -3,8 +3,15 @@ import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
-import { Column, Entity, ManyToOne,  PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne,  PrimaryGeneratedColumn } from "typeorm";
 import { FurnitureEntity } from "../furniture/furniture.entity";
+import { DoorInsulationEntity } from "src/modules/product-constants/door-insulation/door-insulation.entity";
+import { DoorCoveringEntity } from "src/modules/product-constants/door-covering/door-covering.entity";
+import { OpeningTypeEntity } from "src/modules/product-constants/opening-type/opening-type.entity";
+import { DoorSizeEntity } from "src/modules/product-constants/door-size/door-size.entity";
+import { DoorWeightEntity } from "src/modules/product-constants/door-weight/door-weight.entity";
+import { FrameMaterialConstructionEntity } from "src/modules/product-constants/frame-material-construction/frame-material-construction.entity";
+import { SealerCircuitEntity } from "src/modules/product-constants/sealer-circuit/sealer-circuit.entity";
 
 
 @Entity("entrance_door")
@@ -42,44 +49,65 @@ export class EntranceDoorEntity {
   @Column("bigint", {default: 0})
   frame_material_thickness: number;
 
-  @Column("text", {array: true})
-  door_insulation: string[];
+  @ManyToMany(() => DoorInsulationEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  door_insulation: DoorInsulationEntity[];
 
-  @Column("text", {array: true})
-  covering: string[];
+  @ManyToMany(() => DoorCoveringEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  covering: DoorCoveringEntity[];
 
   @Column("bool", {default: false})
   door_peephole: boolean;
 
-  @Column("text", {array: true})
-  opening_type: string[];
-
-  @Column("text", {array: true})
-  size: string[];
-
-  @ManyToOne(() => FurnitureEntity, {
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
+  @ManyToMany(() => OpeningTypeEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
   })
-  lower_lock: FurnitureEntity | null;
+  @JoinTable()
+  opening_type: OpeningTypeEntity[];
 
-  @ManyToOne(() => FurnitureEntity, {
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
+  @ManyToMany(() => DoorSizeEntity,  {
+    onUpdate:"CASCADE", cascade: true, eager: true
   })
-  upper_lock: FurnitureEntity | null;
+  @JoinTable()
+  size: DoorSizeEntity[];
 
-  @Column("text", {array: true})
-  weight: string[];
+  @ManyToMany(() => FurnitureEntity,  {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  lower_lock: FurnitureEntity[];
+
+  @ManyToMany(() => FurnitureEntity,  {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  upper_lock: FurnitureEntity[];
+
+  @ManyToMany(() => DoorWeightEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  weight: DoorWeightEntity[];
 
   @Column("double precision", {default: 0})
   metal_thickness: number;
 
-  @Column("text", {array: true})
-  frame_material_construction?: string[];
+  @ManyToMany(() => FrameMaterialConstructionEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  frame_material_construction: FrameMaterialConstructionEntity[];
 
-  @Column("text", {array: true})
-  sealer_circuit?: string[];
+  @ManyToMany(() => SealerCircuitEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  sealer_circuit: SealerCircuitEntity[];
 
   @Column("boolean", { default: false })
   home_page?: boolean;
