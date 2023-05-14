@@ -109,6 +109,12 @@ export class EntranceDoorEntity {
   @JoinTable()
   sealer_circuit: SealerCircuitEntity[];
 
+  @ManyToMany(() => FurnitureEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  door_hand: FurnitureEntity[];
+
   @Column("boolean", { default: false })
   home_page?: boolean;
 

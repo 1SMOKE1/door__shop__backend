@@ -65,6 +65,9 @@ export class UpdateEntranceDoorDto {
   @IsArray()
   frameMaterialConstruction: string[];
 
+  @IsArray()
+  doorHand: string[];
+
   @IsOptional()
   homePage?: boolean;
 
