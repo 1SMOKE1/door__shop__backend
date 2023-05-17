@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, HttpStatus, Res, ParseIntPipe, Param, Post, Body, Put, Delete, UseInterceptors, UploadedFiles } from "@nestjs/common";
+import { BadRequestException, Controller, Get, HttpStatus, Res, ParseIntPipe, Param, Post, Body, Delete, UseInterceptors, UploadedFiles, Patch } from "@nestjs/common";
 import { WindowService } from "../services/window.service";
 import { Response } from "express";
 import { CreateWindowDto } from "../dto/create-window.dto";
@@ -52,7 +52,7 @@ export class WindowController {
     }
   }
 
-  @Put(":id")
+  @Patch(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateWindowDto, @Res() res: Response) {
     try {
       const updatedWindow = await this.windowService.updateById(id, body, images);

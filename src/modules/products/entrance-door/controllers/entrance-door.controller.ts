@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Res, UploadedFiles, UseInterceptors } from "@nestjs/common";
 import { EntranceDoorService } from "../services/entrance-door.service";
 import { Response } from "express";
 import { CreateEntranceDoorDto } from "../dto/create-entrance-door.dto";
@@ -52,12 +52,13 @@ export class EntranceDoorController {
     }
   }
 
-  @Put(":id")
+  @Patch(":id")
   async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateEntranceDoorDto, @Res() res: Response) {
     try {
       const newEntranceDoor = await this.entranceDoorService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
     } catch (err) {
+      console.log(err);
       throw new BadRequestException(err);
     }
   }

@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsOptional, IsNumber, IsInt, IsArray } from "class-validator";
+import { IsNotEmpty, IsOptional, IsNumber, IsInt, IsArray, IsNumberString } from "class-validator";
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
@@ -31,20 +31,53 @@ export class UpdateWindowDto {
   @IsNotEmpty()
   inStock: InStockEnum;
 
-  @IsArray()  
-  profile: string[];
+  @IsArray()
+  mosquitoNet: string[];
 
-  @IsArray()  
-  construction: string[];
+  @IsArray()
+  windowSill: string[];
 
-  @IsArray()  
-  glassUnit: string[];
+  @IsArray()
+  windowEbb: string[];
 
-  @IsArray()  
+  @IsArray()
+  windowHand: string[];
+
+  @IsArray()
+  childLock: string[];
+
+  @IsArray()
+  housewifeStub: string[];
+
+  @IsArray()
+  glassPocketAdd: string[];
+
+  @IsArray()
   lamination: string[];
 
-  @IsArray()  
-  glasses: string[];
+  @IsArray()
+  profile: string[];
+
+  @IsOptional()
+  @IsNumberString()
+  @Type(() => Number)
+  @IsInt()
+  windowHeight: number;
+
+  @IsOptional()
+  @IsNumberString()
+  @Type(() => Number)
+  @IsInt()
+  windowWidth: number;
+
+  @IsArray()
+  camerasCount: string[];
+
+  @IsArray()
+  features: string[];
+
+  @IsArray()
+  sectionCount: string[];
 
   @IsOptional()
   homePage?: boolean;

@@ -2,8 +2,20 @@ import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
 import { ProductProducerEntity } from "src/modules/product-producers/product-producer.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
+import { MosquitNetEntity } from "src/modules/product-constants/mosquit-net/mosquit-net.entity";
+import { WindowSillEntity } from "src/modules/product-constants/window-sill/window-sill.entity";
+import { WindowHandEntity } from "src/modules/product-constants/window-hand/window-hand.entity";
+import { ChildLockEntity } from "src/modules/product-constants/child-lock/child-lock.entity";
+import { HousewifeStubEntity } from "src/modules/product-constants/housewife-stub/housewife-stub.entity";
+import { GlassPocketAddEntity } from "src/modules/product-constants/glass-pocket-add/glass-pocket-add.entity";
+import { WindowLaminationEntity } from "src/modules/product-constants/window-lamination/window-lamination.entity";
+import { WindowProfileEntity } from "src/modules/product-constants/window-profile/window-profile.entity";
+import { CamerasCountEntity } from "src/modules/product-constants/cameras-count/cameras-count.entity";
+import { FeaturesEntity } from "src/modules/product-constants/features/features.entity";
+import { SectionCountEntity } from "src/modules/product-constants/section-count/section-count.entity";
+import { WindowEbbEntity } from "src/modules/product-constants/window-ebb/window-ebb.entity";
 
 
 
@@ -36,44 +48,83 @@ export class WindowEntity {
   @Column("varchar")
   in_stock: InStockEnum;
 
-  @Column("text", {array: true})
-  mosquito_net: string[];
+  @ManyToMany(() => MosquitNetEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  mosquito_net: MosquitNetEntity[];
 
-  @Column("text", {array: true})
-  window_sill: string[];
+  @ManyToMany(() => WindowSillEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  window_sill: WindowSillEntity[];
 
-  @Column("text", {array: true})
-  window_hand: string[];
+  @ManyToMany(() => WindowEbbEntity , {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  window_ebb: WindowEbbEntity[];
 
-  @Column("text", {array: true})
-  child_lock: string[];
+  @ManyToMany(() => WindowHandEntity,  {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  window_hand: WindowHandEntity[];
 
-  @Column("text", {array: true})
-  housewife_stub: string[];
+  @ManyToMany(() => ChildLockEntity,  {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  child_lock: ChildLockEntity[];
 
-  @Column("text", {array: true})
-  glass_pocket_add: string[];
+  @ManyToMany(() => HousewifeStubEntity,  {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  housewife_stub: HousewifeStubEntity[];
 
-  @Column("text", {array: true})
-  lamination: string[];
+  @ManyToMany(() => GlassPocketAddEntity,  {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  glass_pocket_add: GlassPocketAddEntity[];
 
-  @Column("text", {array: true})
-  profile: string[];
+  @ManyToMany(() => WindowLaminationEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  lamination: WindowLaminationEntity[];
 
-  @Column("bigint", {default: 0})
+  @ManyToMany(() => WindowProfileEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  profile: WindowProfileEntity[];
+
+  @Column("double precision", {default: 0})
   window_height: number;
 
-  @Column("bigint", {default: 0})
+  @Column("double precision", {default: 0})
   window_width: number;
   
-  @Column("text", {array: true})
-  cameras_count: string[];
+  @ManyToMany(() => CamerasCountEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  cameras_count: CamerasCountEntity[];
 
-  @Column("text", {array: true})
-  features: string[];
+  @ManyToMany(() => FeaturesEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  features: FeaturesEntity[];
 
-  @Column("text", {array: true})
-  sections_count: string[];
+  @ManyToMany(() => SectionCountEntity, {
+    onUpdate:"CASCADE", cascade: true, eager: true
+  })
+  @JoinTable()
+  sections_count: SectionCountEntity[];
 
   @Column({ type: "varchar", length: 500, default: "Немає опису" })
   description?: string;

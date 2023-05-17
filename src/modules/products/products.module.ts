@@ -5,6 +5,7 @@ import { EntranceDoorModule } from './entrance-door/entrance-door.module';
 import { FurnitureModule } from './furniture/furniture.module';
 import { InteriorDoorModule } from './interior-door/interior-door.module';
 import { WindowModule } from './window/window.module';
+import { ConvertingService } from './services/converting.service';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { WindowModule } from './window/window.module';
     WindowModule
   ],
   controllers: [ProductsController],
-  providers: [ProductsService]
+  providers: [ProductsService, ConvertingService]
 })
 export class ProductsModule {}

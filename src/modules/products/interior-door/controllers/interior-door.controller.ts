@@ -8,8 +8,8 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
-  Put,
   Res,
   UploadedFiles,
   UseInterceptors,
@@ -67,7 +67,7 @@ export class InteriorDoorController {
     }
   }
 
-  @Put(":id")
+  @Patch(":id")
   async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
     try {
       const updatedInteriorDoor = await this.interiorDoorService.updateById(id, body, images);

@@ -25,6 +25,8 @@ import { CamerasCountModule } from './cameras-count/cameras-count.module';
 import { FeaturesModule } from './features/features.module';
 import { SectionCountModule } from './section-count/section-count.module';
 import { DoorFrameMaterialModule } from "./door-frame-material/door-frame-material.module";
+import { OpeningTypeModule } from "./opening-type/opening-type.module";
+import { DoorCoveringModule } from "./door-covering/door-covering.module";
 
 
 
@@ -52,7 +54,9 @@ import { DoorFrameMaterialModule } from "./door-frame-material/door-frame-materi
     GlassPocketAddModule,
     CamerasCountModule,
     FeaturesModule,
-    SectionCountModule
+    SectionCountModule,
+    OpeningTypeModule,
+    DoorCoveringModule,
   ],
 })
 export class ProductConstantsModule {}

@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsInt, IsArray, IsOptional } from "class-validator";
+import { IsNotEmpty, IsNumber, IsInt, IsArray, IsOptional, IsBooleanString } from "class-validator";
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
@@ -33,38 +33,56 @@ export class UpdateEntranceDoorDto {
   @IsNotEmpty()
   inStock: InStockEnum;
 
-  @IsArray()
-  fabricMaterialThickness: string[];
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
+  fabricMaterialThickness: number | string;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
+  frameMaterialThickness: number | string;
 
   @IsArray()
-  fabricMaterialHeight: string[];
+  doorInsulation: string[];
 
   @IsArray()
-  fabricMaterialWidth: string[];
+  covering: string[];
+
+  @IsBooleanString()
+  doorPeephole: boolean
 
   @IsArray()
-  noiseIsolation: string[];
+  openingType: string[];
 
   @IsArray()
-  doorFrameMaterial: string[];
+  size: string[];
 
   @IsArray()
-  doorSelectionBoard: string[];
+  lowerLock: string[];
 
   @IsArray()
-  doorWelt: string[];
+  upperLock: string[];
+
+  @IsArray()
+  weight: string[];
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
+  metalThickness: number;
+
+  @IsArray()
+  frameMaterialConstruction: string[];
+
+  @IsArray()
+  sealerCircuit: string[];
 
   @IsArray()
   doorHand: string[];
-
-  @IsArray()
-  doorLoops: string[];
-
-  @IsArray()
-  doorStopper: string[];
-
-  @IsArray()
-  doorSlidingSystem: string[];
 
   @IsOptional()
   homePage?: boolean;

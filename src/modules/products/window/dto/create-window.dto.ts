@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsInt, IsArray, IsOptional } from "class-validator";
+import { IsNotEmpty, IsInt, IsArray, IsOptional, IsNumberString } from "class-validator";
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
@@ -23,34 +23,61 @@ export class CreateWindowDto {
   guarantee: GuaranteeEnum;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumberString()
   @Type(() => Number)
   @IsInt()
   price: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  @IsInt()
-  installationPrice: number;
-
-  @IsNotEmpty()
   inStock: InStockEnum;
 
   @IsArray()
-  profile: string[];
+  mosquitoNet: string[];
 
   @IsArray()
-  construction: string[];
+  windowSill: string[];
 
   @IsArray()
-  glassUnit: string[];
+  windowEbb: string[];
+
+  @IsArray()
+  windowHand: string[];
+
+  @IsArray()
+  childLock: string[];
+
+  @IsArray()
+  housewifeStub: string[];
+
+  @IsArray()
+  glassPocketAdd: string[];
 
   @IsArray()
   lamination: string[];
 
   @IsArray()
-  glasses: string[];
+  profile: string[];
+
+  @IsNotEmpty()
+  @IsNumberString()
+  @Type(() => Number)
+  @IsInt()
+  windowHeight: number;
+
+  @IsNotEmpty()
+  @IsNumberString()
+  @Type(() => Number)
+  @IsInt()
+  windowWidth: number;
+
+  @IsArray()
+  camerasCount: string[];
+
+  @IsArray()
+  features: string[];
+
+  @IsArray()
+  sectionCount: string[];
 
   @IsOptional()
   homePage?: boolean;
