@@ -43,10 +43,10 @@ export class EntranceDoorEntity {
   @Column("varchar")
   in_stock: InStockEnum;
 
-  @Column("bigint", {default: 0})
+  @Column("double precision", {default: 0})
   fabric_material_thickness: number;
 
-  @Column("bigint", {default: 0})
+  @Column("double precision", {default: 0})
   frame_material_thickness: number;
 
   @ManyToMany(() => DoorInsulationEntity, {

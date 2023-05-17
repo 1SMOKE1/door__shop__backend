@@ -2,7 +2,7 @@ import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
-import { IsArray, IsBoolean, IsInt, IsNotEmpty, IsNumber, IsOptional} from "class-validator";
+import { IsArray, IsBooleanString, IsInt, IsNotEmpty, IsNumber, IsOptional} from "class-validator";
 import { Type } from "class-transformer";
 
 
@@ -35,12 +35,12 @@ export class CreateEntranceDoorDto{
   @IsNumber()
   @Type(() => Number)
   @IsInt()
-  fabricMaterialThickness: number;
+  fabricMaterialThickness: number | string;
 
   @IsNumber()
   @Type(() => Number)
   @IsInt()
-  frameMaterialThickness: number;
+  frameMaterialThickness: number | string;
 
   @IsArray()
   doorInsulation: string[];
@@ -48,7 +48,7 @@ export class CreateEntranceDoorDto{
   @IsArray()
   covering: string[];
 
-  @IsBoolean()
+  @IsBooleanString()
   doorPeephole: boolean
 
   @IsArray()
@@ -58,10 +58,10 @@ export class CreateEntranceDoorDto{
   size: string[];
 
   @IsArray()
-  lower_lock: string[];
+  lowerLock: string[];
 
   @IsArray()
-  upper_lock: string[];
+  upperLock: string[];
 
   @IsArray()
   weight: string[];
@@ -73,6 +73,9 @@ export class CreateEntranceDoorDto{
 
   @IsArray()
   frameMaterialConstruction: string[];
+
+  @IsArray()
+  sealerCircuit: string[];
 
   @IsArray()
   doorHand: string[];

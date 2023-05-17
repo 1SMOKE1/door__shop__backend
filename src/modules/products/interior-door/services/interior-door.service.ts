@@ -20,6 +20,7 @@ import { DoorFrameMaterialEntity } from "src/modules/product-constants/door-fram
 import { DoorSelectionBoardEntity } from "src/modules/product-constants/door-selection-board/door-selection-board.entity";
 import { DoorWeltEntity } from "src/modules/product-constants/door-welt/door-welt.entity";
 import { DoorSlidingSystemEntity } from "src/modules/product-constants/door-sliding-system/door-sliding-system.entity";
+import { ConvertingService } from "../../services/converting.service";
 
 @Injectable()
 export class InteriorDoorService {
@@ -41,6 +42,8 @@ export class InteriorDoorService {
 }
 
   constructor(
+    private readonly convertingService: ConvertingService,
+
     @InjectRepository(InteriorDoorEntity)
     private readonly interiorDoorRepository: Repository<InteriorDoorEntity>,
     @InjectRepository(ProductProducerEntity)
@@ -146,35 +149,30 @@ export class InteriorDoorService {
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    const allFurniture = await this.furnitureRepository.find();
-
-    if(allFurniture.length === 0)
-    throw new HttpException('Create at least 1 furniture item', HttpStatus.CONFLICT);
-
     let fabric_material_width: FabricMaterialWidthEntity[] = [];
 
-    if(this.checkOnNotEmpty(fabricMaterialWidth).length !== 0)
-      fabric_material_width = await this.findAllByCond(this.fabricMaterialWidthRepository, fabricMaterialWidth);
+    if(this.convertingService.checkOnNotEmpty(fabricMaterialWidth).length !== 0)
+      fabric_material_width = await this.convertingService.findAllByCond(this.fabricMaterialWidthRepository, fabricMaterialWidth);
 
     let door_isolation: DoorIsolationEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorIsolation).length !== 0)
-      door_isolation = await this.findAllByCond(this.doorIsolationRepository, doorIsolation);
+    if(this.convertingService.checkOnNotEmpty(doorIsolation).length !== 0)
+      door_isolation = await this.convertingService.findAllByCond(this.doorIsolationRepository, doorIsolation);
 
     let door_frame_material: DoorFrameMaterialEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorFrameMaterial).length !== 0)
-     door_frame_material = await this.findAllByCond(this.doorFrameMaterialRepository, doorFrameMaterial);
+    if(this.convertingService.checkOnNotEmpty(doorFrameMaterial).length !== 0)
+     door_frame_material = await this.convertingService.findAllByCond(this.doorFrameMaterialRepository, doorFrameMaterial);
 
     let door_selection_board: DoorSelectionBoardEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorSelectionBoard).length !== 0)
-      door_selection_board = await this.findAllByCond(this.doorSelectionBoardRepository, doorSelectionBoard);
+    if(this.convertingService.checkOnNotEmpty(doorSelectionBoard).length !== 0)
+      door_selection_board = await this.convertingService.findAllByCond(this.doorSelectionBoardRepository, doorSelectionBoard);
 
     let door_welt: DoorWeltEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorWelt).length !== 0)
-      door_welt = await this.findAllByCond(this.doorWeltRepository, doorWelt);
+    if(this.convertingService.checkOnNotEmpty(doorWelt).length !== 0)
+      door_welt = await this.convertingService.findAllByCond(this.doorWeltRepository, doorWelt);
 
     let door_hand: FurnitureEntity[] = [];
     let door_mechanism: FurnitureEntity[] = [];
@@ -182,19 +180,19 @@ export class InteriorDoorService {
     let door_stopper: FurnitureEntity[] = [];
 
 
-    if(this.checkOnNotEmpty(doorHand).length !== 0)
-      door_hand =  await this.findAllByCond(this.furnitureRepository, doorHand);
-    if(this.checkOnNotEmpty(doorMechanism).length !== 0)
-      door_mechanism = await this.findAllByCond(this.furnitureRepository, doorMechanism);
-    if(this.checkOnNotEmpty(doorLoops).length !== 0)
-      door_loops = await this.findAllByCond(this.furnitureRepository, doorMechanism);
-    if(this.checkOnNotEmpty(doorStopper).length !== 0)
-      door_stopper = await this.findAllByCond(this.furnitureRepository, doorStopper);
+    if(this.convertingService.checkOnNotEmpty(doorHand).length !== 0)
+      door_hand =  await this.convertingService.findAllByCond(this.furnitureRepository, doorHand);
+    if(this.convertingService.checkOnNotEmpty(doorMechanism).length !== 0)
+      door_mechanism = await this.convertingService.findAllByCond(this.furnitureRepository, doorMechanism);
+    if(this.convertingService.checkOnNotEmpty(doorLoops).length !== 0)
+      door_loops = await this.convertingService.findAllByCond(this.furnitureRepository, doorMechanism);
+    if(this.convertingService.checkOnNotEmpty(doorStopper).length !== 0)
+      door_stopper = await this.convertingService.findAllByCond(this.furnitureRepository, doorStopper);
 
     let door_sliding_system: DoorSlidingSystemEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorSlidingSystem).length !== 0)
-      door_sliding_system = await this.findAllByCond(this.doorSlidingSystemRepository, doorSlidingSystem);
+    if(this.convertingService.checkOnNotEmpty(doorSlidingSystem).length !== 0)
+      door_sliding_system = await this.convertingService.findAllByCond(this.doorSlidingSystemRepository, doorSlidingSystem);
     
     
 
@@ -313,28 +311,28 @@ export class InteriorDoorService {
 
     let fabric_material_width: FabricMaterialWidthEntity[] = [];
 
-    if(this.checkOnNotEmpty(fabricMaterialWidth).length !== 0)
-      fabric_material_width = await this.findAllByCond(this.fabricMaterialWidthRepository, fabricMaterialWidth);
+    if(this.convertingService.checkOnNotEmpty(fabricMaterialWidth).length !== 0)
+      fabric_material_width = await this.convertingService.findAllByCond(this.fabricMaterialWidthRepository, fabricMaterialWidth);
 
     let door_isolation: DoorIsolationEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorIsolation).length !== 0)
-      door_isolation = await this.findAllByCond(this.doorIsolationRepository, doorIsolation);
+    if(this.convertingService.checkOnNotEmpty(doorIsolation).length !== 0)
+      door_isolation = await this.convertingService.findAllByCond(this.doorIsolationRepository, doorIsolation);
 
     let door_frame_material: DoorFrameMaterialEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorFrameMaterial).length !== 0)
-     door_frame_material = await this.findAllByCond(this.doorFrameMaterialRepository, doorFrameMaterial);
+    if(this.convertingService.checkOnNotEmpty(doorFrameMaterial).length !== 0)
+     door_frame_material = await this.convertingService.findAllByCond(this.doorFrameMaterialRepository, doorFrameMaterial);
 
     let door_selection_board: DoorSelectionBoardEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorSelectionBoard).length !== 0)
-      door_selection_board = await this.findAllByCond(this.doorSelectionBoardRepository, doorSelectionBoard);
+    if(this.convertingService.checkOnNotEmpty(doorSelectionBoard).length !== 0)
+      door_selection_board = await this.convertingService.findAllByCond(this.doorSelectionBoardRepository, doorSelectionBoard);
 
     let door_welt: DoorWeltEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorWelt).length !== 0)
-      door_welt = await this.findAllByCond(this.doorWeltRepository, doorWelt);
+    if(this.convertingService.checkOnNotEmpty(doorWelt).length !== 0)
+      door_welt = await this.convertingService.findAllByCond(this.doorWeltRepository, doorWelt);
 
     let door_hand: FurnitureEntity[] = [];
     let door_mechanism: FurnitureEntity[] = [];
@@ -342,19 +340,19 @@ export class InteriorDoorService {
     let door_stopper: FurnitureEntity[] = [];
 
 
-    if(this.checkOnNotEmpty(doorHand).length !== 0)
-      door_hand =  await this.findAllByCond(this.furnitureRepository, doorHand);
-    if(this.checkOnNotEmpty(doorMechanism).length !== 0)
-      door_mechanism = await this.findAllByCond(this.furnitureRepository, doorMechanism);
-    if(this.checkOnNotEmpty(doorLoops).length !== 0)
-      door_loops = await this.findAllByCond(this.furnitureRepository, doorMechanism);
-    if(this.checkOnNotEmpty(doorStopper).length !== 0)
-      door_stopper = await this.findAllByCond(this.furnitureRepository, doorStopper);
+    if(this.convertingService.checkOnNotEmpty(doorHand).length !== 0)
+      door_hand =  await this.convertingService.findAllByCond(this.furnitureRepository, doorHand);
+    if(this.convertingService.checkOnNotEmpty(doorMechanism).length !== 0)
+      door_mechanism = await this.convertingService.findAllByCond(this.furnitureRepository, doorMechanism);
+    if(this.convertingService.checkOnNotEmpty(doorLoops).length !== 0)
+      door_loops = await this.convertingService.findAllByCond(this.furnitureRepository, doorMechanism);
+    if(this.convertingService.checkOnNotEmpty(doorStopper).length !== 0)
+      door_stopper = await this.convertingService.findAllByCond(this.furnitureRepository, doorStopper);
 
     let door_sliding_system: DoorSlidingSystemEntity[] = [];
 
-    if(this.checkOnNotEmpty(doorSlidingSystem).length !== 0)
-      door_sliding_system = await this.findAllByCond(this.doorSlidingSystemRepository, doorSlidingSystem);
+    if(this.convertingService.checkOnNotEmpty(doorSlidingSystem).length !== 0)
+      door_sliding_system = await this.convertingService.findAllByCond(this.doorSlidingSystemRepository, doorSlidingSystem);
 
    
     // IMAGES
@@ -367,6 +365,9 @@ export class InteriorDoorService {
     imagesPathes = images.map((el) => el ? el.path : null);
 
     curProduct.name = name;
+    curProduct.product_producer = product_producer;
+    curProduct.type_of_product = type_of_product;
+    curProduct.guarantee = guarantee;
     curProduct.country = country;
     curProduct.in_stock = inStock;
     curProduct.price = +price;
@@ -409,28 +410,6 @@ export class InteriorDoorService {
     await this.interiorDoorRepository.delete(interiorDoorIds);
 
     return `items were deleted successfuly`
-  }
-
-  private async findAllByCond(repository: Repository<any>, obj: string[]): Promise<FurnitureEntity[]>{
-    return await Promise.all(
-      obj.map(p =>  
-        new Promise((res) => res(p))
-          .then((el: string) => 
-            repository.findOneByOrFail({name: el})))
-    )
-  }
-
-  private checkOnNotEmpty(val: string[]| null | undefined): string[]{
-    if(val)
-      switch(true){
-        case val[0] === '':
-          return [];
-        case val[0] !== '':
-          return [...val];
-        default: 
-          return [];
-      }
-    return []
   }
 
 }

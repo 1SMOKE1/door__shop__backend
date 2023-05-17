@@ -13,16 +13,54 @@ import { UpdateWindowDto } from "../dto/update-window.dto";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 import { IImages } from "src/interfaces/IImages";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
+import { MosquitNetEntity } from "src/modules/product-constants/mosquit-net/mosquit-net.entity";
+import { ConvertingService } from "../../services/converting.service";
+import { WindowSillEntity } from "src/modules/product-constants/window-sill/window-sill.entity";
+import { WindowEbbEntity } from "src/modules/product-constants/window-ebb/window-ebb.entity";
+import { WindowHandEntity } from "src/modules/product-constants/window-hand/window-hand.entity";
+import { ChildLockEntity } from "src/modules/product-constants/child-lock/child-lock.entity";
+import { HousewifeStubEntity } from "src/modules/product-constants/housewife-stub/housewife-stub.entity";
+import { GlassPocketAddEntity } from "src/modules/product-constants/glass-pocket-add/glass-pocket-add.entity";
+import { WindowLaminationEntity } from "src/modules/product-constants/window-lamination/window-lamination.entity";
+import { WindowProfileEntity } from "src/modules/product-constants/window-profile/window-profile.entity";
+import { CamerasCountEntity } from "src/modules/product-constants/cameras-count/cameras-count.entity";
+import { FeaturesEntity } from "src/modules/product-constants/features/features.entity";
+import { SectionCountEntity } from "src/modules/product-constants/section-count/section-count.entity";
 
 @Injectable()
 export class WindowService {
   constructor(
+    private readonly convertingService: ConvertingService,
     @InjectRepository(WindowEntity)
     private readonly windowRepository: Repository<WindowEntity>,
     @InjectRepository(ProductProducerEntity)
     private readonly productProducerRepository: Repository<ProductProducerEntity>,
     @InjectRepository(TypeOfProductEntity)
-    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>
+    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>,
+    @InjectRepository(MosquitNetEntity)
+    private readonly mosquitoNetRepository: Repository<MosquitNetEntity>,
+    @InjectRepository(WindowSillEntity)
+    private readonly windowSillRepository: Repository<WindowSillEntity>,
+    @InjectRepository(WindowEbbEntity)
+    private readonly windowEbbRepository: Repository<WindowEbbEntity>,
+    @InjectRepository(WindowHandEntity)
+    private readonly windowHandRepository: Repository<WindowHandEntity>,
+    @InjectRepository(ChildLockEntity)
+    private readonly childLockRepository: Repository<ChildLockEntity>,
+    @InjectRepository(HousewifeStubEntity)
+    private readonly houseWifeStubRepository: Repository<HousewifeStubEntity>,
+    @InjectRepository(GlassPocketAddEntity)
+    private readonly glassPocketAddRepository: Repository<GlassPocketAddEntity>,
+    @InjectRepository(WindowLaminationEntity)
+    private readonly laminationRepository: Repository<WindowLaminationEntity>,
+    @InjectRepository(WindowProfileEntity)
+    private readonly profileRepository: Repository<WindowProfileEntity>,
+    @InjectRepository(CamerasCountEntity)
+    private readonly camerasCountRepository: Repository<CamerasCountEntity>,
+    @InjectRepository(FeaturesEntity)
+    private readonly featuresRepository: Repository<FeaturesEntity>,
+    @InjectRepository(SectionCountEntity)
+    private readonly sectionCountRepository: Repository<SectionCountEntity>
   ) {}
 
   async findAll() {
@@ -46,10 +84,22 @@ export class WindowService {
       guarantee,
       inStock,
       price,
-
       productProducerName,
       typeOfProductName,
-
+      mosquitoNet,
+      windowSill,
+      windowEbb,
+      windowHand,
+      childLock,
+      housewifeStub,
+      glassPocketAdd,
+      lamination,
+      profile,
+      windowWidth,
+      windowHeight,
+      camerasCount,
+      features,
+      sectionCount,
       homePage,
       description,
     } = body;
@@ -98,16 +148,66 @@ export class WindowService {
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
+    let mosquito_net: MosquitNetEntity[] = [];
 
-    // profile: string[] // Профіль
+    if(this.convertingService.checkOnNotEmpty(mosquitoNet).length !== 0)
+      mosquito_net = await this.convertingService.findAllByCond(this.mosquitoNetRepository, mosquitoNet);
 
-    //construction:  string[] // Конструкція
+    let window_sill: WindowSillEntity[] = [];
 
-    // glassUnit: string[] // Стеклопакети
+    if(this.convertingService.checkOnNotEmpty(windowSill).length !== 0)
+      window_sill = await this.convertingService.findAllByCond(this.windowSillRepository, windowSill);
 
-    // lamination: string [] // Ламінація
+    let window_ebb: WindowEbbEntity[] = [];
 
-    // glasses: string[] // Стекла
+    if(this.convertingService.checkOnNotEmpty(windowEbb).length !== 0)
+      window_ebb = await this.convertingService.findAllByCond(this.windowEbbRepository, windowEbb);
+
+    let window_hand: WindowHandEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(windowHand).length !== 0)
+      window_hand = await this.convertingService.findAllByCond(this.windowHandRepository, windowHand);
+
+    let child_lock: ChildLockEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(childLock).length !== 0)
+      child_lock = await this.convertingService.findAllByCond(this.childLockRepository, childLock);
+
+    let housewife_stub: HousewifeStubEntity[] = [];
+    
+    if(this.convertingService.checkOnNotEmpty(housewifeStub).length !== 0)
+      housewife_stub = await this.convertingService.findAllByCond(this.houseWifeStubRepository, housewifeStub);
+
+    let glass_pocket_add: GlassPocketAddEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(glassPocketAdd).length !== 0)
+      glass_pocket_add = await this.convertingService.findAllByCond(this.glassPocketAddRepository, glassPocketAdd);
+
+    let window_lamination: WindowLaminationEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(lamination).length !== 0)
+      window_lamination = await this.convertingService.findAllByCond(this.laminationRepository, lamination);
+
+    let window_profile: WindowProfileEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(profile).length !== 0)
+      window_profile = await this.convertingService.findAllByCond(this.profileRepository, profile);
+    
+    let cameras_count: CamerasCountEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(camerasCount).length !== 0)
+      cameras_count = await this.convertingService.findAllByCond(this.camerasCountRepository, camerasCount);
+    
+    let window_features: FeaturesEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(features).length !== 0)
+      window_features = await this.convertingService.findAllByCond(this.featuresRepository, features);
+    
+    let sections_count: SectionCountEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(sectionCount).length !== 0)
+      sections_count = await this.convertingService.findAllByCond(this.sectionCountRepository, sectionCount);
+    
 
     const { images } = files;
 
@@ -124,8 +224,20 @@ export class WindowService {
       guarantee,
       in_stock: inStock,
       price,
-     
-
+      mosquito_net,
+      window_sill,
+      window_ebb,
+      window_hand,
+      child_lock,
+      housewife_stub,
+      glass_pocket_add,
+      lamination: window_lamination,
+      profile: window_profile,
+      window_width: +windowWidth,
+      window_height: +windowHeight,
+      cameras_count,
+      features: window_features,
+      sections_count,
       home_page: homePage,
       description,
       images: imagesPathes
@@ -150,7 +262,20 @@ export class WindowService {
       price,
       productProducerName,
       typeOfProductName,
-
+      mosquitoNet,
+      windowSill,
+      windowEbb,
+      windowHand,
+      childLock,
+      housewifeStub,
+      glassPocketAdd,
+      lamination,
+      profile,
+      windowWidth,
+      windowHeight,
+      camerasCount,
+      features,
+      sectionCount,
       homePage,
       description,
     } = body;
@@ -200,15 +325,65 @@ export class WindowService {
     }
 
 
-    // profile: string[] // Профіль
-  
-    //construction:  string[] // Конструкція
+    let mosquito_net: MosquitNetEntity[] = [];
 
-    // glassUnit: string[] // Стеклопакети
+    if(this.convertingService.checkOnNotEmpty(mosquitoNet).length !== 0)
+      mosquito_net = await this.convertingService.findAllByCond(this.mosquitoNetRepository, mosquitoNet);
 
-    // lamination: string [] // Ламінація
-  
-    // glasses: string[] // Стекла
+    let window_sill: WindowSillEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(windowSill).length !== 0)
+      window_sill = await this.convertingService.findAllByCond(this.windowSillRepository, windowSill);
+
+    let window_ebb: WindowEbbEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(windowEbb).length !== 0)
+      window_ebb = await this.convertingService.findAllByCond(this.windowEbbRepository, windowEbb);
+
+    let window_hand: WindowHandEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(windowHand).length !== 0)
+      window_hand = await this.convertingService.findAllByCond(this.windowHandRepository, windowHand);
+
+    let child_lock: ChildLockEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(childLock).length !== 0)
+      child_lock = await this.convertingService.findAllByCond(this.childLockRepository, childLock);
+
+    let housewife_stub: HousewifeStubEntity[] = [];
+    
+    if(this.convertingService.checkOnNotEmpty(housewifeStub).length !== 0)
+      housewife_stub = await this.convertingService.findAllByCond(this.houseWifeStubRepository, housewifeStub);
+
+    let glass_pocket_add: GlassPocketAddEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(glassPocketAdd).length !== 0)
+      glass_pocket_add = await this.convertingService.findAllByCond(this.glassPocketAddRepository, glassPocketAdd);
+
+    let window_lamination: WindowLaminationEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(lamination).length !== 0)
+      window_lamination = await this.convertingService.findAllByCond(this.laminationRepository, lamination);
+
+    let window_profile: WindowProfileEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(profile).length !== 0)
+      window_profile = await this.convertingService.findAllByCond(this.profileRepository, profile);
+    
+    let cameras_count: CamerasCountEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(camerasCount).length !== 0)
+      cameras_count = await this.convertingService.findAllByCond(this.camerasCountRepository, camerasCount);
+    
+    let window_features: FeaturesEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(features).length !== 0)
+      window_features = await this.convertingService.findAllByCond(this.featuresRepository, features);
+    
+    let sections_count: SectionCountEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(sectionCount).length !== 0)
+      sections_count = await this.convertingService.findAllByCond(this.sectionCountRepository, sectionCount);
 
     const { images } = files;
 
@@ -217,19 +392,35 @@ export class WindowService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    return await this.windowRepository
-      .update(id, {
-        name,
-        country,
-        guarantee,
-        in_stock: inStock,
-        price,
+    curProduct.name = name;
+    curProduct.product_producer = product_producer;
+    curProduct.type_of_product = type_of_product;
+    curProduct.guarantee = guarantee;
+    curProduct.country = country;
+    curProduct.in_stock = inStock;
+    curProduct.price = +price;
+    curProduct.mosquito_net = mosquito_net;
+    curProduct.window_sill = window_sill;
+    curProduct.window_ebb = window_ebb;
+    curProduct.window_hand = window_hand;
+    curProduct.child_lock = child_lock;
+    curProduct.housewife_stub = housewife_stub;
+    curProduct.glass_pocket_add = glass_pocket_add;
+    curProduct.lamination = window_lamination;
+    curProduct.profile = window_profile;
+    curProduct.window_width = +windowWidth;
+    curProduct.window_height = +windowHeight;
+    curProduct.cameras_count = cameras_count;
+    curProduct.features = window_features;
+    curProduct.sections_count = sections_count;
+    curProduct.home_page = homePage;
+    curProduct.description = description;
+    curProduct.images = imagesPathes;
 
-        home_page: homePage,
-        description,
-        images: imagesPathes
-      })
-      .then(() => this.findById(id));
+
+
+
+    return await this.windowRepository.save(curProduct)  
   }
 
   async deleteById(id: number) {

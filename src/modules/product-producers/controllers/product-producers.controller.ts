@@ -7,8 +7,8 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
-  Put,
   Res,
 } from "@nestjs/common";
 import { Response } from "express";
@@ -59,7 +59,7 @@ export class ProductProducersController {
     }
   }
 
-  @Put(":id")
+  @Patch(":id")
   async updateOne(
     @Param("id", ParseIntPipe) id: number,
     @Body() body: UpdateProductProducerDto,

@@ -12,6 +12,7 @@ import { DoorFrameMaterialModule } from 'src/modules/product-constants/door-fram
 import { DoorSelectionBoardModule } from 'src/modules/product-constants/door-selection-board/door-selection-board.module';
 import { DoorWeltModule } from 'src/modules/product-constants/door-welt/door-welt.module';
 import { DoorSlidingSystemModule } from 'src/modules/product-constants/door-sliding-system/door-sliding-system.module';
+import { ConvertingService } from '../services/converting.service';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { DoorSlidingSystemModule } from 'src/modules/product-constants/door-slid
     DoorWeltModule,
     DoorSlidingSystemModule
   ],
-  providers: [InteriorDoorService],
+  providers: [InteriorDoorService, ConvertingService],
   controllers: [InteriorDoorController],
   exports: [
     TypeOrmModule.forFeature([InteriorDoorEntity])

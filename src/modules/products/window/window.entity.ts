@@ -102,10 +102,10 @@ export class WindowEntity {
   @JoinTable()
   profile: WindowProfileEntity[];
 
-  @Column("bigint", {default: 0})
+  @Column("double precision", {default: 0})
   window_height: number;
 
-  @Column("bigint", {default: 0})
+  @Column("double precision", {default: 0})
   window_width: number;
   
   @ManyToMany(() => CamerasCountEntity, {
