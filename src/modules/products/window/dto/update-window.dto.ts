@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsOptional, IsNumber, IsInt, IsArray, IsNumberString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsNumber, IsInt, IsArray } from "class-validator";
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
@@ -59,13 +59,13 @@ export class UpdateWindowDto {
   profile: string[];
 
   @IsOptional()
-  @IsNumberString()
+  @IsNumber()
   @Type(() => Number)
   @IsInt()
   windowHeight: number;
 
   @IsOptional()
-  @IsNumberString()
+  @IsNumber()
   @Type(() => Number)
   @IsInt()
   windowWidth: number;

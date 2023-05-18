@@ -7,7 +7,4 @@ export class FeaturesEntity {
 
   @Column({type: 'varchar'})
   name: string;
-
-  @Column({type: 'bigint'})
-  price: number;
 }
