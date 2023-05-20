@@ -53,7 +53,8 @@ export class FurnitureService {
       productProducerName,
       typeOfProductName,
       homePage,
-      description
+      description,
+      choosenImage,
     } = body;
 
     const exists = await this.findByName(name);
@@ -127,7 +128,8 @@ export class FurnitureService {
       type_of_product,
       home_page: homePage,
       description,
-      images: imagesPathes
+      images: imagesPathes,
+      choosen_image: choosenImage
     });
     return await this.furnitureRepository.save(newProduct);
   }
@@ -148,7 +150,8 @@ export class FurnitureService {
       productProducerName,
       homePage,
       description,
-      typeOfProductName
+      typeOfProductName,
+      choosenImage,
     } = body;
 
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
@@ -215,7 +218,8 @@ export class FurnitureService {
         price,
         home_page: homePage,
         description,
-        images: imagesPathes
+        images: imagesPathes,
+        choosen_image: choosenImage
       })
       .then(() => this.findById(id));
   }

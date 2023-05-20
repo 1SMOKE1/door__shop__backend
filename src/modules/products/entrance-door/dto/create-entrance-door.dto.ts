@@ -89,7 +89,8 @@ export class CreateEntranceDoorDto{
   @IsOptional()
   description?: string;
 
-
+  @IsOptional()
+  choosen_image: number;
 }
 
 

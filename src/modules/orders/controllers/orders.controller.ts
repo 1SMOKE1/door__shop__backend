@@ -59,7 +59,6 @@ export class OrdersController {
       const updatedOrder = await this.ordersService.updateById(id, body);
       return res.status(HttpStatus.CREATED).json(updatedOrder);
     } catch (err) {
-      console.log(err);
       throw new BadRequestException(err);
     }
   }

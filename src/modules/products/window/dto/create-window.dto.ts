@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsInt, IsArray, IsOptional, IsNumberString } from "class-validator";
+import { IsNotEmpty, IsInt, IsArray, IsOptional, IsNumber } from "class-validator";
 import { CountryEnum } from "src/enums/country.enum";
 import { GuaranteeEnum } from "src/enums/guarantee.enum";
 import { InStockEnum } from "src/enums/in-stock.enum";
@@ -23,7 +23,7 @@ export class CreateWindowDto {
   guarantee: GuaranteeEnum;
 
   @IsNotEmpty()
-  @IsNumberString()
+  @IsNumber()
   @Type(() => Number)
   @IsInt()
   price: number;
@@ -58,14 +58,12 @@ export class CreateWindowDto {
   @IsArray()
   profile: string[];
 
-  @IsNotEmpty()
-  @IsNumberString()
+  @IsNumber()
   @Type(() => Number)
   @IsInt()
   windowHeight: number;
 
-  @IsNotEmpty()
-  @IsNumberString()
+  @IsNumber()
   @Type(() => Number)
   @IsInt()
   windowWidth: number;
@@ -87,4 +85,7 @@ export class CreateWindowDto {
 
   @IsOptional()
   description?: string;
+
+  @IsOptional()
+  choosenImage: number;
 }

@@ -1,9 +1,9 @@
-import { IProduct } from "src/modules/products/interfaces/IProduct";
+import { IProductCalculator } from "./IProductCalculator";
 
 
 export interface ICartLine{
   quantity: number;
-  product: IProduct;
+  product: IProductCalculator;
 
   get subTotal(): number;
   increase(): void;

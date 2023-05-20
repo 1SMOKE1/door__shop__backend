@@ -7,7 +7,4 @@ export class CamerasCountEntity {
 
   @Column({type: 'varchar'})
   name: string;
-
-  @Column({type: 'bigint'})
-  price: number;
 }

@@ -39,6 +39,9 @@ export class CreateFurnitureDto {
 
   @IsOptional()
   description?: string;
+
+  @IsOptional()
+  choosenImage: number;
 }
 
 

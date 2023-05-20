@@ -7,7 +7,4 @@ export class SectionCountEntity {
 
   @Column({type: 'varchar'})
   name: string;
-
-  @Column({type: 'bigint'})
-  price: number;
 }
