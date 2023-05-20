@@ -43,4 +43,7 @@ export class FurnitureEntity {
 
   @Column({type: "text", array: true})
   images: string[];
+
+  @Column("bigint", {default: 0})
+  choosen_image: number;
 }

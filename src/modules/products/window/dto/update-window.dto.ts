@@ -87,4 +87,7 @@ export class UpdateWindowDto {
 
   @IsOptional()
   description?: string;
+
+  @IsOptional()
+  choosenImage: number;
 }

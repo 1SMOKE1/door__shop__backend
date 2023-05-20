@@ -92,4 +92,7 @@ export class UpdateEntranceDoorDto {
 
   @IsOptional()
   description?: string;
+
+  @IsOptional()
+  choosen_image: number;
 }

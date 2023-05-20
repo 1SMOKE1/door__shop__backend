@@ -39,4 +39,7 @@ export class UpdateFurnitureDto {
 
   @IsOptional()
   description?: string;
+
+  @IsOptional()
+  choosenImage: number;
 }

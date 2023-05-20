@@ -79,4 +79,7 @@ export class CreateInteriorDoorDto {
 
   @IsOptional()
   description?: string;
+
+  @IsOptional()
+  choosenImage: number;
 }

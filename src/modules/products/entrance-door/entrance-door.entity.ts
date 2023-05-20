@@ -123,4 +123,7 @@ export class EntranceDoorEntity {
 
   @Column({ type: "varchar", length: 500, default: "Немає опису" })
   description?: string;
+
+  @Column("bigint", {default: 0})
+  choosen_image: number;
 }

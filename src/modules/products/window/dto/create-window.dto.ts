@@ -85,4 +85,7 @@ export class CreateWindowDto {
 
   @IsOptional()
   description?: string;
+
+  @IsOptional()
+  choosenImage: number;
 }

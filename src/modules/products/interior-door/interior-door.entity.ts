@@ -116,4 +116,7 @@ export class InteriorDoorEntity {
 
   @Column("text", {array: true})
   images: string[];
+
+  @Column("bigint", {default: 0})
+  choosen_image: number;
 }

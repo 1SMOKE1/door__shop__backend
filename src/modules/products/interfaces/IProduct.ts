@@ -81,9 +81,9 @@ export interface IProduct{
   cameras_count?: CamerasCountEntity[]; // Кількість камер
   features?: FeaturesEntity[]; // Особливості
   section_count?: SectionCountEntity[]; // Кількість секцій
-
-
+  
   home_page?: boolean,
   images: string[],
   description?: string, // Опис
+  choosen_image?: number; // обране фото
 }
