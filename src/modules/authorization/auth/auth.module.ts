@@ -9,8 +9,11 @@ import { AuthController } from './controllers/auth.controller';
 
 @Module({
   imports: [
-    AdminModule,
-    JwtModule.register({})
+    AdminModule,{
+      ...JwtModule.register({}),
+      global: false
+    }
+    
   ],
   providers: [
     AuthService,

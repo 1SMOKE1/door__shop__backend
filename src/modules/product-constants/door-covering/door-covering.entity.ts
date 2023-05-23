@@ -8,8 +8,4 @@ export class DoorCoveringEntity {
 
   @Column({type: 'varchar'})
   name: string;
-
-  @Column({type: 'bigint'})
-  price: number;
-
 }

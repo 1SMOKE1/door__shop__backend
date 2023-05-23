@@ -55,5 +55,5 @@ export interface IProductCalculator{
     description: string,
     homePage: boolean,
     images: string[],
-    choosenImage: number
+    choosenImage: string
 }

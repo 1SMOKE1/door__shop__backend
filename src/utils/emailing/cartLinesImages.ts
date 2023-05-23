@@ -8,12 +8,14 @@ const getCartLinesImages = (arr: ICartLine[]): ICartLineImage[] => {
   return arr.map((el: ICartLine) => {
       let filename = '';
       if(el.product.images.length !== 0){
-        filename = el.product.images[0].split('\\').pop();
+        filename = el.product.choosenImage.split('\\').pop();
+        console.log(filename);
+        console.log(el.product.choosenImage);
       }
       const cid = filename.split('.').shift();
       return {
         filename,
-        path: el.product.images.length !== 0 ? el.product.images[0] : '',
+        path: el.product.images.length !== 0 ? el.product.choosenImage : '',
         cid
       }
     }

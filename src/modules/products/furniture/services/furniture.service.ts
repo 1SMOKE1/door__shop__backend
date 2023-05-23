@@ -16,21 +16,28 @@ import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 
 @Injectable()
 export class FurnitureService {
+
+  getRelations = { relations: {
+      product_producer: true,
+      type_of_product: true,
+    }
+  }
+
   constructor(
     @InjectRepository(FurnitureEntity)
     private readonly furnitureRepository: Repository<FurnitureEntity>,
     @InjectRepository(ProductProducerEntity)
     private readonly productProducerRepository: Repository<ProductProducerEntity>,
     @InjectRepository(TypeOfProductEntity)
-    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>,
+    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>
   ) {}
 
   async findAll() {
-    return await this.furnitureRepository.find({ relations: { product_producer: true } });
+    return await this.furnitureRepository.find({...this.getRelations});
   }
 
   async findById(id: number) {
-    const currentProduct = await this.furnitureRepository.findOne({ where: { id }, relations: { product_producer: true } });
+    const currentProduct = await this.furnitureRepository.findOne({ where: { id }, ...this.getRelations});
 
     if (currentProduct == null) throw new HttpException(`furniture with id: ${id}, doesn't exists`, HttpStatus.FORBIDDEN);
 
@@ -225,7 +232,9 @@ export class FurnitureService {
   }
 
   async deleteById(id: number) {
-    if ((await this.findById(id)) == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
+    const curItem = await this.findById(id);
+
+    if (curItem == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
 
     return await this.furnitureRepository.delete(id)
     .then(() => `furniture by id: ${id} was deleted successfuly`);

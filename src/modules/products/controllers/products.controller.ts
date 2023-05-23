@@ -1,9 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Query, Res, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Query, Res } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
 import { Response } from 'express';
 import { IHoleFiltrationBody } from '../interfaces/IHoleFiltrationBody';
 import { IPagination } from '../interfaces/IPagination';
-import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
+
 
 @Controller('products')
 export class ProductsController {
@@ -53,7 +53,6 @@ export class ProductsController {
   }
 
   @Delete()
-  @UseGuards(JwtAuthGuard)
   async deleteAll(
     @Res() res: Response
   ){

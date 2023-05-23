@@ -43,7 +43,6 @@ import { AuthorizationModule } from './modules/authorization/authorization.modul
     ProductConstantsModule,
     ExcelAndPhotosModule,
     FormsModule,
-    ProductConstantsModule,
     CarouselsModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads', 'images'),

@@ -269,7 +269,7 @@ export class InteriorDoorService {
     if(type_of_product == null){
       const typeOfProducts = await this.typeOfProductRepository.find();
 
-      throw new HttpException(`Incorrect typeOfProrductName you could choose from: ${typeOfProducts
+      throw new HttpException(`Некоректний typeOfProrductName ви можете обрати з: ${typeOfProducts
         .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
     }
 
@@ -280,32 +280,34 @@ export class InteriorDoorService {
 
     const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
 
-    if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer for interiorDoor`, HttpStatus.NOT_FOUND);
+    if(productProducers.length === 0) throw new HttpException(
+      `Будь ласка створіть хоча б 1 виробника для ${TypeOfProductEnum.interiorDoor}`, 
+      HttpStatus.NOT_FOUND);
 
     const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
 
     if (product_producer == null) {
       const producers = await this.productProducerRepository.find(typeOfProductRelations);
 
-      throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Некоректний виробник, ви можете обрати з: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!(await checkEnum(CountryEnum, country))) {
       const countries = await generateErrorArr(CountryEnum);
 
-      throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Некоректна країна, ви можете обрати з: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
       const guaranties = await generateErrorArr(GuaranteeEnum);
 
-      throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Некоректна гарантія, ви можете обрати з: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
     if (!(await checkEnum(InStockEnum, inStock))) {
       const inStocks = await generateErrorArr(InStockEnum);
 
-      throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+      throw new HttpException(`Некоректна наявність, ви можете обрати з: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
 
@@ -392,24 +394,25 @@ export class InteriorDoorService {
   }
 
   async deleteById(id: number) {
-    if ((await this.findById(id)) == null) throw new HttpException(`interior_door with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
+    const curItem: InteriorDoorEntity = await this.findById(id);
+
+    if (curItem == null) throw new HttpException(`${TypeOfProductEnum.interiorDoor} з id: ${id} не існують`, HttpStatus.NOT_FOUND);
 
     return await this.interiorDoorRepository.delete(id)
-    .then(() => `interior_door by id: ${id} was deleted successfuly`)
+    .then(() => `${TypeOfProductEnum.interiorDoor} були видалені успішно`)
   }
 
   async deleteAll(){
     const interiorDoorIds = await this.interiorDoorRepository.find()
     .then((data: InteriorDoorEntity[]) => 
-      data.map((item: InteriorDoorEntity): number => 
-        (item.id)
-      )
+      data.map((item: InteriorDoorEntity): number => item.id)
     );
 
     if(interiorDoorIds.length !== 0)
     await this.interiorDoorRepository.delete(interiorDoorIds);
 
-    return `items were deleted successfuly`
+    return `${TypeOfProductEnum.interiorDoor} були видалені успішно`
   }
+
 
 }
