@@ -10,7 +10,10 @@ import { TypeOfProductsModule } from 'src/modules/type-of-products/type-of-produ
   imports: [
     TypeOrmModule.forFeature([FurnitureEntity]),
     ProductProducersModule,
-    TypeOfProductsModule
+    TypeOfProductsModule,
+    
+  
+  
   ],
   controllers: [FurnitureController],
   providers: [FurnitureService],

@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
 import { DoorSizeService } from '../services/door-size.service';
-import { CreateDoorWeltDto } from '../../door-welt/dto/create-door-welt.dto';
-import { UpdateDoorWeltDto } from '../../door-welt/dto/update-door-welt.dto';
 import { Response } from 'express';
+import { UpdateDoorSizeDto } from '../dto/update-door-size.dto';
+import { CreateDoorSizeDto } from '../dto/create-door-size.dto';
 
 @Controller('door-size')
 export class DoorSizeController {
@@ -22,7 +22,7 @@ export class DoorSizeController {
   }
 
   @Post()
-  async createOne(@Body() body: CreateDoorWeltDto, @Res() res: Response) {
+  async createOne(@Body() body: CreateDoorSizeDto, @Res() res: Response) {
     try {
       const entity = await this.doorSizeService.createOne(body);
       return res.status(HttpStatus.CREATED).json(entity);
@@ -32,7 +32,7 @@ export class DoorSizeController {
   }
 
   @Put(":id")
-  async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateDoorWeltDto, @Res() res: Response) {
+  async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateDoorSizeDto, @Res() res: Response) {
     try {
       const updatedEntity = await this.doorSizeService.updateById(id, body);
       return res.status(HttpStatus.CREATED).json(updatedEntity);

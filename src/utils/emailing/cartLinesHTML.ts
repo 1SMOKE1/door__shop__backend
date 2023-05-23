@@ -9,7 +9,7 @@ const getCartLinesHTML = (arr: ICartLine[]): string => {
     let cid = '';
 
     if(item.product.images.length !== 0){
-      cid = item.product.images[0].split('\\').pop().split('.').shift();
+      cid = item.product.choosenImage.split('\\').pop().split('.').shift();
     }
  
 
