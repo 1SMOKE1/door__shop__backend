@@ -10,8 +10,7 @@ export class CreateFurnitureDto {
   @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty() 
-  productProducerName: string;
+  productProducerName: string | null;
 
   @IsNotEmpty() 
   typeOfProductName: TypeOfProductEnum;
