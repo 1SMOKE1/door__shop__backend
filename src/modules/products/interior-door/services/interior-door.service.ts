@@ -129,12 +129,19 @@ export class InteriorDoorService {
 
     if(productProducers.length === 0) throw new HttpException(`Please create at least 1 product_producer for interiorDoor`, HttpStatus.NOT_FOUND);
 
-    const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
+    
+    let product_producer: ProductProducerEntity;
 
-    if (product_producer == null) {
-      const producers = await this.productProducerRepository.find(typeOfProductRelations);
-
-      throw new HttpException(`Incorrect productProducers: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+    if(productProducerName === ''){
+      product_producer = null;
+    }
+    else {
+      product_producer= await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product});
+      if (product_producer == null) {
+        const producers = await this.productProducerRepository.find(typeOfProductRelations);
+  
+        throw new HttpException(`Некорректний виробник, ви взмозі обрати з: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+      }
     }
 
     if (!(await checkEnum(GuaranteeEnum, guarantee))) {
@@ -284,12 +291,18 @@ export class InteriorDoorService {
       `Будь ласка створіть хоча б 1 виробника для ${TypeOfProductEnum.interiorDoor}`, 
       HttpStatus.NOT_FOUND);
 
-    const product_producer = await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product });
+    let product_producer: ProductProducerEntity;
 
-    if (product_producer == null) {
-      const producers = await this.productProducerRepository.find(typeOfProductRelations);
-
-      throw new HttpException(`Некоректний виробник, ви можете обрати з: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+    if(productProducerName === ''){
+      product_producer = null;
+    }
+    else {
+      product_producer= await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product});
+      if (product_producer == null) {
+        const producers = await this.productProducerRepository.find(typeOfProductRelations);
+  
+        throw new HttpException(`Некорректний виробник, ви взмозі обрати з: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+      }
     }
 
     if (!(await checkEnum(CountryEnum, country))) {

@@ -11,8 +11,7 @@ export class CreateEntranceDoorDto{
   @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty() 
-  productProducerName: string;
+  productProducerName: string | null;
 
   @IsNotEmpty() 
   typeOfProductName: TypeOfProductEnum;

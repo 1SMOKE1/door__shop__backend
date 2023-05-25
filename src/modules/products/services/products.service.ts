@@ -55,19 +55,19 @@ export class ProductsService {
 
   async filtration(body: IHoleFiltrationBody, pagination: IPagination) {
 
-    const { checkboxArr, sliderValue, searchValue } = body;
+    const { checkboxArr, sliderValue, searchValue, noProductProducers} = body;
 
     const { sliderMinValue, sliderMaxValue } = sliderValue;
 
     const { page, itemsPerPage } = pagination;
 
     if (page && itemsPerPage) {
-      return await this.filtrationAlgorithm(checkboxArr, sliderMinValue, sliderMaxValue, searchValue)
+      return await this.filtrationAlgorithm(checkboxArr, sliderMinValue, sliderMaxValue, searchValue, noProductProducers)
       .then((products: productMultiType[]) => 
       this.pagination(products, page, itemsPerPage));
     }
 
-    return await this.filtrationAlgorithm(checkboxArr, sliderMinValue, sliderMaxValue, searchValue);
+    return await this.filtrationAlgorithm(checkboxArr, sliderMinValue, sliderMaxValue, searchValue, noProductProducers);
   }
 
   async deleteAll(){
@@ -115,46 +115,73 @@ export class ProductsService {
     return `items were deleted successfuly`
   }
 
-  private async filtrationAlgorithm(checkboxArr: IProductProducer[], sliderMinValue: number, sliderMaxValue: number, searchValue: string) {
+  private async filtrationAlgorithm(checkboxArr: IProductProducer[], sliderMinValue: number, sliderMaxValue: number, searchValue: string, noProductProducers: boolean) {
 
     const products = await this.findAll();
 
     // чекбоксы
-    if (searchValue === "" && checkboxArr.length !== 0 &&  (sliderMinValue === 0 && sliderMaxValue === 20000)) {
+    if (searchValue === "" && checkboxArr.length !== 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === false) {
       return await this.filtrationByCheckboxes(products, checkboxArr);
     }
     // слайдер
-    if (searchValue === "" && checkboxArr.length === 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000)) {
+    if (searchValue === "" && checkboxArr.length === 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000) && noProductProducers === false) {
       return await this.filtrationBySlider(products, sliderMinValue, sliderMaxValue);
     }
     // поиск
-    if (searchValue !== "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000)) {
+    if (searchValue !== "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === false) {
       return await this.filtrationBySearch(products, searchValue);
     }
 
+    // без производителя
+    if(searchValue === "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === true){
+      return await this.filtrationNoProductProducers(products);
+    }
+
     // для чекбоксов и слайдера
-    if (searchValue === "" && checkboxArr.length !== 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000)) {
+    if (searchValue === "" && checkboxArr.length !== 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000) && noProductProducers === false) {
       return await this.filtrationByCheckboxes(products, checkboxArr)
       .then((filteredProducts: productMultiType[]) => 
       this.filtrationBySlider(filteredProducts, sliderMinValue, sliderMaxValue));
     }
 
     // для чекбоксов и поиска
-    if (searchValue !== "" && checkboxArr.length !== 0 && (sliderMinValue === 0 && sliderMaxValue === 20000)) {
+    if (searchValue !== "" && checkboxArr.length !== 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === false) {
       return await this.filtrationByCheckboxes(products, checkboxArr)
       .then((filteredProducts: productMultiType[]) => 
       this.filtrationBySearch(filteredProducts, searchValue));
     }
 
+    // для чекбоксов и без производителя
+    if (searchValue === "" && checkboxArr.length !== 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === true) {
+      const noProductProducersProducts = await this.filtrationNoProductProducers(products);
+
+      return await this.filtrationByCheckboxes(products, checkboxArr)
+      .then((filteredProducts: productMultiType[]) => [...filteredProducts, ...noProductProducersProducts]);
+    }
+
     // для слайдера и поиска
-    if (searchValue !== "" && checkboxArr.length === 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000)) {
+    if (searchValue !== "" && checkboxArr.length === 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000) && noProductProducers === false) {
       return await this.filtrationBySlider(products, sliderMinValue, sliderMaxValue)
       .then((filteredProducts: productMultiType[]) => 
       this.filtrationBySearch(filteredProducts, searchValue));
     }
 
-    // для чексоксов и слайдера и поиска
-    if (searchValue !== "" && checkboxArr.length !== 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000)) {
+    // для слайдера и без производителя
+    if (searchValue === "" && checkboxArr.length === 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000) && noProductProducers === true) {
+      const noProductProducersProducts = await this.filtrationNoProductProducers(products);
+
+      return await this.filtrationBySlider(noProductProducersProducts, sliderMinValue, sliderMaxValue)
+    }
+
+    // для поиска и без производителя
+    if (searchValue !== "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === true) {
+      const noProductProducersProducts = await this.filtrationNoProductProducers(products);
+
+      return await this.filtrationBySearch(noProductProducersProducts, searchValue);
+    }
+
+    // для чекбоксов и слайдера и поиска
+    if (searchValue === "" && checkboxArr.length !== 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000) && noProductProducers === false) {
       return await this.filtrationByCheckboxes(products, checkboxArr)
       .then((filteredProducts1: productMultiType[]) => 
       this.filtrationBySlider(filteredProducts1, sliderMinValue, sliderMaxValue))
@@ -162,8 +189,47 @@ export class ProductsService {
       this.filtrationBySearch(filteredProducts2, searchValue));
     }
 
+    // для чекбоксов и поиска и без производителя
+    if (searchValue !== "" && checkboxArr.length !== 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === true) {
+      const noProductProducersProducts = await this.filtrationNoProductProducers(products);
+
+      return await this.filtrationByCheckboxes(products, checkboxArr)
+      .then((filteredProducts1: productMultiType[]) => 
+      this.filtrationBySearch([...filteredProducts1, ...noProductProducersProducts], searchValue));
+    }
+
+    // для слайдера и поиска и без производителя
+    if (searchValue !== "" && checkboxArr.length === 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000) && noProductProducers === true) {
+      const noProductProducersProducts = await this.filtrationNoProductProducers(products);
+
+      return await this.filtrationBySlider(noProductProducersProducts, sliderMinValue, sliderMaxValue)
+      .then((filteredProducts: productMultiType[]) => 
+      this.filtrationBySearch(filteredProducts, searchValue))
+    }
+
+
+    // для чекбоксов и слайдера и без производителя
+    if (searchValue === "" && checkboxArr.length !== 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000) && noProductProducers === true) {
+      const noProductProducersProducts = await this.filtrationNoProductProducers(products);
+
+      return await this.filtrationByCheckboxes(products, checkboxArr)
+      .then((filteredProducts1: productMultiType[]) => 
+      this.filtrationBySlider([...filteredProducts1, ...noProductProducersProducts], sliderMinValue, sliderMaxValue));
+    }
+
+    // для чекбоксов и слайдера и поиска и без производителя
+    if (searchValue !== "" && checkboxArr.length !== 0 && (sliderMinValue !== 0 || sliderMaxValue !== 20000) && noProductProducers === true) {
+      const noProductProducersProducts = await this.filtrationNoProductProducers(products);
+
+      return await this.filtrationByCheckboxes(products, checkboxArr)
+      .then((filteredProducts1: productMultiType[]) => 
+      this.filtrationBySlider([...filteredProducts1, ...noProductProducersProducts], sliderMinValue, sliderMaxValue))
+      .then((filteredProducts2: productMultiType[]) => 
+      this.filtrationBySearch(filteredProducts2, searchValue))
+    }
+
     // Обнуление
-    if (searchValue === "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000)) {
+    if (searchValue === "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === false) {
       return products;
     }
   }
@@ -194,6 +260,10 @@ export class ProductsService {
     return products
       .filter((el: productMultiType) => 
       el.name.toLowerCase().includes(searchValue.toLowerCase()));
+  }
+
+  private async filtrationNoProductProducers(products: productMultiType[]){
+    return products.filter((el: productMultiType) => el.product_producer === null);
   }
 
   private async pagination(products: productMultiType[], pageNumber: number, itemsPerPage: number): Promise<IGetProducts>{

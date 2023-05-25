@@ -11,7 +11,7 @@ export class UpdateInteriorDoorDto {
   name: string;
 
   @IsOptional()
-  productProducerName: string;
+  productProducerName: string | null;
 
   @IsOptional()
   typeOfProductName: TypeOfProductEnum;

@@ -29,11 +29,9 @@ export class ExcelAndPhotosController {
     @UploadedFiles() images: IImages,
   ){
     try {
-      console.log(images.images)
       const excelData = await this.excelAndPhotosService.readExcelAndPhotos(excel);
       return res.status(HttpStatus.CREATED).json(excelData);
     } catch (err){  
-      console.log(err);
       throw new BadRequestException(err);
     }
   }

@@ -6,6 +6,7 @@ export interface IHoleFiltrationBody{
 
   checkboxArr: IProductProducer[],
   sliderValue: ISliderValue,
-  searchValue: string
+  searchValue: string,
+  noProductProducers: boolean
 
 }
