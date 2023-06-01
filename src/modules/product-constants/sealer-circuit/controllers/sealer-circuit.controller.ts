@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { SealerCircuitService } from '../services/sealer-circuit.service';
 import { CreateSealerCircuitDto } from '../dto/create-sealer-circuit.dto';
 import { UpdateSealerCircuitDto } from '../dto/update-sealer-circuit.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('sealer-circuit')
 export class SealerCircuitController {
@@ -21,6 +22,7 @@ export class SealerCircuitController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateSealerCircuitDto, @Res() res: Response) {
     try {
@@ -31,6 +33,7 @@ export class SealerCircuitController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateSealerCircuitDto, @Res() res: Response) {
     try {
@@ -41,6 +44,7 @@ export class SealerCircuitController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

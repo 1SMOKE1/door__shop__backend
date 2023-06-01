@@ -10,11 +10,13 @@ import {
   Patch,
   Post,
   Res,
+  UseGuards,
 } from "@nestjs/common";
 import { Response } from "express";
 import { ProductProducersService } from "../services/product-producers.service";
 import { CreateProductProducerDto } from "../dto/create-product-producer.dto";
 import { UpdateProductProducerDto } from "../dto/update-product-producer.dto";
+import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
 
 @Controller("product-producers")
 export class ProductProducersController {
@@ -44,6 +46,7 @@ export class ProductProducersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(
     @Body() body: CreateProductProducerDto,
@@ -59,6 +62,7 @@ export class ProductProducersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   async updateOne(
     @Param("id", ParseIntPipe) id: number,
@@ -73,6 +77,7 @@ export class ProductProducersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteOne(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

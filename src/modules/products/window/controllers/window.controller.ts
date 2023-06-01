@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, HttpStatus, Res, ParseIntPipe, Param, Post, Body, Delete, UseInterceptors, UploadedFiles, Patch } from "@nestjs/common";
+import { BadRequestException, Controller, Get, HttpStatus, Res, ParseIntPipe, Param, Post, Body, Delete, UseInterceptors, UploadedFiles, Patch, UseGuards } from "@nestjs/common";
 import { WindowService } from "../services/window.service";
 import { Response } from "express";
 import { CreateWindowDto } from "../dto/create-window.dto";
@@ -6,6 +6,7 @@ import { UpdateWindowDto } from "../dto/update-window.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
 import { IImages } from "src/interfaces/IImages";
+import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
 
 @Controller("window")
 @UseInterceptors(
@@ -42,6 +43,7 @@ export class WindowController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateWindowDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
@@ -52,6 +54,7 @@ export class WindowController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateWindowDto, @Res() res: Response) {
     try {
@@ -62,6 +65,7 @@ export class WindowController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteOne(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -72,6 +76,7 @@ export class WindowController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteAll(@Res() res: Response){
     try {

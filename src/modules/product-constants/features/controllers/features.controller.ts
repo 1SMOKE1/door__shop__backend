@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { FeaturesService } from '../services/features.service';
 import { CreateFeaturesDto } from '../dto/create-features.dto';
 import { UpdateFeaturesDto } from '../dto/update-features.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('features')
 export class FeaturesController {
@@ -21,6 +22,7 @@ export class FeaturesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateFeaturesDto, @Res() res: Response) {
     try {
@@ -31,6 +33,7 @@ export class FeaturesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateFeaturesDto, @Res() res: Response) {
     try {
@@ -41,6 +44,7 @@ export class FeaturesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

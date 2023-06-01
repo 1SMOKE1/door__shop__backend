@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FurnitureService } from "../services/furniture.service";
 import { Response } from "express";
 import { CreateFurnitureDto } from "../dto/create-furniture.dto";
@@ -6,6 +6,7 @@ import { UpdateFurnitureDto } from "../dto/update-furniture.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
 import { IImages } from "src/interfaces/IImages";
+import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
 
 @Controller("furniture")
 @UseInterceptors(
@@ -42,6 +43,7 @@ export class FurnitureController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateFurnitureDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
@@ -52,6 +54,7 @@ export class FurnitureController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateFurnitureDto, @Res() res: Response) {
     try {
@@ -62,6 +65,7 @@ export class FurnitureController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -72,6 +76,7 @@ export class FurnitureController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteAll(@Res() res: Response) {
     try {

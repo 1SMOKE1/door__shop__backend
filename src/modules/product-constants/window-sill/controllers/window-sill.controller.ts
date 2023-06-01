@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { WindowSillService } from '../services/window-sill.service';
 import { CreateWindowSillDto } from '../dto/create-window-sill.dto';
 import { UpdateWindowSillDto } from '../dto/update-window-sill.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('window-sill')
 export class WindowSillController {
@@ -22,6 +23,7 @@ export class WindowSillController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateWindowSillDto, @Res() res: Response) {
     try {
@@ -32,6 +34,7 @@ export class WindowSillController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateWindowSillDto, @Res() res: Response) {
     try {
@@ -42,6 +45,7 @@ export class WindowSillController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

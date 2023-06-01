@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { WindowHandService } from '../services/window-hand.service';
 import { CreateWindowHandDto } from '../dto/create-window-hand.dto';
 import { UpdateWindowHandDto } from '../dto/update-window-hand.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('window-hand')
 export class WindowHandController {
@@ -21,6 +22,7 @@ export class WindowHandController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateWindowHandDto, @Res() res: Response) {
     try {
@@ -31,6 +33,7 @@ export class WindowHandController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateWindowHandDto, @Res() res: Response) {
     try {
@@ -41,6 +44,7 @@ export class WindowHandController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

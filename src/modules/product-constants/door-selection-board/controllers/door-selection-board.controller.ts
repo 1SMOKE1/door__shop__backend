@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { DoorSelectionBoardService } from '../services/door-selection-board.service';
 import { CreateDoorSelectionBoardDto } from '../dto/create-door-selection-board.dto';
 import { UpdateDoorSelectionBoardDto } from '../dto/update-door-selection-board.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('door-selection-board')
 export class DoorSelectionBoardController {
@@ -21,6 +22,7 @@ export class DoorSelectionBoardController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateDoorSelectionBoardDto, @Res() res: Response) {
     try {
@@ -31,6 +33,7 @@ export class DoorSelectionBoardController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateDoorSelectionBoardDto, @Res() res: Response) {
     try {
@@ -41,6 +44,7 @@ export class DoorSelectionBoardController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

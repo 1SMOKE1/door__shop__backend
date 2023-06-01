@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { OrdersService } from '../services/orders.service';
 import { Response } from 'express';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('orders')
 export class OrdersController {
@@ -11,6 +12,7 @@ export class OrdersController {
     private readonly ordersService: OrdersService
   ){}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getAll(
     @Res() res: Response
@@ -23,6 +25,7 @@ export class OrdersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getById(
     @Param('id', ParseIntPipe) id: number,
@@ -36,6 +39,7 @@ export class OrdersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async crateOne(
     @Body() body: CreateOrderDto,
@@ -49,6 +53,7 @@ export class OrdersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number, 
@@ -63,6 +68,7 @@ export class OrdersController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteOne(
     @Param('id', ParseIntPipe) id: number,

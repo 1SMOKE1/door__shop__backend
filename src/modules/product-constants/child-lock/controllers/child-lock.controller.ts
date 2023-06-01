@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { ChildLockService } from '../services/child-lock.service';
 import { CreateWindowHandDto } from '../../window-hand/dto/create-window-hand.dto';
 import { UpdateWindowHandDto } from '../../window-hand/dto/update-window-hand.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('child-lock')
 export class ChildLockController {
@@ -21,6 +22,7 @@ export class ChildLockController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateWindowHandDto, @Res() res: Response) {
     try {
@@ -31,6 +33,7 @@ export class ChildLockController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateWindowHandDto, @Res() res: Response) {
     try {
@@ -41,6 +44,7 @@ export class ChildLockController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

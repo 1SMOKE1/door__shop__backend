@@ -51,6 +51,21 @@ import { AuthorizationModule } from './modules/authorization/authorization.modul
         index: false
       }
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads', 'our-comments'),
+      serveRoot: '/uploads/our-comments',
+      serveStaticOptions: {
+        index: false
+      }
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads', 'our-works'),
+      serveRoot: '/uploads/our-works',
+      serveStaticOptions: {
+        index: false
+      }
+    }),
+    
     AuthorizationModule,
   ],
   controllers: []

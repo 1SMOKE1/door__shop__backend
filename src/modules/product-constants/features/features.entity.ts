@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
+@Index(['name'], {unique: true})
 @Entity('features')
 export class FeaturesEntity {
   @PrimaryGeneratedColumn()

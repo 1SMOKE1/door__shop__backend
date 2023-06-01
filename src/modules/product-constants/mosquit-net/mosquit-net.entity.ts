@@ -1,5 +1,6 @@
-import { PrimaryGeneratedColumn, Column, Entity } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity, Index } from "typeorm";
 
+@Index(['name'], {unique: true})
 @Entity("mosquit_net")
 export class MosquitNetEntity {
   @PrimaryGeneratedColumn()

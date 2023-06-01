@@ -12,6 +12,7 @@ import {
   Post,
   Res,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { InteriorDoorService } from "../services/interior-door.service";
@@ -21,6 +22,7 @@ import { UpdateInteriorDoorDto } from "../dto/update-interior-door.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
 import { IImages } from "src/interfaces/IImages";
+import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
 
 @Controller("interior-door")
 @UseInterceptors(
@@ -57,6 +59,7 @@ export class InteriorDoorController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateInteriorDoorDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
@@ -67,6 +70,7 @@ export class InteriorDoorController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
     try {
@@ -77,6 +81,7 @@ export class InteriorDoorController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -87,6 +92,7 @@ export class InteriorDoorController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteAll(@Res() res: Response){
     try {

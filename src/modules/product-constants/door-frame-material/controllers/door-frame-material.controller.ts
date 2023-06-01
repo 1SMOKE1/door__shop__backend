@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { DoorFrameMaterialService } from "../services/door-frame-material.service";
 import { Response } from "express";
 import { CreateDoorFrameMaterialDto } from "../dto/create-door-frame-material.dto";
 import { UpdateDoorFrameMaterialDto } from "../dto/update-door-frame-material.dto";
+import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
 
 @Controller("door-frame-material")
 export class FrameMaterialController {
@@ -18,6 +19,7 @@ export class FrameMaterialController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateDoorFrameMaterialDto, @Res() res: Response) {
     try {
@@ -28,6 +30,7 @@ export class FrameMaterialController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateDoorFrameMaterialDto, @Res() res: Response) {
     try {
@@ -38,6 +41,7 @@ export class FrameMaterialController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { GlassPocketAddService } from '../services/glass-pocket-add.service';
 import { CreateGlassPocketAddDto } from '../dto/create-glass-pocket-add.dto';
 import { UpdateGlassPocketAddDto } from '../dto/update-glass-pocket-add.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('glass-pocket-add')
 export class GlassPocketAddController {
@@ -21,6 +22,7 @@ export class GlassPocketAddController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateGlassPocketAddDto, @Res() res: Response) {
     try {
@@ -31,6 +33,7 @@ export class GlassPocketAddController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateGlassPocketAddDto, @Res() res: Response) {
     try {
@@ -41,6 +44,7 @@ export class GlassPocketAddController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

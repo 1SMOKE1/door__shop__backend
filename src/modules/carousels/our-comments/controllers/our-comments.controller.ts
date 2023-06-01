@@ -1,9 +1,10 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { OurCommentsService } from "../services/our-comments.service";
 import { Response } from "express";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { imageFileFilter, ourCommentStorage } from "src/configurations/multer-config/multer.config";
 import { CreateOurCommentDto } from "../dto/create-our-comment.dto";
+import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
 
 @Controller("our-comments")
 @UseInterceptors(
@@ -25,6 +26,7 @@ export class OurCommentsController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateOurCommentDto, @Res() res: Response, @UploadedFile() image: Express.Multer.File) {
     try {
@@ -35,6 +37,7 @@ export class OurCommentsController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: CreateOurCommentDto, @Res() res: Response, @UploadedFile() image: Express.Multer.File) {
     try {
@@ -45,6 +48,7 @@ export class OurCommentsController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteOne(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
