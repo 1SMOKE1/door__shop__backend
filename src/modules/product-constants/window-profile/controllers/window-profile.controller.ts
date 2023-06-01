@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { WindowProfileService } from '../services/window-profile.service';
 import { Response } from 'express'; 
 import { CreateWindowProfileDto } from '../dto/create-window-profile.dto';
 import { UpdateWindowProfileDto } from '../dto/update-window-profile.dto';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('window-profile')
 export class WindowProfileController {
@@ -23,6 +24,7 @@ export class WindowProfileController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(
     @Body() body: CreateWindowProfileDto,
@@ -36,6 +38,7 @@ export class WindowProfileController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number,
@@ -49,6 +52,7 @@ export class WindowProfileController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteById(
     @Param('id', ParseIntPipe) id: number,

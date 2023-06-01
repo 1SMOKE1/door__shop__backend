@@ -1,6 +1,7 @@
-import { PrimaryGeneratedColumn, Column, Entity } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity, Index } from "typeorm";
 
 // Відлив
+@Index(['name'], {unique: true})
 @Entity('window_ebb')
 export class WindowEbbEntity {
   @PrimaryGeneratedColumn()

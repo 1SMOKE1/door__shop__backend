@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { WindowEbbService } from '../services/window-ebb.service';
 import { CreateWindowEbbDto } from '../dto/create-window-ebb.dto';
 import { UpdateWindowEbbDto } from '../dto/update-window-ebb.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('window-ebb')
 export class WindowEbbController {
@@ -21,6 +22,7 @@ export class WindowEbbController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateWindowEbbDto, @Res() res: Response) {
     try {
@@ -31,6 +33,7 @@ export class WindowEbbController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateWindowEbbDto, @Res() res: Response) {
     try {
@@ -41,6 +44,7 @@ export class WindowEbbController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

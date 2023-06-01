@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { FrameMaterialConstructionService } from '../services/frame-material-construction.service';
 import { CreateFrameMaterialConstructionDto } from '../dto/create-frame-material-construction.dto';
 import { UpdateFrameMaterialConstructionDto } from '../dto/update-frame-material-construction.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 @Controller('frame-material-construction')
 export class FrameMaterialConstructionController {
 
@@ -20,6 +21,7 @@ export class FrameMaterialConstructionController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateFrameMaterialConstructionDto, @Res() res: Response) {
     try {
@@ -30,6 +32,7 @@ export class FrameMaterialConstructionController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateFrameMaterialConstructionDto, @Res() res: Response) {
     try {
@@ -40,6 +43,7 @@ export class FrameMaterialConstructionController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

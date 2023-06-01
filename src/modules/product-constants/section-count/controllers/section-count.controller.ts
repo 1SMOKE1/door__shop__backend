@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { SectionCountService } from '../services/section-count.service';
 import { CreateSectionCountDto } from '../dto/create-section-count.dto';
 import { UpdateSectionCountDto } from '../dto/update-section-count.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('section-count')
 export class SectionCountController {
@@ -21,6 +22,7 @@ export class SectionCountController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateSectionCountDto, @Res() res: Response) {
     try {
@@ -31,6 +33,7 @@ export class SectionCountController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateSectionCountDto, @Res() res: Response) {
     try {
@@ -41,6 +44,7 @@ export class SectionCountController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

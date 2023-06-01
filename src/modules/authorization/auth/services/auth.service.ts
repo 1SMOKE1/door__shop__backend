@@ -58,16 +58,7 @@ export class AuthService {
 
     const payload = { email, sub: id};
 
-    const [access_token, refresh_token] = await Promise.all([
-      this.jwtService.signAsync(payload, {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: '1h'
-      }),
-      this.jwtService.signAsync(payload, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: '7d'
-      })
-    ])
+    const [access_token, refresh_token] = await this.initTokens(payload);
 
     return {
       access_token,
@@ -92,7 +83,37 @@ export class AuthService {
 
   }
 
-  async logout(userId: string) {
-    return this.adminService.updateUser(+userId, { refresh_token: null });
+  async logout(token: string) {
+    return this.adminService.updateUser(this.jwtService.decode(token).sub, { refresh_token: null });
+  }
+
+  async updateAccessToken(token: string): Promise<{access_token: string}>{
+
+    const email = this.jwtService.decode(token)['email'];
+
+    const id = this.jwtService.decode(token).sub;
+
+    const payload: {id: number, email: string} = {email, id};
+
+    const newAccessToken = await this.jwtService.signAsync(payload, {
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: '1h'
+    })
+
+
+    return {access_token: newAccessToken};
+  }
+
+  async initTokens(payload: {email: string, sub: number}){
+    return Promise.all([
+      this.jwtService.signAsync(payload, {
+        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+        expiresIn: '1h'
+      }),
+      this.jwtService.signAsync(payload, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: '7d'
+      })
+    ])
   }
 }

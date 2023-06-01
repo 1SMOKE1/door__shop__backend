@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { CreateDoorCoveringDto } from "../dto/create-door-covering.dto";
 import { UpdateDoorCoveringDto } from "../dto/update-door-covering.dto";
 import { DoorCoveringService } from "../services/door-covering.service";
+import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
 
 
 @Controller("covering")
@@ -19,6 +20,7 @@ export class DoorCoveringController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateDoorCoveringDto, @Res() res: Response) {
     try {
@@ -29,6 +31,7 @@ export class DoorCoveringController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateDoorCoveringDto, @Res() res: Response) {
     try {
@@ -39,6 +42,7 @@ export class DoorCoveringController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

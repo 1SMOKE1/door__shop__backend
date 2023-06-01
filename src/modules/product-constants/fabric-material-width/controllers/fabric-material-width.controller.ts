@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { FabricMaterialWidthService } from '../services/fabric-material-width.service';
 import { CreateFabricMaterialWidthDto } from '../dto/create-fabric-material-width.dto';
 import { UpdateFabricMaterialWidthDto } from '../dto/update-fabric-material-width.dto';
 import { Response } from 'express'; 
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('fabric-material-width')
 export class FabricMaterialWidthController {
@@ -22,6 +23,7 @@ export class FabricMaterialWidthController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateFabricMaterialWidthDto, @Res() res: Response) {
     try {
@@ -32,6 +34,7 @@ export class FabricMaterialWidthController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateFabricMaterialWidthDto, @Res() res: Response) {
     try {
@@ -42,6 +45,7 @@ export class FabricMaterialWidthController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

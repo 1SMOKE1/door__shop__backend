@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { DoorSlidingSystemService } from '../services/door-sliding-system.service';
 import { CreateDoorSlidingSystemDto } from '../dto/create-door-sliding-system.dto';
 import { UpdateDoorSlidingSystemDto } from '../dto/update-door-sliding-system.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('door-sliding-system')
 export class DoorSlidingSystemController {
@@ -21,6 +22,7 @@ export class DoorSlidingSystemController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateDoorSlidingSystemDto, @Res() res: Response) {
     try {
@@ -31,6 +33,7 @@ export class DoorSlidingSystemController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @Body() body: UpdateDoorSlidingSystemDto, @Res() res: Response) {
     try {
@@ -41,6 +44,7 @@ export class DoorSlidingSystemController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {

@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Index } from "typeorm";
 
+@Index(['name'], {unique: true})
 @Entity('window_hand')
 export class WindowHandEntity {
   @PrimaryGeneratedColumn()

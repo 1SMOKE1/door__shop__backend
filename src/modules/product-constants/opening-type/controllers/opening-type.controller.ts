@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { OpeningTypeService } from '../services/opening-type.service';
 import { Response } from 'express';
 import { CreateOpeningTypeDto } from '../dto/create-opening-type.dto';
 import { UpdateOpeningTypeDto } from '../dto/update-opening-type.dto';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('opening-type')
 export class OpeningTypeController {
@@ -23,6 +24,7 @@ export class OpeningTypeController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(
     @Body() body: CreateOpeningTypeDto,
@@ -36,6 +38,7 @@ export class OpeningTypeController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number,
@@ -49,6 +52,7 @@ export class OpeningTypeController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteById(
     @Param('id', ParseIntPipe) id: number,

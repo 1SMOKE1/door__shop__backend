@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { WindowLaminationService } from '../services/window-lamination.service';
 import { Response } from 'express';
 import { CreateWindowLaminationDto } from '../dto/create-window-lamination.dto';
 import { UpdateWindowLaminationDto } from '../dto/update-window-lamination.dto';
+import { JwtAuthGuard } from 'src/modules/authorization/auth/guards/jwt.auth.guard';
 
 @Controller('window-lamination')
 export class WindowLaminationController {
@@ -23,6 +24,7 @@ export class WindowLaminationController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(
     @Body() body: CreateWindowLaminationDto,
@@ -36,6 +38,7 @@ export class WindowLaminationController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateOne(
     @Param('id', ParseIntPipe) id: number,
@@ -49,6 +52,7 @@ export class WindowLaminationController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteById(
     @Param('id', ParseIntPipe) id: number,

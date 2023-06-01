@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
 // Вага
+@Index(['name'], {unique: true})
 @Entity("door_weight")
 export class DoorWeightEntity {
   @PrimaryGeneratedColumn()
