@@ -22,7 +22,7 @@ const ownerMessage = (name: string, email: string, totalCost: number, phone: str
 
   return {
     from: "Doorshop.dp.ua@gmail.com",
-    to: "kamyshan19@gmail.com", // chumak.dp.ua@gmail.com
+    to: "chumak.dp.ua@gmail.com", // "kamyshan19@gmail.com", 
     subject: `Замовлення З door_shop`,
     html: `
         <body style="margin: 0;">

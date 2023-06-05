@@ -1,23 +1,55 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
-import { NestExpressApplication } from '@nestjs/platform-express';
-
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { ConfigService } from "@nestjs/config";
+import { ValidationPipe } from "@nestjs/common";
+import { ExpressAdapter } from "@nestjs/platform-express";
+import * as http from 'http';
+import * as https from "https";
+import { readFileSync } from "fs";
+import * as express from "express";
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    rawBody: true,
-    cors: {
-      origin: "http://localhost:4200"
-    },
-  });
-  app.setGlobalPrefix('api');
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-    forbidUnknownValues: false
-  }));
-  await app.listen(app.get(ConfigService).get('PORT'));
+  const server = express();
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+
+  const origin = ['https://yakdveri.com.ua', 'https://www.yakdveri.com.ua'];
+
+  app.enableCors({ origin });
+
+  // const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  //   rawBody: true,
+  //   cors: {
+  //     origin: "http://localhost:4200"
+  //   },
+  // });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidUnknownValues: false,
+    }),
+  );
+
+  const env = process.env.NODE_ENV || "development";
+  const port = app.get(ConfigService).get("PORT");
+
+  if (env === 'development') {
+    http.createServer(server).listen(port);
+  }
+
+  if (env === "production") {
+    const sslKeyPath = app.get(ConfigService).get("SSL_KEY_PATH");
+    const sslCertPath = app.get(ConfigService).get("SSL_CERT_PATH");
+
+    const httpsOptions = {
+      key: readFileSync(sslKeyPath),
+      cert: readFileSync(sslCertPath),
+    };
+
+    https.createServer(httpsOptions, server).listen(port, "127.0.0.1");
+  }
+
+  await app.init();
 }
 bootstrap();

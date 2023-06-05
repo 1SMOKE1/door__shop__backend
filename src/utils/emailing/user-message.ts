@@ -16,6 +16,7 @@ const userMessage = (name: string, email: string, totalCost: number, phone: stri
   }
 
 
+
   // <div style="display: flex; width: 140px; justify-content: space-between; align-items: center;">
   //   <a href="" target="_blank">
   //     <img src="assets/inst.png" alt="" /></a>
