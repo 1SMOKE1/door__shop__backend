@@ -23,8 +23,6 @@ export class OurCommentsService {
 
   async createOne(body: CreateOurCommentDto, image: Express.Multer.File){
 
-    console.log(image)
-
     if(!body) throw new HttpException('No body', HttpStatus.FORBIDDEN);
 
     const { imgAlt } = body;

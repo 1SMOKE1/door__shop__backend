@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { hash, compare } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import { ITokens } from '../../admin/interfaces/IToken';
 import { AdminService } from '../../admin/services/admin.service';
 import { JwtService } from '@nestjs/jwt';
@@ -22,13 +22,16 @@ export class AuthService {
 
     const user = await this.adminService.getOneByEmail(email);
 
-    if(await this.checkHashPassword(password, user.password)){
-      throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED)
-    }
-
     if(user === null){
       throw new HttpException('Sorry user with this email doesn`t exists', HttpStatus.NOT_FOUND);
     }
+
+
+    if(!await compare(password, user.password))
+      throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED)
+    
+
+  
 
     
 
@@ -43,13 +46,6 @@ export class AuthService {
 
   private async hashedData( data: string ): Promise<string> {
     return await hash(data, 10);
-  }
-
-  private async checkHashPassword( password: string, passwordHash: string ): Promise<boolean> {
-
-    const hashedPass = await this.hashedData(password);
-
-    return await compare(hashedPass, passwordHash);
   }
 
   private async getTokens ( body: AdminEntity ): Promise<ITokens>{
@@ -97,7 +93,7 @@ export class AuthService {
 
     const newAccessToken = await this.jwtService.signAsync(payload, {
       secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      expiresIn: '1h'
+      expiresIn: '1m'
     })
 
 
@@ -108,7 +104,7 @@ export class AuthService {
     return Promise.all([
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: '1h'
+        expiresIn: '1m'
       }),
       this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),

@@ -31,7 +31,6 @@ export class OurWorksController {
   @Post()
   async createOne(@UploadedFile() image: Express.Multer.File, @Body() body: CreateOurWorkDto, @Res() res: Response) {
     try {
-      console.log(image);
       const newOurWork = await this.ourWorksService.createOne(body, image);
       return res.status(HttpStatus.CREATED).json(newOurWork);
     } catch (err) {

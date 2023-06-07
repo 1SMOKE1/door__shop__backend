@@ -12,7 +12,7 @@ async function bootstrap() {
   const server = express();
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
-  const origin = ['https://yakdveri.com.ua', 'https://www.yakdveri.com.ua'];
+  const origin = ['https://yakdveri.com.ua', 'https://www.yakdveri.com.ua', 'http://localhost:4200'];
 
   app.enableCors({ origin });
 
