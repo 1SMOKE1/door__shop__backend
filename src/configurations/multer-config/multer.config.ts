@@ -21,37 +21,73 @@ export const excelFileFilter = (req, file, callback) => {
 
 export const imageStorage = diskStorage({
   destination: function (req, file, cb) {
-    cb(new HttpException('something went wrong with folder ./uploads/images', HttpStatus.FORBIDDEN), './uploads/images')
+    try{
+      cb(null, `uploads/images`);
+    } catch (err) {
+      throw new HttpException('something went wrong with folder uploads/images', HttpStatus.FORBIDDEN);
+    }
   },
-  filename: (req: any, file, cb) => {
-    cb(new HttpException('something went wrong with name', HttpStatus.FORBIDDEN), `${date}-${file.originalname}`);
+  filename: (req, file, cb) => {
+    try{
+      cb(null, `${date}-${file.originalname}`);
+      // new HttpException('something went wrong with name', HttpStatus.FORBIDDEN)
+    } catch(err) {
+      throw new HttpException('something went wrong with name', HttpStatus.FORBIDDEN);
+    }
   },
 })
 
 export const ourWorkStorage = diskStorage({
   destination: function (req, file, cb) {
-    cb(new HttpException('something went wrong with folder ./uploads/our-works', HttpStatus.FORBIDDEN), './uploads/our-works')
+    try{
+      cb(null, `uploads/our-works`);
+    } catch (err) {
+      throw new HttpException('something went wrong with folder uploads/our-works', HttpStatus.FORBIDDEN);
+    }
   },
-  filename: (req: any, file, cb) => {
-    cb(new HttpException('something went wrong with name', HttpStatus.FORBIDDEN), `${date}-${file.originalname}`);
+  filename: (req, file, cb) => {
+    try{
+      cb(null, `${date}-${file.originalname}`);
+      // new HttpException('something went wrong with name', HttpStatus.FORBIDDEN)
+    } catch(err) {
+      throw new HttpException('something went wrong with name', HttpStatus.FORBIDDEN);
+    }
   },
 })
 
 export const ourCommentStorage = diskStorage({
   destination: function (req, file, cb) {
-    cb(new HttpException('something went wrong folder ./uploads/our-comments', HttpStatus.FORBIDDEN), './uploads/our-comments')
+    try{
+      cb(null, `uploads/our-comments`);
+    } catch (err) {
+      throw new HttpException('something went wrong with folder uploads/our-comments', HttpStatus.FORBIDDEN);
+    }
   },
-  filename: (req: any, file, cb) => {
-    cb(new HttpException('something went wrong with name', HttpStatus.FORBIDDEN), `${date}-${file.originalname}`);
+  filename: (req, file, cb) => {
+    try{
+      cb(null, `${date}-${file.originalname}`);
+      // new HttpException('something went wrong with name', HttpStatus.FORBIDDEN)
+    } catch(err) {
+      throw new HttpException('something went wrong with name', HttpStatus.FORBIDDEN);
+    }
   },
 })
 
 export const excelStorage = diskStorage({
   destination: function (req, file, cb) {
-    cb(new HttpException('something went wrong ./uploads/excel', HttpStatus.FORBIDDEN), './uploads/excel')
+    try{
+      cb(null, `uploads/excel`);
+    } catch (err) {
+      throw new HttpException('something went wrong with folder uploads/excel', HttpStatus.FORBIDDEN);
+    }
   },
-    filename: (req: any, file, cb) => {
-      cb(new HttpException('something went wrong with name', HttpStatus.FORBIDDEN), `${date}-${file.originalname}`);
+    filename: (req, file, cb) => {
+      try{
+        cb(null, `${date}-${file.originalname}`);
+        // new HttpException('something went wrong with name', HttpStatus.FORBIDDEN)
+      } catch(err) {
+        throw new HttpException('something went wrong with name', HttpStatus.FORBIDDEN);
+      }
    },
 })
 
