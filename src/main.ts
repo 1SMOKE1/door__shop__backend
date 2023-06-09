@@ -16,12 +16,6 @@ async function bootstrap() {
 
   app.enableCors({ origin });
 
-  // const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-  //   rawBody: true,
-  //   cors: {
-  //     origin: "http://localhost:4200"
-  //   },
-  // });
 
   app.useGlobalPipes(
     new ValidationPipe({
