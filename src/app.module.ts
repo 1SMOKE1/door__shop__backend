@@ -29,7 +29,7 @@ import { AuthorizationModule } from './modules/authorization/authorization.modul
       useClass: TypeOrmConfigService
     }),
     MulterModule.register({
-      dest: 'uploads',
+      dest: './uploads',
     }),
     MailerModule.forRootAsync({
       useClass: MailerConfigService
