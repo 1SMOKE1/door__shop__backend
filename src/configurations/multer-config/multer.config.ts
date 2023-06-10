@@ -19,36 +19,28 @@ export const excelFileFilter = (req, file, callback) => {
 }
 
 export const imageStorage = diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, `./uploads/images`);
-  },
+  destination: `./uploads/images`,
   filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
   },
 })
 
 export const ourWorkStorage = diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, `./uploads/our-works`);
-  },
+  destination: `./uploads/our-works`,
   filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
   },
 })
 
 export const ourCommentStorage = diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, `./uploads/our-comments`);
-  },
+  destination: `./uploads/our-comments`,
   filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
   },
 })
 
 export const excelStorage = diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, `./uploads/excel`);
-  },
+  destination: `./uploads/excel`,
     filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
    },
