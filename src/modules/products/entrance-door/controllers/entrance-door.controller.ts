@@ -5,8 +5,8 @@ import { CreateEntranceDoorDto } from "../dto/create-entrance-door.dto";
 import { UpdateEntranceDoorDto } from "../dto/update-entrance-door.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { imageFileFilter, imageStorage } from "src/configurations/multer-config/multer.config";
-import { IImages } from "src/interfaces/IImages";
 import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
+import { IImages } from "src/interfaces/IImages";
 
 @Controller("entrance-door")
 @UseInterceptors(
@@ -45,7 +45,7 @@ export class EntranceDoorController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async createOne(@Body() body: CreateEntranceDoorDto, @UploadedFiles() images: IImages, @Res() res: Response) {
+  async createOne(@Body() body: CreateEntranceDoorDto, @UploadedFiles() images: IImages , @Res() res: Response) {
     try {
       const newEntranceDoor = await this.entranceDoorService.createOne(body, images);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
@@ -56,7 +56,7 @@ export class EntranceDoorController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(":id")
-  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateEntranceDoorDto, @Res() res: Response) {
+  async updateById(@Param("id", ParseIntPipe) id: number,@UploadedFiles() images: IImages, @Body() body: UpdateEntranceDoorDto, @Res() res: Response) {
     try {
       const newEntranceDoor = await this.entranceDoorService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);

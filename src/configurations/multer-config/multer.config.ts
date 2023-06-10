@@ -15,25 +15,15 @@ export const excelFileFilter = (req, file, callback) => {
   if (!file.originalname.match(/\.(xls|xlsx)$/)) {
     return callback(new HttpException('Only image files are allowed!', HttpStatus.FORBIDDEN), false);
   }
-
   callback(null, true);
 }
 
 export const imageStorage = diskStorage({
   destination: function (req, file, cb) {
-    try{
-      cb(null, `uploads/images`);
-    } catch (err) {
-      throw new HttpException('something went wrong with folder uploads/images', HttpStatus.FORBIDDEN);
-    }
+    cb(null, `uploads/images`);
   },
   filename: (req, file, cb) => {
-    try{
-      cb(null, `${date}-${file.originalname}`);
-      // new HttpException('something went wrong with name', HttpStatus.FORBIDDEN)
-    } catch(err) {
-      throw new HttpException('something went wrong with name', HttpStatus.FORBIDDEN);
-    }
+    cb(null, `${date}-${file.originalname}`);
   },
 })
 
