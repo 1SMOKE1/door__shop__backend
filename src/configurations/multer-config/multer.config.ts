@@ -29,55 +29,28 @@ export const imageStorage = diskStorage({
 
 export const ourWorkStorage = diskStorage({
   destination: function (req, file, cb) {
-    try{
-      cb(null, `uploads/our-works`);
-    } catch (err) {
-      throw new HttpException('something went wrong with folder uploads/our-works', HttpStatus.FORBIDDEN);
-    }
+    cb(null, `uploads/our-works`);
   },
   filename: (req, file, cb) => {
-    try{
-      cb(null, `${date}-${file.originalname}`);
-      // new HttpException('something went wrong with name', HttpStatus.FORBIDDEN)
-    } catch(err) {
-      throw new HttpException('something went wrong with name', HttpStatus.FORBIDDEN);
-    }
+    cb(null, `${date}-${file.originalname}`);
   },
 })
 
 export const ourCommentStorage = diskStorage({
   destination: function (req, file, cb) {
-    try{
-      cb(null, `uploads/our-comments`);
-    } catch (err) {
-      throw new HttpException('something went wrong with folder uploads/our-comments', HttpStatus.FORBIDDEN);
-    }
+    cb(null, `uploads/our-comments`);
   },
   filename: (req, file, cb) => {
-    try{
-      cb(null, `${date}-${file.originalname}`);
-      // new HttpException('something went wrong with name', HttpStatus.FORBIDDEN)
-    } catch(err) {
-      throw new HttpException('something went wrong with name', HttpStatus.FORBIDDEN);
-    }
+    cb(null, `${date}-${file.originalname}`);
   },
 })
 
 export const excelStorage = diskStorage({
   destination: function (req, file, cb) {
-    try{
-      cb(null, `uploads/excel`);
-    } catch (err) {
-      throw new HttpException('something went wrong with folder uploads/excel', HttpStatus.FORBIDDEN);
-    }
+    cb(null, `uploads/excel`);
   },
     filename: (req, file, cb) => {
-      try{
-        cb(null, `${date}-${file.originalname}`);
-        // new HttpException('something went wrong with name', HttpStatus.FORBIDDEN)
-      } catch(err) {
-        throw new HttpException('something went wrong with name', HttpStatus.FORBIDDEN);
-      }
+    cb(null, `${date}-${file.originalname}`);
    },
 })
 
