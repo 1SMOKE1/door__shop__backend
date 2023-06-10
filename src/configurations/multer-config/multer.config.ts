@@ -20,7 +20,7 @@ export const excelFileFilter = (req, file, callback) => {
 
 export const imageStorage = diskStorage({
   destination: function (req, file, cb) {
-    cb(null, `uploads/images`);
+    cb(null, `./uploads/images`);
   },
   filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
@@ -29,7 +29,7 @@ export const imageStorage = diskStorage({
 
 export const ourWorkStorage = diskStorage({
   destination: function (req, file, cb) {
-    cb(null, `uploads/our-works`);
+    cb(null, `./uploads/our-works`);
   },
   filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
@@ -38,7 +38,7 @@ export const ourWorkStorage = diskStorage({
 
 export const ourCommentStorage = diskStorage({
   destination: function (req, file, cb) {
-    cb(null, `uploads/our-comments`);
+    cb(null, `./uploads/our-comments`);
   },
   filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
@@ -47,7 +47,7 @@ export const ourCommentStorage = diskStorage({
 
 export const excelStorage = diskStorage({
   destination: function (req, file, cb) {
-    cb(null, `uploads/excel`);
+    cb(null, `./uploads/excel`);
   },
     filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
