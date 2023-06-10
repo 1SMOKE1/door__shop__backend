@@ -43,7 +43,7 @@ export class FurnitureController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateFurnitureDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
@@ -54,7 +54,7 @@ export class FurnitureController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Put(":id")
   async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateFurnitureDto, @Res() res: Response) {
     try {
@@ -65,7 +65,7 @@ export class FurnitureController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -76,7 +76,7 @@ export class FurnitureController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteAll(@Res() res: Response) {
     try {

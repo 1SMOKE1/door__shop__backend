@@ -59,7 +59,7 @@ export class InteriorDoorController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateInteriorDoorDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
@@ -70,7 +70,7 @@ export class InteriorDoorController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Patch(":id")
   async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
     try {
@@ -81,7 +81,7 @@ export class InteriorDoorController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -92,7 +92,7 @@ export class InteriorDoorController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteAll(@Res() res: Response){
     try {

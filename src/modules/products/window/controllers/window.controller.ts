@@ -43,7 +43,7 @@ export class WindowController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post()
   async createOne(@Body() body: CreateWindowDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
@@ -54,7 +54,7 @@ export class WindowController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Patch(":id")
   async updateOne(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateWindowDto, @Res() res: Response) {
     try {
@@ -65,7 +65,7 @@ export class WindowController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteOne(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -76,7 +76,7 @@ export class WindowController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Delete()
   async deleteAll(@Res() res: Response){
     try {
