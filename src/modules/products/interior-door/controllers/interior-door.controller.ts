@@ -10,14 +10,13 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Req,
   Res,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { InteriorDoorService } from "../services/interior-door.service";
-import { Response, Request } from "express";
+import { Response } from "express";
 import { CreateInteriorDoorDto } from "../dto/create-interior-door.dto";
 import { UpdateInteriorDoorDto } from "../dto/update-interior-door.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
@@ -56,16 +55,10 @@ export class InteriorDoorController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(
-    FileFieldsInterceptor([{ name: "images", maxCount: 30 }], {
-      storage: imageStorage,
-      fileFilter: imageFileFilter,
-    }),
-  )
   @Post()
-  async createOne(@Body() body: CreateInteriorDoorDto, @Req() req: Request , @Res() res: Response) {
+  async createOne(@Body() body: CreateInteriorDoorDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
-      const newInteriorDoor = await this.interiorDoorService.createOne(body, req.files['images']);
+      const newInteriorDoor = await this.interiorDoorService.createOne(body, images);
       return res.status(HttpStatus.CREATED).json(newInteriorDoor);
     } catch (err) {
       throw new BadGatewayException(err);
@@ -73,16 +66,10 @@ export class InteriorDoorController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(
-    FileFieldsInterceptor([{ name: "images", maxCount: 30 }], {
-      storage: imageStorage,
-      fileFilter: imageFileFilter,
-    }),
-  )
   @Patch(":id")
-  async updateById(@Param("id", ParseIntPipe) id: number, @Req() req: Request, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
+  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
     try {
-      const updatedInteriorDoor = await this.interiorDoorService.updateById(id, body, req.files['images']);
+      const updatedInteriorDoor = await this.interiorDoorService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(updatedInteriorDoor);
     } catch (err) {
       throw new BadGatewayException(err);

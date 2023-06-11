@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 import * as moment from "moment";
 import { diskStorage } from "multer";
-import fs from 'fs';
 
 const date = moment().format('DDMMYYYY-HHmmsss_SSS');
 
@@ -21,7 +20,7 @@ export const excelFileFilter = (req, file, callback) => {
 
 export const imageStorage = diskStorage({
   destination: function (req, file, cb) {
-    cb(null, `./uploads/images`);
+    cb(null, `./uploads/images/`);
   },
   filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
@@ -29,21 +28,21 @@ export const imageStorage = diskStorage({
 })
 
 export const ourWorkStorage = diskStorage({
-  destination: `./uploads/our-works`,
+  destination: `./uploads/our-works/`,
   filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
   },
 })
 
 export const ourCommentStorage = diskStorage({
-  destination: `./uploads/our-comments`,
+  destination: `./uploads/our-comments/`,
   filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
   },
 })
 
 export const excelStorage = diskStorage({
-  destination: `./uploads/excel`,
+  destination: `./uploads/excel/`,
     filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
    },

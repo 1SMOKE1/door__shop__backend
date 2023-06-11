@@ -52,10 +52,9 @@ export class EntranceDoorController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(":id")
-  async updateById(@Param("id", ParseIntPipe) id: number, req: Request, @Body() body: UpdateEntranceDoorDto, @Res() res: Response) {
+  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateEntranceDoorDto, @Res() res: Response) {
     try {
-      console.log(req)
-      const newEntranceDoor = await this.entranceDoorService.updateById(id, body, req.formData['images']);
+      const newEntranceDoor = await this.entranceDoorService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
     } catch (err) {
       console.log(err);
