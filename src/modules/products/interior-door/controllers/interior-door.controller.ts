@@ -26,6 +26,12 @@ import { IImages } from "src/interfaces/IImages";
 import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
 
 @Controller("interior-door")
+@UseInterceptors(
+  FileFieldsInterceptor([{ name: "images", maxCount: 30 }], {
+    storage: imageStorage,
+    fileFilter: imageFileFilter,
+  }),
+)
 export class InteriorDoorController {
   constructor(private readonly interiorDoorService: InteriorDoorService) {}
 
