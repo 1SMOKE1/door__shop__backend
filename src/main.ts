@@ -2,19 +2,23 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import { ValidationPipe } from "@nestjs/common";
-import { ExpressAdapter } from "@nestjs/platform-express";
+import { ExpressAdapter, NestExpressApplication } from "@nestjs/platform-express";
 import * as http from "http";
 import * as https from "https";
 import { readFileSync } from "fs";
 import * as express from "express";
+import * as morgan from 'morgan';
 
 async function bootstrap() {
   const server = express();
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(server));
 
   const origin = ["https://yakdveri.com.ua",  "https://www.yakdveri.com.ua", "http://localhost:4200"];
 
   app.enableCors({ origin });
+
+  app.use(express.json());
+  app.use(morgan('dev'));
 
   app.useGlobalPipes(
     new ValidationPipe({
