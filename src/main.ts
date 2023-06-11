@@ -14,7 +14,7 @@ async function bootstrap() {
 
   const origin = ['https://yakdveri.com.ua',  'https://www.yakdveri.com.ua', 'http://localhost:4200', 'https://127.0.0.1:5000'];
 
-  app.enableCors({ origin });
+  // app.enableCors({ origin });
 
   app.useGlobalPipes(
     new ValidationPipe({
