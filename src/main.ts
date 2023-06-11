@@ -3,7 +3,7 @@ import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import { ValidationPipe } from "@nestjs/common";
 import { ExpressAdapter, NestExpressApplication } from "@nestjs/platform-express";
-import * as http from 'http';
+import * as http from "http";
 import * as https from "https";
 import { readFileSync } from "fs";
 import * as express from "express";
@@ -12,14 +12,9 @@ async function bootstrap() {
   const server = express();
   const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(server));
 
-  const origin = ['https://yakdveri.com.ua', 'https://www.yakdveri.com.ua', 'http://localhost:4200', 'https://127.0.0.1:5000'];
+  const origin = ['https://yakdveri.com.ua',  'https://www.yakdveri.com.ua', 'http://localhost:4200', 'https://127.0.0.1:5000'];
 
-  app.enableCors({ origin });
-
-  app.useBodyParser('raw');
-
-  
-
+  // app.enableCors({ origin });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -32,7 +27,7 @@ async function bootstrap() {
   const env = process.env.NODE_ENV || "development";
   const port = app.get(ConfigService).get("PORT");
 
-  if (env === 'development') {
+  if (env === "development") {
     http.createServer(server).listen(port);
   }
 

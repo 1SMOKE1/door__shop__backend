@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { compare, hash } from 'bcrypt';
+import { compare } from 'bcrypt';
 import { ITokens } from '../../admin/interfaces/IToken';
 import { AdminService } from '../../admin/services/admin.service';
 import { JwtService } from '@nestjs/jwt';
@@ -42,10 +42,6 @@ export class AuthService {
   
 
     return tokens;
-  }
-
-  private async hashedData( data: string ): Promise<string> {
-    return await hash(data, 10);
   }
 
   private async getTokens ( body: AdminEntity ): Promise<ITokens>{

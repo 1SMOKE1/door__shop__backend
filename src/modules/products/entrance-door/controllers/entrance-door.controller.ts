@@ -9,7 +9,13 @@ import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.gua
 import { IImages } from "src/interfaces/IImages";
 
 @Controller("entrance-door")
-
+@UseGuards(JwtAuthGuard)
+@UseInterceptors(
+  FileFieldsInterceptor([{ name: "images", maxCount: 30 }], {
+    storage: imageStorage,
+    fileFilter: imageFileFilter,
+  }),
+)
 export class EntranceDoorController {
   constructor(private readonly entranceDoorService: EntranceDoorService) {}
 
