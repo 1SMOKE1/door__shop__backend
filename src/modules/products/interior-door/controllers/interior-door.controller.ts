@@ -10,13 +10,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Req,
   Res,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { InteriorDoorService } from "../services/interior-door.service";
-import { Response } from "express";
+import { Response, Request } from "express";
 import { CreateInteriorDoorDto } from "../dto/create-interior-door.dto";
 import { UpdateInteriorDoorDto } from "../dto/update-interior-door.dto";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
@@ -25,17 +26,6 @@ import { IImages } from "src/interfaces/IImages";
 import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.guard";
 
 @Controller("interior-door")
-@UseInterceptors(
-  FileFieldsInterceptor(
-    [
-      {name: 'images', maxCount: 30}
-    ],
-    {
-      storage: imageStorage,
-      fileFilter: imageFileFilter,
-    },
-  ),
-)
 export class InteriorDoorController {
   constructor(private readonly interiorDoorService: InteriorDoorService) {}
 
@@ -59,29 +49,41 @@ export class InteriorDoorController {
     }
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: "images", maxCount: 30 }], {
+      storage: imageStorage,
+      fileFilter: imageFileFilter,
+    }),
+  )
   @Post()
-  async createOne(@Body() body: CreateInteriorDoorDto, @UploadedFiles() images: IImages, @Res() res: Response) {
+  async createOne(@Body() body: CreateInteriorDoorDto, @Req() req: Request , @Res() res: Response) {
     try {
-      const newInteriorDoor = await this.interiorDoorService.createOne(body, images);
+      const newInteriorDoor = await this.interiorDoorService.createOne(body, req.files['images']);
       return res.status(HttpStatus.CREATED).json(newInteriorDoor);
     } catch (err) {
       throw new BadGatewayException(err);
     }
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(
+    FileFieldsInterceptor([{ name: "images", maxCount: 30 }], {
+      storage: imageStorage,
+      fileFilter: imageFileFilter,
+    }),
+  )
   @Patch(":id")
-  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
+  async updateById(@Param("id", ParseIntPipe) id: number, @Req() req: Request, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
     try {
-      const updatedInteriorDoor = await this.interiorDoorService.updateById(id, body, images);
+      const updatedInteriorDoor = await this.interiorDoorService.updateById(id, body, req.files['images']);
       return res.status(HttpStatus.CREATED).json(updatedInteriorDoor);
     } catch (err) {
       throw new BadGatewayException(err);
     }
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -92,9 +94,9 @@ export class InteriorDoorController {
     }
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete()
-  async deleteAll(@Res() res: Response){
+  async deleteAll(@Res() res: Response) {
     try {
       const answer = await this.interiorDoorService.deleteAll();
       return res.status(HttpStatus.OK).json(answer);

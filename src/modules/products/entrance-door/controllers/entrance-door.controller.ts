@@ -9,17 +9,7 @@ import { JwtAuthGuard } from "src/modules/authorization/auth/guards/jwt.auth.gua
 import { IImages } from "src/interfaces/IImages";
 
 @Controller("entrance-door")
-@UseInterceptors(
-  FileFieldsInterceptor(
-    [
-      { name: "images", maxCount: 30 },
-    ],
-    {
-      storage: imageStorage,
-      fileFilter: imageFileFilter,
-    },
-  ),
-)
+
 export class EntranceDoorController {
   constructor(private readonly entranceDoorService: EntranceDoorService) {}
 
@@ -43,9 +33,9 @@ export class EntranceDoorController {
     }
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async createOne(@Body() body: CreateEntranceDoorDto, @UploadedFiles() images: IImages , @Res() res: Response) {
+  async createOne(@Body() body: CreateEntranceDoorDto, @UploadedFiles() images: IImages, @Res() res: Response) {
     try {
       const newEntranceDoor = await this.entranceDoorService.createOne(body, images);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
@@ -54,18 +44,20 @@ export class EntranceDoorController {
     }
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
-  async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateEntranceDoorDto, @Res() res: Response) {
+  async updateById(@Param("id", ParseIntPipe) id: number, req: Request, @Body() body: UpdateEntranceDoorDto, @Res() res: Response) {
     try {
-      const newEntranceDoor = await this.entranceDoorService.updateById(id, body, images);
+      console.log(req)
+      const newEntranceDoor = await this.entranceDoorService.updateById(id, body, req.formData['images']);
       return res.status(HttpStatus.CREATED).json(newEntranceDoor);
     } catch (err) {
+      console.log(err);
       throw new BadRequestException(err);
     }
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   async deleteById(@Param("id", ParseIntPipe) id: number, @Res() res: Response) {
     try {
@@ -76,9 +68,9 @@ export class EntranceDoorController {
     }
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete()
-  async deleteAll(@Res() res: Response){
+  async deleteAll(@Res() res: Response) {
     try {
       const answer = await this.entranceDoorService.deleteAll();
       return res.status(HttpStatus.OK).json(answer);
