@@ -1,6 +1,6 @@
-import { BadRequestException, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Headers, Query, Res, Req } from '@nestjs/common';
+import { BadRequestException, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Headers, Query, Res, } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
-import { Response, Request } from 'express';
+import { Response } from 'express';
 import { IHoleFiltrationBody } from '../interfaces/IHoleFiltrationBody';
 import { IPagination } from '../interfaces/IPagination';
 
