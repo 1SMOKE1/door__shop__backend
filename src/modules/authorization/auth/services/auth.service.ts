@@ -76,7 +76,11 @@ export class AuthService {
   }
 
   async logout(token: string) {
-    return this.adminService.updateUser(this.jwtService.decode(token).sub, { refresh_token: null });
+    try{
+      return this.adminService.updateUser(this.jwtService.decode(token).sub, { refresh_token: null });
+    } catch (err) {
+      throw new HttpException('not working', HttpStatus.BAD_REQUEST);
+    }
   }
 
   async updateAccessToken(token: string): Promise<{access_token: string}>{
