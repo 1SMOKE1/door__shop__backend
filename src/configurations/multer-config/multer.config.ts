@@ -12,8 +12,8 @@ export const imageFileFilter = (req, file, callback) => {
 };
 
 export const excelFileFilter = (req, file, callback) => {
-  if (!file.originalname.match(/\.(xls|xlsx)$/)) {
-    return callback(new HttpException('Only image files are allowed!', HttpStatus.FORBIDDEN), false);
+  if (!file.originalname.match(/\.(xlsx)$/)) {
+    return callback(new HttpException('Only excel files are allowed!', HttpStatus.FORBIDDEN), false);
   }
   callback(null, true);
 }
@@ -43,7 +43,7 @@ export const ourCommentStorage = diskStorage({
 
 export const excelStorage = diskStorage({
   destination: `./uploads/excel/`,
-    filename: (req, file, cb) => {
+  filename: (req, file, cb) => {
     cb(null, `${date}-${file.originalname}`);
    },
 })
