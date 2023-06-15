@@ -11,8 +11,8 @@ export const imageFileFilter = (req, file, callback) => {
   callback(null, true);
 };
 
-export const excelFileFilter = (req, file, callback) => {
-  if (!file.originalname.match(/\.(xlsx)$/)) {
+export const excelWithPhotosFileFilter = (req, file, callback) => {
+  if (!file.originalname.match(/\.(xlsx|jpg|jpeg|jfif|png|svg|webp)$/)) {
     return callback(new HttpException('Only excel files are allowed!', HttpStatus.FORBIDDEN), false);
   }
   callback(null, true);
