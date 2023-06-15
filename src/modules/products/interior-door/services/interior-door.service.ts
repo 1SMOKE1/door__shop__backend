@@ -360,7 +360,7 @@ export class InteriorDoorService {
     if(this.convertingService.checkOnNotEmpty(doorMechanism).length !== 0)
       door_mechanism = await this.convertingService.findAllByCond(this.furnitureRepository, doorMechanism);
     if(this.convertingService.checkOnNotEmpty(doorLoops).length !== 0)
-      door_loops = await this.convertingService.findAllByCond(this.furnitureRepository, doorMechanism);
+      door_loops = await this.convertingService.findAllByCond(this.furnitureRepository, doorLoops);
     if(this.convertingService.checkOnNotEmpty(doorStopper).length !== 0)
       door_stopper = await this.convertingService.findAllByCond(this.furnitureRepository, doorStopper);
 

@@ -28,7 +28,6 @@ export class ProductsController {
   async filtration(
     @Query() query: IPagination,
     @Res() res: Response,
-    @Headers() headers: any,
     @Headers('data') body: string
   ){
     try {
