@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Headers, Query, Res, } from '@nestjs/common';
+import { BadRequestException, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Headers, Query, Res, Post, Body, } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
 import { Response } from 'express';
 import { IHoleFiltrationBody } from '../interfaces/IHoleFiltrationBody';
@@ -24,15 +24,14 @@ export class ProductsController {
     } 
   }
 
-  @Get('filtration')
+  @Post('filtration')
   async filtration(
     @Query() query: IPagination,
     @Res() res: Response,
-    @Headers('data') body: string
+    @Body() body: IHoleFiltrationBody
   ){
     try {
-      const parsedBody: IHoleFiltrationBody = (JSON.parse(body))
-      const filtered = await this.productsService.filtration(parsedBody, query)
+      const filtered = await this.productsService.filtration(body, query)
       return res.status(HttpStatus.OK).json(filtered);
     } catch (err) {
       throw new BadRequestException(err);
