@@ -6,6 +6,8 @@ import { FurnitureModule } from './furniture/furniture.module';
 import { InteriorDoorModule } from './interior-door/interior-door.module';
 import { WindowModule } from './window/window.module';
 import { ConvertingService } from './services/converting.service';
+import { CreateQueryBuilderService } from './services/create-query-builder.service';
+import { FiltrationService } from './services/filtration.service';
 
 @Module({
   imports: [
@@ -15,6 +17,6 @@ import { ConvertingService } from './services/converting.service';
     WindowModule
   ],
   controllers: [ProductsController],
-  providers: [ProductsService, ConvertingService]
+  providers: [ProductsService, ConvertingService, CreateQueryBuilderService, FiltrationService]
 })
 export class ProductsModule {}

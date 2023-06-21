@@ -40,6 +40,7 @@ export class InteriorDoorController {
       const interiorDoors = await this.interiorDoorService.findAll();
       return res.status(HttpStatus.OK).json(interiorDoors);
     } catch (err) {
+      console.log(err)
       throw new BadRequestException(err);
     }
   }
