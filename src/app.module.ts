@@ -13,8 +13,8 @@ import { ProductConstantsModule } from './modules/product-constants/product-cons
 import { CarouselsModule } from './modules/carousels/carousels.module';
 import TypeOrmConfigService from './configurations/typeorm-config/typeorm.config';
 import MailerConfigService from './configurations/mailer-config/mailer.config';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+// import { ServeStaticModule } from '@nestjs/serve-static';
+// import { join } from 'path';
 import { AuthorizationModule } from './modules/authorization/authorization.module';
 
 
