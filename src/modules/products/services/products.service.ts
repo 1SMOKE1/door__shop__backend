@@ -40,6 +40,12 @@ export class ProductsService {
     ]).then(products => products.flat());
   }
 
+  async findAllAndPagination(pagination: IPagination){
+    const {page, itemsPerPage} = pagination;
+    return this.findAll().then((products: productMultiType[]) => 
+    this.pagination(products, page, itemsPerPage));
+  }
+
   async findOne(id: number, typeOfProductName: string){
 
     const relations = {where: {id} ,...this.productRelations}
@@ -64,13 +70,10 @@ export class ProductsService {
 
     const { page, itemsPerPage } = pagination;
 
-    if (page && itemsPerPage) {
-      return await this.filtrationAlgorithm(checkboxArr, sliderMinValue, sliderMaxValue, searchValue, noProductProducers)
-      .then((products: productMultiType[]) => 
-      this.pagination(products, page, itemsPerPage));
-    }
 
-    return await this.filtrationAlgorithm(checkboxArr, sliderMinValue, sliderMaxValue, searchValue, noProductProducers);
+    return this.filtrationAlgorithm(checkboxArr, sliderMinValue, sliderMaxValue, searchValue, noProductProducers)
+    .then((products: productMultiType[]) => 
+    this.pagination(products, page, itemsPerPage));
   }
 
   async deleteAll(){
@@ -196,9 +199,9 @@ export class ProductsService {
     }
 
     // Обнуление
-    if (searchValue === "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === false) {
-      return await this.findAll();
-    }
+    // if (searchValue === "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === false) {
+    //   return await this.findAll();
+    // }
   }
 
   private async pagination(products: productMultiType[], pageNumber: number, itemsPerPage: number): Promise<IGetProducts>{

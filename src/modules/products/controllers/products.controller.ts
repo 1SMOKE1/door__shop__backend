@@ -24,6 +24,20 @@ export class ProductsController {
     } 
   }
 
+  @Get('all-and-pagination')
+  async getAllAndPagination(
+    @Query() query: IPagination,
+    @Res() res: Response
+  ){
+    try {
+      const products = await this.productsService.findAllAndPagination(query);
+      return res.status(HttpStatus.OK).json(products);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+
   @Get('filtration')
   async filtration(
     @Query() query: IPagination,
