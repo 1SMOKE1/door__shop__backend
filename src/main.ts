@@ -9,6 +9,10 @@ import { readFileSync } from "fs";
 import * as express from "express";
 import * as morgan from 'morgan';
 
+import * as compression from 'compression';
+// somewhere in your initialization file
+
+
 async function bootstrap() {
   const server = express();
   const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(server));
@@ -27,6 +31,8 @@ async function bootstrap() {
       forbidUnknownValues: false,
     }),
   );
+
+  app.use(compression());
 
   const env = process.env.NODE_ENV || "development";
   const port = app.get(ConfigService).get("PORT");
