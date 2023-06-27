@@ -32,7 +32,7 @@ export class ProductsService {
   ) {}
 
   async findAll() {
-    return Promise.all([
+    return await Promise.all([
       this.entranceDoorRepository.find(this.productRelations),
       this.furnitureRepository.find(this.productRelations),
       this.interiorDoorRepository.find(this.productRelations),
