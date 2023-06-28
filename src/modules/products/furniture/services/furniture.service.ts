@@ -131,9 +131,6 @@ export class FurnitureService {
      if(images)
      imagesPathes = images.map((el) => el ? el.path : null);
 
-     if(description.length > 5000)
-      throw new HttpException('Не більше 5000 символів', HttpStatus.CONFLICT);
-
     const newProduct = this.furnitureRepository.create({
       name,
       country,
@@ -228,9 +225,6 @@ export class FurnitureService {
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
-
-    if(description.length > 5000)
-      throw new HttpException('Не більше 5000 символів', HttpStatus.CONFLICT);
 
     return await this.furnitureRepository
       .update(id, {
