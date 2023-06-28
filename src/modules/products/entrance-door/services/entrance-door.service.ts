@@ -224,7 +224,7 @@ export class EntranceDoorService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
 
     const newProduct = this.entranceDoorRepository.create({
       name,
@@ -404,7 +404,7 @@ export class EntranceDoorService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
 
     
 

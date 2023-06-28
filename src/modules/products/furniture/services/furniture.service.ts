@@ -131,7 +131,7 @@ export class FurnitureService {
      if(images)
      imagesPathes = images.map((el) => el ? el.path : null);
 
-     const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+     const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
 
     const newProduct = this.furnitureRepository.create({
       name,
@@ -228,7 +228,7 @@ export class FurnitureService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
 
     return await this.furnitureRepository
       .update(id, {

@@ -213,7 +213,7 @@ export class InteriorDoorService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
 
     const newProduct = this.interiorDoorRepository.create({
       name,
@@ -381,7 +381,7 @@ export class InteriorDoorService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
 
     curProduct.name = name;
     curProduct.product_producer = product_producer;
