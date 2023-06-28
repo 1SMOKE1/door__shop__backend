@@ -131,6 +131,8 @@ export class FurnitureService {
      if(images)
      imagesPathes = images.map((el) => el ? el.path : null);
 
+     const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+
     const newProduct = this.furnitureRepository.create({
       name,
       country,
@@ -140,7 +142,7 @@ export class FurnitureService {
       product_producer,
       type_of_product,
       home_page: homePage,
-      description,
+      description: changedDescription,
       images: imagesPathes,
       choosen_image: choosenImage
     });
@@ -226,6 +228,8 @@ export class FurnitureService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
+    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+
     return await this.furnitureRepository
       .update(id, {
         name,
@@ -236,7 +240,7 @@ export class FurnitureService {
         in_stock: inStock,
         price,
         home_page: homePage,
-        description,
+        description: changedDescription,
         images: imagesPathes,
         choosen_image: choosenImage
       })

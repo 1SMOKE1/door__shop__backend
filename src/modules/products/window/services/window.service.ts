@@ -222,6 +222,8 @@ export class WindowService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
+    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+
     const newProduct = this.windowRepository.create({
       name,
       product_producer,
@@ -245,7 +247,7 @@ export class WindowService {
       features: window_features,
       sections_count,
       home_page: homePage,
-      description,
+      description: changedDescription,
       images: imagesPathes
     });
     return await this.windowRepository.save(newProduct);
@@ -400,6 +402,8 @@ export class WindowService {
     const { images } = files;
 
     let imagesPathes: string[] = [...curProduct.images];
+
+    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
@@ -426,7 +430,7 @@ export class WindowService {
     curProduct.features = window_features;
     curProduct.sections_count = sections_count;
     curProduct.home_page = homePage;
-    curProduct.description = description;
+    curProduct.description = changedDescription;
     curProduct.images = imagesPathes;
 
 

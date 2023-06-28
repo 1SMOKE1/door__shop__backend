@@ -213,6 +213,8 @@ export class InteriorDoorService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
+    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+
     const newProduct = this.interiorDoorRepository.create({
       name,
       product_producer,
@@ -233,7 +235,7 @@ export class InteriorDoorService {
       door_loops,
       door_stopper,
       door_sliding_system,
-      description,
+      description: changedDescription,
       home_page: homePage,
       images: imagesPathes,
     })
@@ -379,6 +381,8 @@ export class InteriorDoorService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
+    const changedDescription = description.replace(/\s\s+/g, '\\n\\n\\n');
+
     curProduct.name = name;
     curProduct.product_producer = product_producer;
     curProduct.type_of_product = type_of_product;
@@ -401,7 +405,7 @@ export class InteriorDoorService {
     curProduct.door_loops = door_loops;
     curProduct.door_stopper = door_stopper;
     curProduct.home_page = homePage;
-    curProduct.description = description;
+    curProduct.description = changedDescription;
     curProduct.images = imagesPathes;
     return await this.interiorDoorRepository.save(curProduct);
   }
