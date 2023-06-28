@@ -222,6 +222,9 @@ export class WindowService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
+    if(description.length > 5000)
+      throw new HttpException('Не більше 5000 символів', HttpStatus.CONFLICT);
+
     const newProduct = this.windowRepository.create({
       name,
       product_producer,
@@ -403,6 +406,9 @@ export class WindowService {
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
+
+    if(description.length > 5000)
+      throw new HttpException('Не більше 5000 символів', HttpStatus.CONFLICT);
 
     curProduct.name = name;
     curProduct.product_producer = product_producer;
