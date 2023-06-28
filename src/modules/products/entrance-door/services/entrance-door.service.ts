@@ -402,6 +402,8 @@ export class EntranceDoorService {
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
+    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+
     
 
     curProduct.name = name;
@@ -426,7 +428,7 @@ export class EntranceDoorService {
     curProduct.frame_material_construction = frame_material_construction;
     curProduct.sealer_circuit = sealer_circuit;
     curProduct.home_page = homePage;
-    curProduct.description = description;
+    curProduct.description = changedDescription;
     curProduct.images = imagesPathes;
     
     return await this.entranceDoorRepository.save(curProduct);
