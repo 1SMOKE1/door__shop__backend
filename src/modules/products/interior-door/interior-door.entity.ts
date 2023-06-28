@@ -108,7 +108,7 @@ export class InteriorDoorEntity {
   @JoinTable()
   door_sliding_system: DoorSlidingSystemEntity[];
   
-  @Column({ type: "text", length: 5000, default: "Немає опису" })
+  @Column({ type: "text", default: "Немає опису" })
   description?: string;
 
   @Column("boolean", { default: false })

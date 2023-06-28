@@ -121,7 +121,7 @@ export class EntranceDoorEntity {
   @Column("text", { array: true, default: [] })
   images: string[];
 
-  @Column({ type: "text", length: 5000, default: "Немає опису" })
+  @Column({ type: "text", default: "Немає опису" })
   description?: string;
 
   @Column("bigint", {default: 0})
