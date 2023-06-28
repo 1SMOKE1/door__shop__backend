@@ -126,7 +126,7 @@ export class WindowEntity {
   @JoinTable()
   sections_count: SectionCountEntity[];
 
-  @Column({ type: "varchar", length: 5000, default: "Немає опису" })
+  @Column({ type: "text", length: 5000, default: "Немає опису" })
   description?: string;
 
   @Column("boolean", { default: false })
