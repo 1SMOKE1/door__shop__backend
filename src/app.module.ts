@@ -13,8 +13,8 @@ import { ProductConstantsModule } from './modules/product-constants/product-cons
 import { CarouselsModule } from './modules/carousels/carousels.module';
 import TypeOrmConfigService from './configurations/typeorm-config/typeorm.config';
 import MailerConfigService from './configurations/mailer-config/mailer.config';
-// import { ServeStaticModule } from '@nestjs/serve-static';
-// import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AuthorizationModule } from './modules/authorization/authorization.module';
 
 
@@ -44,27 +44,27 @@ import { AuthorizationModule } from './modules/authorization/authorization.modul
     ExcelAndPhotosModule,
     FormsModule,
     CarouselsModule,
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'uploads', 'images'),
-    //   serveRoot: '/uploads/images',
-    //   serveStaticOptions: {
-    //     index: false
-    //   }
-    // }),
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'uploads', 'our-comments'),
-    //   serveRoot: '/uploads/our-comments',
-    //   serveStaticOptions: {
-    //     index: false
-    //   }
-    // }),
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'uploads', 'our-works'),
-    //   serveRoot: '/uploads/our-works',
-    //   serveStaticOptions: {
-    //     index: false
-    //   }
-    // }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads', 'images'),
+      serveRoot: '/uploads/images',
+      serveStaticOptions: {
+        index: false
+      }
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads', 'our-comments'),
+      serveRoot: '/uploads/our-comments',
+      serveStaticOptions: {
+        index: false
+      }
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads', 'our-works'),
+      serveRoot: '/uploads/our-works',
+      serveStaticOptions: {
+        index: false
+      }
+    }),
     
     AuthorizationModule,
   ],

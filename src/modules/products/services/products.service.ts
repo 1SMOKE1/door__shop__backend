@@ -70,7 +70,6 @@ export class ProductsService {
 
     const { page, itemsPerPage } = pagination;
 
-
     return this.filtrationAlgorithm(checkboxArr, sliderMinValue, sliderMaxValue, searchValue, noProductProducers)
     .then((products: productMultiType[]) => 
     this.pagination(products, page, itemsPerPage));
@@ -199,9 +198,9 @@ export class ProductsService {
     }
 
     // Обнуление
-    // if (searchValue === "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === false) {
-    //   return await this.findAll();
-    // }
+    if (searchValue === "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === false) {
+      return await this.findAll();
+    }
   }
 
   private async pagination(products: productMultiType[], pageNumber: number, itemsPerPage: number): Promise<IGetProducts>{
