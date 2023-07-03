@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntranceDoorEntity } from "../entrance-door/entrance-door.entity";
 import { FurnitureEntity } from "../furniture/furniture.entity";
@@ -12,7 +12,8 @@ import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 import { IProductProducer } from "src/interfaces/IProductProducer";
 import { IGetProducts } from "src/interfaces/IGetProducts";
 import { FiltrationService } from "./filtration.service";
-
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager'
 
 @Injectable()
 export class ProductsService {
@@ -28,16 +29,29 @@ export class ProductsService {
     private readonly interiorDoorRepository: Repository<InteriorDoorEntity>,
     @InjectRepository(WindowEntity)
     private readonly windowRepository: Repository<WindowEntity>,
-    private readonly filtrationService: FiltrationService
+    private readonly filtrationService: FiltrationService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   async findAll() {
-    return await Promise.all([
+
+    const cachedData = await this.cacheManager.get('all_products');
+
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const data = await Promise.all([
       this.entranceDoorRepository.find(this.productRelations),
       this.furnitureRepository.find(this.productRelations),
       this.interiorDoorRepository.find(this.productRelations),
       this.windowRepository.find(this.productRelations),
     ]).then(products => products.flat());
+
+    // Кешувати дані для майбутнього використання
+    await this.cacheManager.set('all_products', data, 60 * 60 * 1000);
+
+    return data;
   }
 
   async findAllAndPagination(pagination: IPagination){

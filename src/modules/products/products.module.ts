@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod} from '@nestjs/common';
 import { ProductsController } from './controllers/products.controller';
 import { ProductsService } from './services/products.service';
 import { EntranceDoorModule } from './entrance-door/entrance-door.module';
@@ -9,13 +9,15 @@ import { ConvertingService } from './services/converting.service';
 import { CreateQueryBuilderService } from './services/create-query-builder.service';
 import { FiltrationService } from './services/filtration.service';
 import * as compression from 'compression'; 
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
     EntranceDoorModule,
     FurnitureModule,
     InteriorDoorModule,
-    WindowModule
+    WindowModule,
+    CacheModule.register()
   ],
   controllers: [ProductsController],
   providers: [ProductsService, ConvertingService, CreateQueryBuilderService, FiltrationService]
