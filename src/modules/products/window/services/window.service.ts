@@ -136,23 +136,41 @@ export class WindowService {
       }
     }
 
-    if (!(await checkEnum(CountryEnum, country))) {
-      const countries = await generateErrorArr(CountryEnum);
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(GuaranteeEnum, guarantee))) {
-      const guaranties = await generateErrorArr(GuaranteeEnum);
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(InStockEnum, inStock))) {
-      const inStocks = await generateErrorArr(InStockEnum);
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
+
+    if(isNaN(+price))
+     throw new HttpException(`Incorrect price, price must be a number`, HttpStatus.CONFLICT);
+
+    if(+price < 0)
+      throw new HttpException(`Incorrect price, price must be bigger then 0`, HttpStatus.CONFLICT);
+
+    if(isNaN(+windowHeight))
+      throw new HttpException(`Incorrect windowHeight, windowHeight must be a number`, HttpStatus.CONFLICT);
+
+    if(+windowHeight < 0)
+      throw new HttpException(`Incorrect windowHeight, windowHeight must be bigger then 0`, HttpStatus.CONFLICT);
+
+    if(isNaN(+windowWidth))
+      throw new HttpException(`Incorrect windowWidth, windowWidth must be a number`, HttpStatus.CONFLICT);
+
+    if(+windowWidth < 0)
+      throw new HttpException(`Incorrect windowWidth, windowWidth must be bigger then 0`, HttpStatus.CONFLICT);
 
     let mosquito_net: MosquitNetEntity[] = [];
 
@@ -320,20 +338,20 @@ export class WindowService {
       }
     }
 
-    if (!(await checkEnum(CountryEnum, country))) {
-      const countries = await generateErrorArr(CountryEnum);
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(GuaranteeEnum, guarantee))) {
-      const guaranties = await generateErrorArr(GuaranteeEnum);
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(InStockEnum, inStock))) {
-      const inStocks = await generateErrorArr(InStockEnum);
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }

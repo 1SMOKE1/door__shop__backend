@@ -10,6 +10,7 @@ import { CreateQueryBuilderService } from './services/create-query-builder.servi
 import { FiltrationService } from './services/filtration.service';
 import * as compression from 'compression'; 
 import { CacheModule } from '@nestjs/cache-manager';
+import { FileService } from './services/file.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     CacheModule.register()
   ],
   controllers: [ProductsController],
-  providers: [ProductsService, ConvertingService, CreateQueryBuilderService, FiltrationService]
+  providers: [ProductsService, ConvertingService, CreateQueryBuilderService, FiltrationService, FileService]
 })
 export class ProductsModule {
   configure(consumer: MiddlewareConsumer) {

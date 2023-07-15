@@ -9,8 +9,11 @@ export class ConvertingService {
     return await Promise.all(
       obj.map(p =>  
         new Promise((res) => res(p))
-          .then((el: string) => 
-            repository.findOneByOrFail({name: el})))
+          .then((el: string) => {
+            console.log(el)
+            return repository.findOneByOrFail({name: el})
+          }
+            ))
     )
   }
 
@@ -21,6 +24,8 @@ export class ConvertingService {
           return [];
         case val[0] !== '':
           return [...val];
+        case val[0] === 'null':
+          return [];
         default: 
           return [];
       }

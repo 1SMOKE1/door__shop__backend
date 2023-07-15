@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { InteriorDoorEntity } from "../interior-door.entity";
 import { Repository } from "typeorm";
@@ -21,6 +21,8 @@ import { DoorSelectionBoardEntity } from "src/modules/product-constants/door-sel
 import { DoorWeltEntity } from "src/modules/product-constants/door-welt/door-welt.entity";
 import { DoorSlidingSystemEntity } from "src/modules/product-constants/door-sliding-system/door-sliding-system.entity";
 import { ConvertingService } from "../../services/converting.service";
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager'
 
 @Injectable()
 export class InteriorDoorService {
@@ -63,7 +65,8 @@ export class InteriorDoorService {
     @InjectRepository(DoorWeltEntity)
     private readonly doorWeltRepository: Repository<DoorWeltEntity>,
     @InjectRepository(DoorSlidingSystemEntity)
-    private readonly doorSlidingSystemRepository: Repository<DoorSlidingSystemEntity>
+    private readonly doorSlidingSystemRepository: Repository<DoorSlidingSystemEntity>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   async findAll() {
@@ -117,8 +120,8 @@ export class InteriorDoorService {
     if(typeOfProductName !== TypeOfProductEnum.interiorDoor)
     throw new HttpException(`typeOfProductName must be 'Двері міжкімнатні'`, HttpStatus.CONFLICT);
 
-    if (!(await checkEnum(CountryEnum, country))) {
-      const countries = await generateErrorArr(CountryEnum);
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
@@ -144,17 +147,36 @@ export class InteriorDoorService {
       }
     }
 
-    if (!(await checkEnum(GuaranteeEnum, guarantee))) {
-      const guaranties = await generateErrorArr(GuaranteeEnum);
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(InStockEnum, inStock))) {
-      const inStocks = await generateErrorArr(InStockEnum);
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
+
+    if(isNaN(+price))
+     throw new HttpException(`Incorrect price, price must be a number`, HttpStatus.CONFLICT);
+
+    if(+price < 0)
+      throw new HttpException(`Incorrect price, price must be bigger then 0`, HttpStatus.CONFLICT);
+
+    if(isNaN(+fabricMaterialThickness))
+    throw new HttpException(`Incorrect fabricMaterialThickness, fabricMaterialThickness must be a number`, HttpStatus.CONFLICT);
+
+    if(+fabricMaterialThickness < 0)
+      throw new HttpException(`Incorrect fabricMaterialThickness, fabricMaterialThickness must be bigger then 0`, HttpStatus.CONFLICT);
+
+    if(isNaN(+fabricMaterialHeight))
+    throw new HttpException(`Incorrect fabricMaterialHeight, fabricMaterialHeight must be a number`, HttpStatus.CONFLICT);
+
+    if(+fabricMaterialHeight < 0)
+      throw new HttpException(`Incorrect fabricMaterialHeight, fabricMaterialHeight must be bigger then 0`, HttpStatus.CONFLICT);
+  
 
     let fabric_material_width: FabricMaterialWidthEntity[] = [];
 
@@ -192,7 +214,7 @@ export class InteriorDoorService {
     if(this.convertingService.checkOnNotEmpty(doorMechanism).length !== 0)
       door_mechanism = await this.convertingService.findAllByCond(this.furnitureRepository, doorMechanism);
     if(this.convertingService.checkOnNotEmpty(doorLoops).length !== 0)
-      door_loops = await this.convertingService.findAllByCond(this.furnitureRepository, doorMechanism);
+      door_loops = await this.convertingService.findAllByCond(this.furnitureRepository, doorLoops);
     if(this.convertingService.checkOnNotEmpty(doorStopper).length !== 0)
       door_stopper = await this.convertingService.findAllByCond(this.furnitureRepository, doorStopper);
 
@@ -239,7 +261,12 @@ export class InteriorDoorService {
       home_page: homePage,
       images: imagesPathes,
     })
+
+    await this.cacheManager.reset();
+
     return await this.interiorDoorRepository.save(newProduct);
+
+    
   }
 
   async updateById(id: number, body: UpdateInteriorDoorDto, files: IImages) {
@@ -307,20 +334,20 @@ export class InteriorDoorService {
       }
     }
 
-    if (!(await checkEnum(CountryEnum, country))) {
-      const countries = await generateErrorArr(CountryEnum);
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Некоректна країна, ви можете обрати з: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(GuaranteeEnum, guarantee))) {
-      const guaranties = await generateErrorArr(GuaranteeEnum);
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Некоректна гарантія, ви можете обрати з: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(InStockEnum, inStock))) {
-      const inStocks = await generateErrorArr(InStockEnum);
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Некоректна наявність, ви можете обрати з: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
@@ -407,6 +434,9 @@ export class InteriorDoorService {
     curProduct.home_page = homePage;
     curProduct.description = changedDescription;
     curProduct.images = imagesPathes;
+
+    await this.cacheManager.reset();
+
     return await this.interiorDoorRepository.save(curProduct);
   }
 
@@ -414,6 +444,8 @@ export class InteriorDoorService {
     const curItem: InteriorDoorEntity = await this.findById(id);
 
     if (curItem == null) throw new HttpException(`${TypeOfProductEnum.interiorDoor} з id: ${id} не існують`, HttpStatus.NOT_FOUND);
+
+    await this.cacheManager.reset();
 
     return await this.interiorDoorRepository.delete(id)
     .then(() => `${TypeOfProductEnum.interiorDoor} були видалені успішно`)
@@ -424,10 +456,13 @@ export class InteriorDoorService {
     .then((data: InteriorDoorEntity[]) => 
       data.map((item: InteriorDoorEntity): number => item.id)
     );
+    
 
     if(interiorDoorIds.length !== 0)
     await this.interiorDoorRepository.delete(interiorDoorIds);
 
+    await this.cacheManager.reset();
+    
     return `${TypeOfProductEnum.interiorDoor} були видалені успішно`
   }
 

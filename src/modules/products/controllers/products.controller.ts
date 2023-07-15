@@ -3,13 +3,16 @@ import { ProductsService } from '../services/products.service';
 import { Response } from 'express';
 import { IHoleFiltrationBody } from '../interfaces/IHoleFiltrationBody';
 import { IPagination } from '../interfaces/IPagination';
-
+import { FileService } from '../services/file.service';
+import {join} from 'path';
+import * as fs from 'fs';
 
 @Controller('products')
 export class ProductsController {
 
   constructor(
-    private readonly productsService: ProductsService
+    private readonly productsService: ProductsService,
+    private readonly filesService: FileService
   ){}
 
   @Get()
@@ -53,6 +56,20 @@ export class ProductsController {
     }
   }
 
+  @Get('files')
+  async getFiles(
+    @Query('image') query: string,
+    @Res() res: Response
+  ){
+    try{
+      const path = decodeURIComponent(JSON.parse(query));
+      const file = fs.createReadStream(join(`${process.cwd()}/uploads/images`, path.split('\\')[2]));
+      file.pipe(res);
+    } catch (err) {
+      throw new BadRequestException(err)
+    }
+  }
+
   @Get(':id')
   async getOneByIdAndTypeOfProduct(
     @Param('id', ParseIntPipe) id: number,
@@ -63,11 +80,10 @@ export class ProductsController {
       const product = await this.productsService.findOne(id, typeOfProduct);
       return res.status(HttpStatus.OK).json(product);
     } catch (err) {
+
       throw new BadRequestException(err);    
     }
   }
-
-
 
   @Delete()
   async deleteAll(

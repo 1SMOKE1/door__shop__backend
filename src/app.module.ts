@@ -68,6 +68,7 @@ import { AuthorizationModule } from './modules/authorization/authorization.modul
     
     AuthorizationModule,
   ],
-  controllers: []
+  controllers: [],
+  providers: []
 })
 export class AppModule {}

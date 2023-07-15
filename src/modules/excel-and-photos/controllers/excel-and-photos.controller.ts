@@ -28,15 +28,15 @@ export class ExcelAndPhotosController {
     @UploadedFiles() files: {excel: Express.Multer.File[], images: Array<Express.Multer.File>},
   ){
     try {
-      // console.log(file);
-      const {excel, images} = files;
 
+      const {excel, images} = files;
       const excelData = await this.excelAndPhotosService.readExcelAndPhotos(excel[0], images);
       return res.status(HttpStatus.CREATED).json(excelData);
     } catch (err){  
       throw new BadRequestException(err);
     }
   }
+
 
 }
 

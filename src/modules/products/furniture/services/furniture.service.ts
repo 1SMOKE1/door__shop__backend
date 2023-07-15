@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FurnitureEntity } from "../furniture.entity";
 import { Repository } from "typeorm";
@@ -13,6 +13,8 @@ import { UpdateFurnitureDto } from "../dto/update-furniture.dto";
 import { TypeOfProductEntity } from "src/modules/type-of-products/type-of-product.entity";
 import { IImages } from "src/interfaces/IImages";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache } from "cache-manager";
 
 @Injectable()
 export class FurnitureService {
@@ -29,7 +31,8 @@ export class FurnitureService {
     @InjectRepository(ProductProducerEntity)
     private readonly productProducerRepository: Repository<ProductProducerEntity>,
     @InjectRepository(TypeOfProductEntity)
-    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>
+    private readonly typeOfProductRepository: Repository<TypeOfProductEntity>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   async findAll() {
@@ -82,8 +85,8 @@ export class FurnitureService {
     if(typeOfProductName !== TypeOfProductEnum.furniture)
     throw new HttpException(`typeOfProductName must be 'Фурнітура'`, HttpStatus.CONFLICT);
 
-    if (!(await checkEnum(CountryEnum, country))) {
-      const countries = await generateErrorArr(CountryEnum);
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
@@ -108,16 +111,26 @@ export class FurnitureService {
       }
     }
 
-    
+    if(isNaN(+price))
+    throw new HttpException(`Incorrect price, price must be a number`, HttpStatus.CONFLICT);
 
-    if (!(await checkEnum(GuaranteeEnum, guarantee))) {
-      const guaranties = await generateErrorArr(GuaranteeEnum);
+    if(+price < 0)
+      throw new HttpException(`Incorrect price, price must be bigger then 0`, HttpStatus.CONFLICT);
+
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
+
+      throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+    }
+
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(InStockEnum, inStock))) {
-      const inStocks = await generateErrorArr(InStockEnum);
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
@@ -132,6 +145,8 @@ export class FurnitureService {
      imagesPathes = images.map((el) => el ? el.path : null);
 
      const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+
+     await this.cacheManager.reset();
 
     const newProduct = this.furnitureRepository.create({
       name,
@@ -201,24 +216,30 @@ export class FurnitureService {
       }
     }
 
-    if (!(await checkEnum(CountryEnum, country))) {
-      const countries = await generateErrorArr(CountryEnum);
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(GuaranteeEnum, guarantee))) {
-      const guaranties = await generateErrorArr(GuaranteeEnum);
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(InStockEnum, inStock))) {
-      const inStocks = await generateErrorArr(InStockEnum);
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
+
+    if(isNaN(+price))
+     throw new HttpException(`Incorrect price, price must be a number`, HttpStatus.CONFLICT);
+
+    if(+price < 0)
+      throw new HttpException(`Incorrect price, price must be bigger then 0`, HttpStatus.CONFLICT);
     // IMAGES
 
     const { images } = files;
@@ -229,6 +250,8 @@ export class FurnitureService {
     imagesPathes = images.map((el) => el ? el.path : null);
 
     const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+
+    await this.cacheManager.reset();
 
     return await this.furnitureRepository
       .update(id, {
@@ -252,6 +275,8 @@ export class FurnitureService {
 
     if (curItem == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
 
+    await this.cacheManager.reset();
+
     return await this.furnitureRepository.delete(id)
     .then(() => `furniture by id: ${id} was deleted successfuly`);
   }
@@ -264,6 +289,8 @@ export class FurnitureService {
       )
     );
 
+    await this.cacheManager.reset();
+    
     if(funitureIds.length !== 0)
     await this.furnitureRepository.delete(funitureIds);
 

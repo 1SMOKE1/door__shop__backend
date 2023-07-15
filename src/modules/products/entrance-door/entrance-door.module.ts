@@ -14,7 +14,7 @@ import { DoorSizeModule } from 'src/modules/product-constants/door-size/door-siz
 import { DoorWeightModule } from 'src/modules/product-constants/door-weight/door-weight.module';
 import { FrameMaterialConstructionModule } from 'src/modules/product-constants/frame-material-construction/frame-material-construction.module';
 import { SealerCircuitModule } from 'src/modules/product-constants/sealer-circuit/sealer-circuit.module';
-
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -29,6 +29,7 @@ import { SealerCircuitModule } from 'src/modules/product-constants/sealer-circui
     DoorWeightModule,
     FrameMaterialConstructionModule,
     SealerCircuitModule,
+    CacheModule.register()
   ],
   providers: [EntranceDoorService, ConvertingService],
   controllers: [EntranceDoorController],

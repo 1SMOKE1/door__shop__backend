@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntranceDoorEntity } from "../entrance-door.entity";
 import { Repository } from "typeorm";
@@ -22,7 +22,8 @@ import { FurnitureEntity } from "../../furniture/furniture.entity";
 import { DoorWeightEntity } from "src/modules/product-constants/door-weight/door-weight.entity";
 import { FrameMaterialConstructionEntity } from "src/modules/product-constants/frame-material-construction/frame-material-construction.entity";
 import { SealerCircuitEntity } from "src/modules/product-constants/sealer-circuit/sealer-circuit.entity";
-
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache } from "cache-manager";
 
 
 @Injectable()
@@ -68,9 +69,7 @@ export class EntranceDoorService {
     private readonly doorFrameMaterialConstructionRepository: Repository<FrameMaterialConstructionEntity>,
     @InjectRepository(SealerCircuitEntity)
     private readonly sealerCircuitRepository: Repository<SealerCircuitEntity>,
-
-
-
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   async findAll() {
@@ -147,23 +146,49 @@ export class EntranceDoorService {
       }
     }
 
-    if (!(await checkEnum(CountryEnum, country))) {
-      const countries = await generateErrorArr(CountryEnum);
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(GuaranteeEnum, guarantee))) {
-      const guaranties = await generateErrorArr(GuaranteeEnum);
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(InStockEnum, inStock))) {
-      const inStocks = await generateErrorArr(InStockEnum);
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
+
+    
+    if(isNaN(+price))
+    throw new HttpException(`Incorrect price, price must be a number`, HttpStatus.CONFLICT);
+
+    if(+price < 0)
+      throw new HttpException(`Incorrect price, price must be bigger then 0`, HttpStatus.CONFLICT);
+
+    if(isNaN(+fabricMaterialThickness))
+    throw new HttpException(`Incorrect fabricMaterialThickness, fabricMaterialThickness must be a number`, HttpStatus.CONFLICT);
+
+    if(+fabricMaterialThickness < 0)
+      throw new HttpException(`Incorrect fabricMaterialThickness, fabricMaterialThickness must be bigger then 0`, HttpStatus.CONFLICT);
+
+    if(isNaN(+frameMaterialThickness))
+    throw new HttpException(`Incorrect frameMaterialThickness, frameMaterialThickness must be a number`, HttpStatus.CONFLICT);
+
+    if(+frameMaterialThickness < 0)
+      throw new HttpException(`Incorrect frameMaterialThickness, frameMaterialThickness must be bigger then 0`, HttpStatus.CONFLICT);
+
+    if(isNaN(+metalThickness))
+    throw new HttpException(`Incorrect metalThickness, metalThickness must be a number`, HttpStatus.CONFLICT);
+
+    if(+metalThickness < 0)
+      throw new HttpException(`Incorrect metalThickness, metalThickness must be bigger then 0`, HttpStatus.CONFLICT);
+  
 
     let door_insulation: DoorInsulationEntity[] = [];
 
@@ -225,6 +250,8 @@ export class EntranceDoorService {
     imagesPathes = images.map((el) => el ? el.path : null);
 
     const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+
+    await this.cacheManager.reset();
 
     const newProduct = this.entranceDoorRepository.create({
       name,
@@ -327,20 +354,20 @@ export class EntranceDoorService {
     
 
     
-    if (!(await checkEnum(CountryEnum, country))) {
-      const countries = await generateErrorArr(CountryEnum);
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(GuaranteeEnum, guarantee))) {
-      const guaranties = await generateErrorArr(GuaranteeEnum);
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(await checkEnum(InStockEnum, inStock))) {
-      const inStocks = await generateErrorArr(InStockEnum);
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
@@ -406,7 +433,7 @@ export class EntranceDoorService {
 
     const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
 
-    
+    await this.cacheManager.reset();
 
     curProduct.name = name;
     curProduct.product_producer = product_producer;
@@ -439,6 +466,8 @@ export class EntranceDoorService {
   async deleteById(id: number) {
     if ((await this.findById(id)) == null) throw new HttpException(`entrance_door with current id: ${id} doesn't exists`, HttpStatus.FORBIDDEN);
 
+    await this.cacheManager.reset();
+
     return await this.entranceDoorRepository.delete(id)
     .then(() => `entrance_door by id: ${id} was deleted successfuly`)
   }
@@ -453,6 +482,8 @@ export class EntranceDoorService {
 
     if(entrandeDoorIds.length !== 0)
     await this.entranceDoorRepository.delete(entrandeDoorIds);
+
+    await this.cacheManager.reset();
 
     return `items were deleted successfuly`
   }

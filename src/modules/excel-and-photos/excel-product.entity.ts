@@ -1,0 +1,58 @@
+import { CountryEnum } from "src/enums/country.enum";
+import { GuaranteeEnum } from "src/enums/guarantee.enum";
+import { InStockEnum } from "src/enums/in-stock.enum";
+import { IExcelProduct } from "./interfaces/excel-product.interface";
+import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
+
+export class ExcelProductEntity implements IExcelProduct{
+  name: string;
+  productProducerName: string;
+  typeOfProductName: TypeOfProductEnum;
+  country: CountryEnum;
+  guarantee: GuaranteeEnum;
+  price: number;
+  inStock: InStockEnum;
+  fabricMaterialThickness?: number;
+  fabricMaterialHeight?: number;
+  fabricMaterialWidth?: string[];
+  doorIsolation?: string[];
+  doorFrameMaterial?: string[];
+  doorSelectionBoard?: string[];
+  doorWelt?: string[];
+  doorHand?: string[];
+  doorMechanism?: string[];
+  doorLoops?: string[];
+  doorStopper?: string[];
+  doorSlidingSystem?: string[];
+  frameMaterialThickness?: number;
+  doorInsulation?: string[];
+  covering?: string[];
+  doorPeephole?: boolean;
+  openingType?: string[];
+  size?: string[];
+  lowerLock?: string[];
+  upperLock?: string[];
+  weight?: string[];
+  metalThickness?: number;
+  frameMaterialConstruction?: string[];
+  sealerCircuit?: string[];
+  mosquitoNet?: string[];
+  windowSill?: string[];
+  windowEbb?: string[];
+  windowHand?: string[];
+  childLock?: string[];
+  housewifeStub?: string[];
+  glassPocketAdd?: string[];
+  lamination?: string[];
+  profile?: string[];
+  windowHeight?: number;
+  windowWidth?: number;
+  camerasCount?: string[];
+  features?: string[];
+  sectionCount?: string[];
+  homePage?: string;
+  images: string[];
+  description?: string;
+  choosenImage?: number;
+  
+}

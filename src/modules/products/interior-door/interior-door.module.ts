@@ -13,6 +13,7 @@ import { DoorSelectionBoardModule } from 'src/modules/product-constants/door-sel
 import { DoorWeltModule } from 'src/modules/product-constants/door-welt/door-welt.module';
 import { DoorSlidingSystemModule } from 'src/modules/product-constants/door-sliding-system/door-sliding-system.module';
 import { ConvertingService } from '../services/converting.service';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { ConvertingService } from '../services/converting.service';
     DoorFrameMaterialModule,
     DoorSelectionBoardModule,
     DoorWeltModule,
-    DoorSlidingSystemModule
+    DoorSlidingSystemModule,
+    CacheModule.register()
   ],
   providers: [InteriorDoorService, ConvertingService],
   controllers: [InteriorDoorController],

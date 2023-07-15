@@ -146,7 +146,6 @@ export class ProductsService {
     }
     // поиск
     if (searchValue !== "" && checkboxArr.length === 0 && (sliderMinValue === 0 && sliderMaxValue === 20000) && noProductProducers === false) {
-      console.log(await this.filtrationService.filtrationBySearch(searchValue));
       return await this.filtrationService.filtrationBySearch(searchValue);
     }
 

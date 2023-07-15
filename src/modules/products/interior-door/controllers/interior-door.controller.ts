@@ -40,7 +40,6 @@ export class InteriorDoorController {
       const interiorDoors = await this.interiorDoorService.findAll();
       return res.status(HttpStatus.OK).json(interiorDoors);
     } catch (err) {
-      console.log(err)
       throw new BadRequestException(err);
     }
   }
@@ -70,10 +69,10 @@ export class InteriorDoorController {
   @Patch(":id")
   async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateInteriorDoorDto, @Res() res: Response) {
     try {
+      console.log(images.images);
       const updatedInteriorDoor = await this.interiorDoorService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(updatedInteriorDoor);
     } catch (err) {
-      console.log(err);
       throw new BadGatewayException(err);
     }
   }
