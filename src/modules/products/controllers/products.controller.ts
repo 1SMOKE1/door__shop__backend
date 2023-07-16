@@ -63,7 +63,8 @@ export class ProductsController {
   ){
     try{
       const path = decodeURIComponent(JSON.parse(query));
-      const file = fs.createReadStream(join(`./uploads/images`, path.split('\\')[2]));
+      const env = process.env.NODE
+      const file = fs.createReadStream(join(`${process.cwd()}/uploads/images`, env === 'production' ? path.split('/')[2] : path.split('\\')[2]));
 
       // res.setHeader('Content-Type', 'application/octet-stream');
       // res.setHeader('Content-Disposition', `attachment; filename="${path.split('-')[2]}"`)
