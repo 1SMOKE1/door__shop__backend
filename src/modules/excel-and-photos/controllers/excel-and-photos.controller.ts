@@ -33,6 +33,7 @@ export class ExcelAndPhotosController {
       const excelData = await this.excelAndPhotosService.readExcelAndPhotos(excel[0], images);
       return res.status(HttpStatus.CREATED).json(excelData);
     } catch (err){  
+      this.excelAndPhotosService.resetRowCounter();
       throw new BadRequestException(err);
     }
   }

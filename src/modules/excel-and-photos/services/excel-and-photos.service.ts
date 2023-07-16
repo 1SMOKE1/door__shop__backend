@@ -13,6 +13,8 @@ import { CreateWindowDto } from 'src/modules/products/window/dto/create-window.d
 import { WindowService } from 'src/modules/products/window/services/window.service';
 import { FurnitureService } from 'src/modules/products/furniture/services/furniture.service';
 import { CreateFurnitureDto } from 'src/modules/products/furniture/dto/create-furniture.dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from "cache-manager";
 
 @Injectable()
 export class ExcelAndPhotosService {
@@ -25,7 +27,8 @@ export class ExcelAndPhotosService {
     @Inject(InteriorDoorService) private readonly interiorDoorService: InteriorDoorService,
     @Inject(EntranceDoorService) private readonly entranceDoorService: EntranceDoorService,
     @Inject(WindowService) private readonly windowService: WindowService,
-    @Inject(FurnitureService) private readonly furnitureService: FurnitureService
+    @Inject(FurnitureService) private readonly furnitureService: FurnitureService,
+    @Inject(CACHE_MANAGER) private readonly cache: Cache
   ){}
 
   async readExcelAndPhotos(excel: Express.Multer.File, images: Array<Express.Multer.File>){
@@ -42,15 +45,17 @@ export class ExcelAndPhotosService {
   
         const interiorDoorData = parse(interiorDoorCsvData, {output: 'objects', comma: ';'}) as unknown as IExcelProduct[];
 
+        // console.log(interiorDoorData)
+
         const interiorDoorData$: Promise<IExcelProduct>[] = interiorDoorData.map((row) => new Promise(async (res, rej) => {
           try{
+            this.rowCounter += 1;
             this.checkRowHeaders(row, TypeOfProductEnum.interiorDoor);
             await this.addRowToDb(row, TypeOfProductEnum.interiorDoor, images)
-            this.rowCounter += 1;
             res(row)
           } catch (err) {
             const changedErr = {
-              ...err, message: `${err.message}, in row: ${this.rowCounter}`
+              ...err, message: `${err.message}, in row: ${this.rowCounter}, list interior_door`
             }
             if(images !== undefined)
             images.forEach((el) => this.deleteFile(el));
@@ -75,13 +80,13 @@ export class ExcelAndPhotosService {
   
         const entranceDoorData$: Promise<IExcelProduct>[] = entranceDoorData.map((row) => new Promise(async (res, rej) => {
           try{
+            this.rowCounter += 1;
             this.checkRowHeaders(row, TypeOfProductEnum.entranceDoor);
             await this.addRowToDb(row, TypeOfProductEnum.entranceDoor, images)
-            this.rowCounter += 1;
             res(row)
           } catch (err) {
             const changedErr = {
-              ...err, message: `${err.message}, in row: ${this.rowCounter}`
+              ...err, message: `${err.message}, in row: ${this.rowCounter}, list entrance_door`
             }
             if(images !== undefined)
             images.forEach((el) => this.deleteFile(el));
@@ -104,13 +109,13 @@ export class ExcelAndPhotosService {
   
         const windowsDoorData$: Promise<IExcelProduct>[] = windowsDoorData.map((row) => new Promise(async (res, rej) => {
           try{
+            this.rowCounter += 1;
             this.checkRowHeaders(row, TypeOfProductEnum.windows);
             await this.addRowToDb(row, TypeOfProductEnum.windows, images)
-            this.rowCounter += 1;
             res(row)
           } catch (err) {
             const changedErr = {
-              ...err, message: `${err.message}, in row: ${this.rowCounter}`
+              ...err, message: `${err.message}, in row: ${this.rowCounter}, list windows`
             }
             if(images !== undefined)
             images.forEach((el) => this.deleteFile(el));
@@ -133,13 +138,13 @@ export class ExcelAndPhotosService {
 
         const furnitureDoorData$: Promise<IExcelProduct>[] = furnitureDoorData.map((row) => new Promise(async (res, rej) => {
           try{
+            this.rowCounter += 1;
             this.checkRowHeaders(row, TypeOfProductEnum.furniture);
             await this.addRowToDb(row, TypeOfProductEnum.furniture, images)
-            this.rowCounter += 1;
             res(row)
           } catch (err) {
             const changedErr = {
-              ...err, message: `${err.message}, in row: ${this.rowCounter}`
+              ...err, message: `${err.message}, in row: ${this.rowCounter}, list furniture`
             }
             if(images !== undefined)
             images.forEach((el) => this.deleteFile(el));
@@ -148,6 +153,8 @@ export class ExcelAndPhotosService {
         }))
         await Promise.all(furnitureDoorData$);
         this.resetRowCounter();
+
+        await this.cache.reset();
   
         this.deleteFile(excel);
   
@@ -195,6 +202,18 @@ export class ExcelAndPhotosService {
           throw new HttpException('no images header', HttpStatus.CONFLICT);
         case !rowKeys.includes('description'):
           throw new HttpException('no description header', HttpStatus.CONFLICT);
+        case row.name === '' || row.name === undefined: 
+          throw new HttpException('name is required', HttpStatus.CONFLICT);
+        case row.productProducerName === '' || row.productProducerName === undefined:
+          throw new HttpException('productProducerName is required', HttpStatus.CONFLICT);
+        case row.country as string === '' || row.country === undefined:
+          throw new HttpException('country is required', HttpStatus.CONFLICT);
+        case row.guarantee as string === '' || row.guarantee === undefined:
+          throw new HttpException('guarantee is required', HttpStatus.CONFLICT);
+        case row.inStock as string === '' || row.inStock === undefined:
+          throw new HttpException('inStock is required', HttpStatus.CONFLICT);
+        case row.price as unknown as string === '' || row.price === undefined:
+          throw new HttpException('price is required', HttpStatus.CONFLICT);
       }
       // interior_door Headers, HttpStatus.CONFLICT
       if(typeOfProduct === TypeOfProductEnum.interiorDoor)
@@ -285,12 +304,13 @@ export class ExcelAndPhotosService {
           throw new HttpException('no sectionCount header', HttpStatus.CONFLICT);
         }
       
+       
+
 
     return row;
   }
   
-  private async addRowToDb(row: IExcelProduct, typeOfProduct: TypeOfProductEnum, images: Array<Express.Multer.File>){
-   
+  private async addRowToDb(row: IExcelProduct, typeOfProduct: TypeOfProductEnum, images: Array<Express.Multer.File> | undefined){
     const {
       name, country, productProducerName, guarantee,
       price, inStock, fabricMaterialThickness, fabricMaterialHeight,
@@ -307,9 +327,10 @@ export class ExcelAndPhotosService {
       sectionCount, homePage, description
     } = row
     this.resetImagesArrs();
-    const [convertedImageNames, convertedImageFiles] =  this.getImagesForCurentRow(images, row.images as string);
+    const imageNames = row.images === undefined || row.images as string === '' ? [] : (row.images as string).split(', ') ;
+    const [convertedImageNames, convertedImageFiles] =  this.getImagesForCurentRow(images, imageNames);
 
-
+    console.log('here')
     switch(true){
       case typeOfProduct === TypeOfProductEnum.interiorDoor:
         const newInteriorDoor: CreateInteriorDoorDto = {
@@ -337,6 +358,7 @@ export class ExcelAndPhotosService {
           homePage: homePage === undefined || homePage === 'no' ? false : true,
           choosenImage: 0
         }
+
         await this.interiorDoorService.createOne(newInteriorDoor, {images: convertedImageFiles});
         break;
       case typeOfProduct === TypeOfProductEnum.entranceDoor:
@@ -419,25 +441,23 @@ export class ExcelAndPhotosService {
     
   }
 
-  private getImagesForCurentRow(images: Array<Express.Multer.File>, imageNames: string): [imageNames: string[], images: Array<Express.Multer.File>]{
-    if(imageNames !== undefined || imageNames !== '' && images !== undefined){
-      const imagesPathes = imageNames.split(', ');
-
+  private getImagesForCurentRow(images: Array<Express.Multer.File>, imageNames: string[]): [imageNames: string[], images: Array<Express.Multer.File>]{
+    if((imageNames !== undefined || imageNames.length !== 0) && images !== undefined){
+      
       this.imagesPathesUpload = images
-      .filter(file => imagesPathes.includes(file.filename.split('-')[2]))
+      .filter(file => imageNames.includes(file.filename.split('-')[2]))
       .map(file => file.path);
 
-      this.imagesFilesUpload = images.filter((file) => imagesPathes.includes(file.filename.split('-')[2]));
+      this.imagesFilesUpload = images.filter((file) => imageNames.includes(file.filename.split('-')[2]));
 
     }
-    
   
     return [this.imagesPathesUpload, this.imagesFilesUpload]
   }
 
 
 
-  private resetRowCounter(): void{
+  public resetRowCounter(): void{
     this.rowCounter = 1;
   }
 
