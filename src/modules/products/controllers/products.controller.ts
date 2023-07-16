@@ -65,9 +65,9 @@ export class ProductsController {
       const path = decodeURIComponent(JSON.parse(query));
       const file = fs.createReadStream(join(`${process.cwd()}/uploads/images`, path.split('\\')[2]));
 
-      res.setHeader('Content-Type', 'application/octet-stream');
-      res.setHeader('Content-Disposition', `attachment; filename="${path.split('-')[2]}"`)
-
+      // res.setHeader('Content-Type', 'application/octet-stream');
+      // res.setHeader('Content-Disposition', `attachment; filename="${path.split('-')[2]}"`)
+      res.type('application/octet-stream');
       file.pipe(res);
     } catch (err) {
       throw new BadRequestException(err)
