@@ -71,6 +71,7 @@ export class ProductsController {
       res.type('application/octet-stream');
       file.pipe(res);
     } catch (err) {
+      console.log(err)
       throw new BadRequestException(err)
     }
   }
