@@ -64,10 +64,13 @@ export class ProductsController {
     try{
       const path = decodeURIComponent(JSON.parse(query));
       console.log(path, 'query path');
-      const env = process.env.NODE;
+      const name = path.split('/')[path.split('/').length - 1];
       console.log(process.cwd(), 'process.cwd');
       console.log(typeof path, 'typeof path');
-      const file = fs.createReadStream(join(`${process.cwd()}/uploads/images`, env === 'production' ? path.split('/')[2] : path.split('\\')[2]));
+      // const file = fs.createReadStream(join(`${process.cwd()}/uploads/images`, env === 'production' ? path.split('/')[path.split('/').length - 1] : path.split('\\')[2]));
+      const filePath = join(`${process.cwd()}/uploads/images`, name);
+      console.log(filePath, 'filePath')
+      const file = fs.createReadStream(filePath);
 
       
       console.log(file, 'file')
