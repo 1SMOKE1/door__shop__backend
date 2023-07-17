@@ -260,21 +260,19 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
 
     this.checkImagesArrOnCorrect(images);
 
-    return await this.furnitureRepository
-      .update(id, {
-        name,
-        country,
-        guarantee,
-        product_producer,
-        type_of_product,
-        in_stock: inStock,
-        price,
-        home_page: homePage,
-        description: changedDescription,
-        images: imagesPathes,
-        choosen_image: choosenImage
-      })
-      .then(() => this.findById(id));
+    curProduct.name = name;
+    curProduct.country = country;
+    curProduct.guarantee = guarantee;
+    curProduct.product_producer = product_producer;
+    curProduct.type_of_product = type_of_product;
+    curProduct.in_stock = inStock;
+    curProduct.price = price;
+    curProduct.home_page = homePage;
+    curProduct.description = changedDescription;
+    curProduct.images = imagesPathes;
+    curProduct.choosen_image = choosenImage;
+
+    return await this.furnitureRepository.save(curProduct)
   }
 
   async deleteById(id: number) {
