@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Res, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, Res, UploadedFiles, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FurnitureService } from "../services/furniture.service";
 import { Response } from "express";
 import { CreateFurnitureDto } from "../dto/create-furniture.dto";
@@ -55,7 +55,7 @@ export class FurnitureController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(":id")
+  @Patch(":id")
   async updateById(@Param("id", ParseIntPipe) id: number, @UploadedFiles() images: IImages, @Body() body: UpdateFurnitureDto, @Res() res: Response) {
     try {
       const updatedFurniture = await this.furnitureService.updateById(id, body, images);
