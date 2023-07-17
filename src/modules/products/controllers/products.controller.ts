@@ -65,7 +65,7 @@ export class ProductsController {
       const path = decodeURIComponent(JSON.parse(query));
       console.log(path, 'query path');
       let name: string;
-      const env = process.env.NODE
+      const env = process.env.NODE_ENV
 
       if(env === 'production'){
         name = path.split('/')[path.split('/').length - 1];
