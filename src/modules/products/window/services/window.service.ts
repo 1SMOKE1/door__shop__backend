@@ -26,9 +26,10 @@ import { WindowProfileEntity } from "src/modules/product-constants/window-profil
 import { CamerasCountEntity } from "src/modules/product-constants/cameras-count/cameras-count.entity";
 import { FeaturesEntity } from "src/modules/product-constants/features/features.entity";
 import { SectionCountEntity } from "src/modules/product-constants/section-count/section-count.entity";
+import { CheckImagesArrOnCorrect } from "src/utils/checkImagesArrOnCorrect";
 
 @Injectable()
-export class WindowService {
+export class WindowService extends CheckImagesArrOnCorrect{
   constructor(
     private readonly convertingService: ConvertingService,
     @InjectRepository(WindowEntity)
@@ -61,7 +62,9 @@ export class WindowService {
     private readonly featuresRepository: Repository<FeaturesEntity>,
     @InjectRepository(SectionCountEntity)
     private readonly sectionCountRepository: Repository<SectionCountEntity>
-  ) {}
+  ) {
+    super();
+  }
 
   async findAll() {
     return await this.windowRepository.find({ relations: { product_producer: true } });
@@ -241,6 +244,8 @@ export class WindowService {
     imagesPathes = images.map((el) => el ? el.path : null);
 
     const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+
+    this.checkImagesArrOnCorrect(images);
 
     const newProduct = this.windowRepository.create({
       name,
@@ -425,6 +430,8 @@ export class WindowService {
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
+
+    this.checkImagesArrOnCorrect(images);
 
     curProduct.name = name;
     curProduct.product_producer = product_producer;

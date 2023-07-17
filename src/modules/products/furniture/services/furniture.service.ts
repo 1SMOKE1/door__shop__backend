@@ -15,9 +15,10 @@ import { IImages } from "src/interfaces/IImages";
 import { TypeOfProductEnum } from "src/enums/type-of-product.enum";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
+import { CheckImagesArrOnCorrect } from "src/utils/checkImagesArrOnCorrect";
 
 @Injectable()
-export class FurnitureService {
+export class FurnitureService extends CheckImagesArrOnCorrect{
 
   getRelations = { relations: {
       product_producer: true,
@@ -33,7 +34,9 @@ export class FurnitureService {
     @InjectRepository(TypeOfProductEntity)
     private readonly typeOfProductRepository: Repository<TypeOfProductEntity>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
-  ) {}
+  ) {
+    super();
+  }
 
   async findAll() {
     return await this.furnitureRepository.find({...this.getRelations});
@@ -148,6 +151,8 @@ export class FurnitureService {
 
      await this.cacheManager.reset();
 
+     this.checkImagesArrOnCorrect(images);
+
     const newProduct = this.furnitureRepository.create({
       name,
       country,
@@ -253,6 +258,8 @@ export class FurnitureService {
 
     await this.cacheManager.reset();
 
+    this.checkImagesArrOnCorrect(images);
+
     return await this.furnitureRepository
       .update(id, {
         name,
@@ -290,7 +297,7 @@ export class FurnitureService {
     );
 
     await this.cacheManager.reset();
-    
+
     if(funitureIds.length !== 0)
     await this.furnitureRepository.delete(funitureIds);
 

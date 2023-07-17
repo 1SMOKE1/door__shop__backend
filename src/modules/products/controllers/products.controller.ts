@@ -3,7 +3,6 @@ import { ProductsService } from '../services/products.service';
 import { Response } from 'express';
 import { IHoleFiltrationBody } from '../interfaces/IHoleFiltrationBody';
 import { IPagination } from '../interfaces/IPagination';
-import { FileService } from '../services/file.service';
 import {join} from 'path';
 import * as fs from 'fs';
 
@@ -12,7 +11,6 @@ export class ProductsController {
 
   constructor(
     private readonly productsService: ProductsService,
-    private readonly filesService: FileService
   ){}
 
   @Get()
@@ -63,23 +61,21 @@ export class ProductsController {
   ){
     try{
       const path = decodeURIComponent(JSON.parse(query));
-      console.log(path, 'query path');
-      const name = path.split('/')[path.split('/').length - 1];
-      console.log(process.cwd(), 'process.cwd');
-      console.log(typeof path, 'typeof path');
-      // const file = fs.createReadStream(join(`${process.cwd()}/uploads/images`, env === 'production' ? path.split('/')[path.split('/').length - 1] : path.split('\\')[2]));
+
+      const env = process.env.NODE;
+
+      let name: string;
+
+      if(env === 'production')
+       name = path.split('/')[path.split('/').length - 1];
+      else 
+       name = path.split('\\')[path.split('\\').length - 1];
       const filePath = join(`${process.cwd()}/uploads/images`, name);
-      console.log(filePath, 'filePath')
       const file = fs.createReadStream(filePath);
 
-      
-      console.log(file, 'file')
-      // res.setHeader('Content-Type', 'application/octet-stream');
-      // res.setHeader('Content-Disposition', `attachment; filename="${path.split('-')[2]}"`)
       res.type('application/octet-stream');
       file.pipe(res);
     } catch (err) {
-      console.log(err)
       throw new BadRequestException(err)
     }
   }

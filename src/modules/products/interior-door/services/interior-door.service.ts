@@ -22,10 +22,11 @@ import { DoorWeltEntity } from "src/modules/product-constants/door-welt/door-wel
 import { DoorSlidingSystemEntity } from "src/modules/product-constants/door-sliding-system/door-sliding-system.entity";
 import { ConvertingService } from "../../services/converting.service";
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Cache } from 'cache-manager'
+import { Cache } from 'cache-manager';
+import { CheckImagesArrOnCorrect } from "src/utils/checkImagesArrOnCorrect";
 
 @Injectable()
-export class InteriorDoorService {
+export class InteriorDoorService extends CheckImagesArrOnCorrect{
 
   getRelations = { relations: [
     'product_producer',
@@ -67,7 +68,9 @@ export class InteriorDoorService {
     @InjectRepository(DoorSlidingSystemEntity)
     private readonly doorSlidingSystemRepository: Repository<DoorSlidingSystemEntity>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
-  ) {}
+  ) {
+    super();
+  }
 
   async findAll() {
     return await this.interiorDoorRepository.find(this.getRelations);
@@ -234,6 +237,8 @@ export class InteriorDoorService {
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
+
+    this.checkImagesArrOnCorrect(images);
 
     const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
 
@@ -407,6 +412,8 @@ export class InteriorDoorService {
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
+
+    this.checkImagesArrOnCorrect(images);
 
     const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
 

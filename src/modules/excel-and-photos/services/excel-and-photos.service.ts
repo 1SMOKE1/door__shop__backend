@@ -15,9 +15,10 @@ import { FurnitureService } from 'src/modules/products/furniture/services/furnit
 import { CreateFurnitureDto } from 'src/modules/products/furniture/dto/create-furniture.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from "cache-manager";
+import { CheckImagesArrOnCorrect } from 'src/utils/checkImagesArrOnCorrect';
 
 @Injectable()
-export class ExcelAndPhotosService {
+export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
 
   imagesPathesUpload: string[] = [];
   imagesFilesUpload: Array<Express.Multer.File> = [];
@@ -29,11 +30,15 @@ export class ExcelAndPhotosService {
     @Inject(WindowService) private readonly windowService: WindowService,
     @Inject(FurnitureService) private readonly furnitureService: FurnitureService,
     @Inject(CACHE_MANAGER) private readonly cache: Cache
-  ){}
+  ){
+    super();
+  }
 
   async readExcelAndPhotos(excel: Express.Multer.File, images: Array<Express.Multer.File>){
     
-        const workbook = reader.parse(fs.readFileSync(`${excel.path}`))
+        const workbook = reader.parse(fs.readFileSync(`${excel.path}`));
+
+        this.checkImagesArrOnCorrect(images);
 
         // interior_door
   

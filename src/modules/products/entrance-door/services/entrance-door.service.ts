@@ -24,10 +24,11 @@ import { FrameMaterialConstructionEntity } from "src/modules/product-constants/f
 import { SealerCircuitEntity } from "src/modules/product-constants/sealer-circuit/sealer-circuit.entity";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Cache } from "cache-manager";
+import { CheckImagesArrOnCorrect } from "src/utils/checkImagesArrOnCorrect";
 
 
 @Injectable()
-export class EntranceDoorService {
+export class EntranceDoorService extends CheckImagesArrOnCorrect{
 
   private getRelations = { relations: [
       'product_producer',
@@ -70,7 +71,9 @@ export class EntranceDoorService {
     @InjectRepository(SealerCircuitEntity)
     private readonly sealerCircuitRepository: Repository<SealerCircuitEntity>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
-  ) {}
+  ) {
+    super();
+  }
 
   async findAll() {
     return await this.entranceDoorRepository.find(this.getRelations);
@@ -253,6 +256,8 @@ export class EntranceDoorService {
 
     await this.cacheManager.reset();
 
+    this.checkImagesArrOnCorrect(images);
+
     const newProduct = this.entranceDoorRepository.create({
       name,
       country,
@@ -432,6 +437,8 @@ export class EntranceDoorService {
     imagesPathes = images.map((el) => el ? el.path : null);
 
     const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+
+    this.checkImagesArrOnCorrect(images);
 
     await this.cacheManager.reset();
 
