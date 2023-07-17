@@ -75,7 +75,7 @@ export class ProductsController {
       const filePath = join(`${process.cwd()}/uploads/images`, name);
       const file = fs.createReadStream(filePath);
 
-      // res.type('application/octet-stream');
+      res.type('application/octet-stream');
       file.pipe(res);
     } catch (err) {
       throw new BadRequestException(err)
