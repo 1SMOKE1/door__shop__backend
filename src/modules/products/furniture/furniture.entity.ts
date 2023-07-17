@@ -35,7 +35,7 @@ export class FurnitureEntity {
   @Column("varchar")
   in_stock: InStockEnum;
 
-  @Column({ type: "text", default: "Немає опису" })
+  @Column({ type: "character varying", default: "Немає опису" })
   description?: string;
 
   @Column("boolean", { default: false })

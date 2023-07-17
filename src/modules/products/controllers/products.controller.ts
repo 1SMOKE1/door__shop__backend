@@ -63,7 +63,6 @@ export class ProductsController {
   ){
     try{
       const path = decodeURIComponent(JSON.parse(query));
-      console.log(path, 'query path');
       let name: string;
       const env = process.env.NODE_ENV
 
@@ -73,17 +72,10 @@ export class ProductsController {
         name = path.split('\\')[path.split('\\').length - 1];
       }
       
-      console.log(process.cwd(), 'process.cwd');
-      console.log(typeof path, 'typeof path');
-      // const file = fs.createReadStream(join(`${process.cwd()}/uploads/images`, env === 'production' ? path.split('/')[path.split('/').length - 1] : path.split('\\')[2]));
       const filePath = join(`${process.cwd()}/uploads/images`, name);
-      console.log(filePath, 'filepath')
       const file = fs.createReadStream(filePath);
 
       
-      console.log(file, 'file')
-      // res.setHeader('Content-Type', 'application/octet-stream');
-      // res.setHeader('Content-Disposition', `attachment; filename="${path.split('-')[2]}"`)
       res.type('application/octet-stream');
       file.pipe(res);
     } catch (err) {
