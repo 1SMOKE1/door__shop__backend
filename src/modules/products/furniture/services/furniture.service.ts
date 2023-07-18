@@ -72,6 +72,8 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
 
     const exists = await this.findByName(name);
 
+    console.log(body)
+
     if(exists !== null){
       throw new HttpException(`Item with current name: ${name} already exists`, HttpStatus.CONFLICT);
     }
@@ -102,7 +104,7 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
 
     let product_producer: ProductProducerEntity;
 
-    if(productProducerName === ''){
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
       product_producer = null;
     }
     else {
@@ -172,10 +174,11 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
   async updateById(id: number, body: UpdateFurnitureDto, files: IImages) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
+    console.log(body)
+
     const curProduct = await this.findById(id);
 
     if (curProduct == null) throw new HttpException(`furniture with current id: ${id} doesn't exists`, HttpStatus.NOT_FOUND);
-
     const {
       name,
       country,
@@ -209,7 +212,7 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
 
     let product_producer: ProductProducerEntity;
 
-    if(productProducerName === ''){
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
       product_producer = null;
     }
     else {

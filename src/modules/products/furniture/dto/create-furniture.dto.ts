@@ -10,6 +10,7 @@ export class CreateFurnitureDto {
   @IsNotEmpty()
   name: string;
 
+  @IsOptional()
   productProducerName: string | null;
 
   @IsNotEmpty() 

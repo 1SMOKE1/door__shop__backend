@@ -73,6 +73,7 @@ export class InteriorDoorController {
       const updatedInteriorDoor = await this.interiorDoorService.updateById(id, body, images);
       return res.status(HttpStatus.CREATED).json(updatedInteriorDoor);
     } catch (err) {
+      console.log(err);
       throw new BadGatewayException(err);
     }
   }

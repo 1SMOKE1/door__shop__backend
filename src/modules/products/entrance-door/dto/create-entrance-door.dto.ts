@@ -11,6 +11,7 @@ export class CreateEntranceDoorDto{
   @IsNotEmpty()
   name: string;
 
+  @IsOptional()
   productProducerName: string | null;
 
   @IsNotEmpty() 

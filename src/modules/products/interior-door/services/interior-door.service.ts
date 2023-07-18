@@ -138,7 +138,7 @@ export class InteriorDoorService extends CheckImagesArrOnCorrect{
     
     let product_producer: ProductProducerEntity;
 
-    if(productProducerName === ''){
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
       product_producer = null;
     }
     else {
@@ -327,7 +327,7 @@ export class InteriorDoorService extends CheckImagesArrOnCorrect{
 
     let product_producer: ProductProducerEntity;
 
-    if(productProducerName === ''){
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
       product_producer = null;
     }
     else {

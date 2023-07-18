@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { WindowEntity } from "../window.entity";
 import { Repository } from "typeorm";
@@ -27,6 +27,8 @@ import { CamerasCountEntity } from "src/modules/product-constants/cameras-count/
 import { FeaturesEntity } from "src/modules/product-constants/features/features.entity";
 import { SectionCountEntity } from "src/modules/product-constants/section-count/section-count.entity";
 import { CheckImagesArrOnCorrect } from "src/utils/checkImagesArrOnCorrect";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache } from "cache-manager";
 
 @Injectable()
 export class WindowService extends CheckImagesArrOnCorrect{
@@ -61,7 +63,8 @@ export class WindowService extends CheckImagesArrOnCorrect{
     @InjectRepository(FeaturesEntity)
     private readonly featuresRepository: Repository<FeaturesEntity>,
     @InjectRepository(SectionCountEntity)
-    private readonly sectionCountRepository: Repository<SectionCountEntity>
+    private readonly sectionCountRepository: Repository<SectionCountEntity>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {
     super();
   }
@@ -127,7 +130,7 @@ export class WindowService extends CheckImagesArrOnCorrect{
 
     let product_producer: ProductProducerEntity;
 
-    if(productProducerName === ''){
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
       product_producer = null;
     }
     else {
@@ -247,6 +250,8 @@ export class WindowService extends CheckImagesArrOnCorrect{
 
     this.checkImagesArrOnCorrect(images);
 
+    await this.cacheManager.reset();
+
     const newProduct = this.windowRepository.create({
       name,
       product_producer,
@@ -331,7 +336,7 @@ export class WindowService extends CheckImagesArrOnCorrect{
 
     let product_producer: ProductProducerEntity;
 
-    if(productProducerName === ''){
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
       product_producer = null;
     }
     else {
@@ -433,6 +438,8 @@ export class WindowService extends CheckImagesArrOnCorrect{
 
     this.checkImagesArrOnCorrect(images);
 
+    await this.cacheManager.reset();
+
     curProduct.name = name;
     curProduct.product_producer = product_producer;
     curProduct.type_of_product = type_of_product;
@@ -469,6 +476,8 @@ export class WindowService extends CheckImagesArrOnCorrect{
     throw new HttpException(`window with current id: ${id} doesn't exists`,
     HttpStatus.NOT_FOUND);
 
+    await this.cacheManager.reset();
+
     return await this.windowRepository.delete(id)
     .then(() => `window by id: ${id} was deleted successfuly`);
   }
@@ -480,6 +489,8 @@ export class WindowService extends CheckImagesArrOnCorrect{
         (item.id)
       )
     );
+
+    await this.cacheManager.reset();
 
     if(windowIds.length !== 0)
     await this.windowRepository.delete(windowIds);

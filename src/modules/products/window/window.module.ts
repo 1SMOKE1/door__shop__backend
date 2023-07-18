@@ -18,6 +18,7 @@ import { CamerasCountModule } from 'src/modules/product-constants/cameras-count/
 import { FeaturesModule } from 'src/modules/product-constants/features/features.module';
 import { SectionCountModule } from 'src/modules/product-constants/section-count/section-count.module';
 import { ChildLockModule } from 'src/modules/product-constants/child-lock/child-lock.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { ChildLockModule } from 'src/modules/product-constants/child-lock/child-
     WindowProfileModule,
     CamerasCountModule,
     FeaturesModule,
-    SectionCountModule
+    SectionCountModule,
+    CacheModule.register()
   ],
   providers: [WindowService, ConvertingService],
   controllers: [WindowController],

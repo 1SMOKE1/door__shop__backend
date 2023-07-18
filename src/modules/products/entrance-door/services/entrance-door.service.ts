@@ -137,7 +137,7 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
 
     let product_producer: ProductProducerEntity;
 
-    if(productProducerName === ''){
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
       product_producer = null;
     }
     else {
@@ -317,8 +317,6 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
       metalThickness,
       frameMaterialConstruction,
       sealerCircuit,
-
-
       homePage,
       description,
     } = body;
@@ -343,7 +341,7 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
 
     let product_producer: ProductProducerEntity;
 
-    if(productProducerName === ''){
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
       product_producer = null;
     }
     else {

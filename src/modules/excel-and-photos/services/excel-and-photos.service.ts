@@ -335,7 +335,8 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
     const imageNames = row.images === undefined || row.images as string === '' ? [] : (row.images as string).split(', ') ;
     const [convertedImageNames, convertedImageFiles] =  this.getImagesForCurentRow(images, imageNames);
 
-    console.log('here')
+    console.log(typeof productProducerName)
+
     switch(true){
       case typeOfProduct === TypeOfProductEnum.interiorDoor:
         const newInteriorDoor: CreateInteriorDoorDto = {
