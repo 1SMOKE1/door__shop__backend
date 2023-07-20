@@ -149,7 +149,7 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
      if(images)
      imagesPathes = images.map((el) => el ? el.path : null);
 
-     const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+     const changedDescription = description.replace(/\n/g, '<br>' );
 
      await this.cacheManager.reset();
 
@@ -257,7 +257,7 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+    const changedDescription = description.replace(/\n/g, '<br>' );
 
     await this.cacheManager.reset();
 

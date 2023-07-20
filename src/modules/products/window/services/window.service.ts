@@ -246,7 +246,7 @@ export class WindowService extends CheckImagesArrOnCorrect{
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
 
-    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+    const changedDescription = description.replace(/\n/g, '<br>' );
 
     this.checkImagesArrOnCorrect(images);
 
@@ -431,7 +431,7 @@ export class WindowService extends CheckImagesArrOnCorrect{
 
     let imagesPathes: string[] = [...curProduct.images];
 
-    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+    const changedDescription = description.replace(/\n/g, '<br>' );
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);

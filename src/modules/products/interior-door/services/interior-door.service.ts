@@ -240,7 +240,7 @@ export class InteriorDoorService extends CheckImagesArrOnCorrect{
 
     this.checkImagesArrOnCorrect(images);
 
-    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+    const changedDescription = description.replace(/\n/g, '<br>' );
 
     const newProduct = this.interiorDoorRepository.create({
       name,
@@ -415,7 +415,7 @@ export class InteriorDoorService extends CheckImagesArrOnCorrect{
 
     this.checkImagesArrOnCorrect(images);
 
-    const changedDescription = description.replace(/\s\s+/g, '<br><br><br>');
+    const changedDescription = description.replace(/\n/g, '<br>' );
 
     curProduct.name = name;
     curProduct.product_producer = product_producer;

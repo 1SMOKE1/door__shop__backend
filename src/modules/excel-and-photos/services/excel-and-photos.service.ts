@@ -46,9 +46,9 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
           throw new HttpException('This excel file not consist, the list called interior_door', HttpStatus.CONFLICT);
         
         const interiorDoorWorkSheet = workbook.find((sheet) => sheet.name === 'interior_door');
-        const interiorDoorCsvData = interiorDoorWorkSheet.data.map((row) => row.join(';')).join('\n');
+        const interiorDoorCsvData = interiorDoorWorkSheet.data.map((row) => row.join('|')).join('\n');
   
-        const interiorDoorData = parse(interiorDoorCsvData, {output: 'objects', comma: ';'}) as unknown as IExcelProduct[];
+        const interiorDoorData = this.parseProducts(interiorDoorCsvData);
 
         // console.log(interiorDoorData)
 
@@ -79,9 +79,9 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
           throw new HttpException('This excel file not consist, the list called entrance_door', HttpStatus.CONFLICT);
   
         const entranceDoorWorkSheet = workbook.find((sheet) => sheet.name === 'entrance_door');
-        const entranceDoorCsvData = entranceDoorWorkSheet.data.map((row) => row.join(';')).join('\n');
+        const entranceDoorCsvData = entranceDoorWorkSheet.data.map((row) => row.join('|')).join('\n');
   
-        const entranceDoorData = parse(entranceDoorCsvData, {output: 'objects', comma: ';'}) as unknown as IExcelProduct[];
+        const entranceDoorData = this.parseProducts(entranceDoorCsvData);
   
         const entranceDoorData$: Promise<IExcelProduct>[] = entranceDoorData.map((row) => new Promise(async (res, rej) => {
           try{
@@ -108,9 +108,9 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
           throw new HttpException('This excel file not consist, the list called windows', HttpStatus.CONFLICT);
   
         const windowsWorkSheet = workbook.find((sheet) => sheet.name === 'windows');
-        const windowsCsvData = windowsWorkSheet.data.map((row) => row.join(';')).join('\n');
+        const windowsCsvData = windowsWorkSheet.data.map((row) => row.join('|')).join('\n');
   
-        const windowsDoorData = parse(windowsCsvData, {output: 'objects', comma: ';'}) as unknown as IExcelProduct[];
+        const windowsDoorData = this.parseProducts(windowsCsvData);
   
         const windowsDoorData$: Promise<IExcelProduct>[] = windowsDoorData.map((row) => new Promise(async (res, rej) => {
           try{
@@ -137,11 +137,13 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
         throw new HttpException('This excel file not consist, the list called furniture', HttpStatus.CONFLICT);
   
         const furnitureWorkSheet = workbook.find((sheet) => sheet.name === 'furniture');
-        const furnitureCsvData = furnitureWorkSheet.data.map((row) => row.join(';')).join('\n');
-  
-        const furnitureDoorData = parse(furnitureCsvData, {output: 'objects', comma: ';'}) as unknown as IExcelProduct[];
+        const furnitureCsvData = furnitureWorkSheet.data.map((row) => row.join('|')).join('\n');
 
-        const furnitureDoorData$: Promise<IExcelProduct>[] = furnitureDoorData.map((row) => new Promise(async (res, rej) => {
+        console.log(furnitureCsvData)
+  
+        const furnitureData = this.parseProducts(furnitureCsvData);
+
+        const furnitureData$: Promise<IExcelProduct>[] = furnitureData.map((row) => new Promise(async (res, rej) => {
           try{
             this.rowCounter += 1;
             this.checkRowHeaders(row, TypeOfProductEnum.furniture);
@@ -156,7 +158,7 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
             rej(changedErr)
           }
         }))
-        await Promise.all(furnitureDoorData$);
+        await Promise.all(furnitureData$);
         this.resetRowCounter();
 
         await this.cache.reset();
@@ -186,6 +188,8 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
     
       const rowKeys = Object.keys(row).map((key) => key.trim());
 
+      // console.log(row)
+
       // common headers
 
       switch(true){
@@ -208,17 +212,17 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
         case !rowKeys.includes('description'):
           throw new HttpException('no description header', HttpStatus.CONFLICT);
         case row.name === '' || row.name === undefined: 
-          throw new HttpException('name is required', HttpStatus.CONFLICT);
-        case row.productProducerName === '' || row.productProducerName === undefined:
-          throw new HttpException('productProducerName is required', HttpStatus.CONFLICT);
-        case row.country as string === '' || row.country === undefined:
-          throw new HttpException('country is required', HttpStatus.CONFLICT);
-        case row.guarantee as string === '' || row.guarantee === undefined:
-          throw new HttpException('guarantee is required', HttpStatus.CONFLICT);
-        case row.inStock as string === '' || row.inStock === undefined:
-          throw new HttpException('inStock is required', HttpStatus.CONFLICT);
-        case row.price as unknown as string === '' || row.price === undefined:
-          throw new HttpException('price is required', HttpStatus.CONFLICT);
+        //   throw new HttpException('name is required', HttpStatus.CONFLICT);
+        // case row.productProducerName === '' || row.productProducerName === undefined:
+        //   throw new HttpException('productProducerName is required', HttpStatus.CONFLICT);
+        // case row.country as string === '' || row.country === undefined:
+        //   throw new HttpException('country is required', HttpStatus.CONFLICT);
+        // case row.guarantee as string === '' || row.guarantee === undefined:
+        //   throw new HttpException('guarantee is required', HttpStatus.CONFLICT);
+        // case row.inStock as string === '' || row.inStock === undefined:
+        //   throw new HttpException('inStock is required', HttpStatus.CONFLICT);
+        // case row.price as unknown as string === '' || row.price === undefined:
+        //   throw new HttpException('price is required', HttpStatus.CONFLICT);
       }
       // interior_door Headers, HttpStatus.CONFLICT
       if(typeOfProduct === TypeOfProductEnum.interiorDoor)
@@ -470,5 +474,9 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
   private resetImagesArrs(): void{
     this.imagesFilesUpload = [];
     this.imagesPathesUpload = [];
+  }
+
+  private parseProducts(csvData: string){
+    return parse(csvData, {output: 'objects', comma: '|'}) as unknown as IExcelProduct[];
   }
 }

@@ -15,7 +15,7 @@ export class ExcelAndPhotosController {
   @UseInterceptors(
     FileFieldsInterceptor([
         {name: "excel", maxCount: 1},
-        {name: 'images', maxCount: 100}
+        {name: 'images', maxCount: 300}
       ],
         {
           storage: imageStorage,
@@ -33,6 +33,7 @@ export class ExcelAndPhotosController {
       const excelData = await this.excelAndPhotosService.readExcelAndPhotos(excel[0], images);
       return res.status(HttpStatus.CREATED).json(excelData);
     } catch (err){  
+      console.log(err);
       this.excelAndPhotosService.resetRowCounter();
       throw new BadRequestException(err);
     }
