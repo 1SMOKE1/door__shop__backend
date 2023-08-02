@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { TAllProductRepositories } from '../interfaces/TAllProductRepositories';
 
 @Injectable()
@@ -73,15 +73,27 @@ export class CreateQueryBuilderService {
       .getMany()
   }
 
-  public createQueryBuilderCheckBoxArrAndProductProducer(repository: Repository<any>, condition1: any, condition2: any): Promise<TAllProductRepositories>{
-    return repository
+  public createQueryBuilderCheckBoxArrAndNoProductProducer(repository: Repository<any>, condition1: any, condition2: any): Promise<TAllProductRepositories>{
+
+    const queryWithProductProducer = repository
       .createQueryBuilder('table')
       .leftJoinAndSelect('table.product_producer', 'product_producer')
       .leftJoinAndSelect('table.type_of_product', 'type_of_product')
       .where('product_producer.name IN (:...values)', condition1)
       .andWhere('type_of_product.name IN (:...names)', condition2)
-      .andWhere('table.product_producer IS NULL')
       .getMany();
+
+    const queryWithoutProductProducer =  repository
+      .createQueryBuilder('table')
+      .leftJoinAndSelect('table.type_of_product', 'type_of_product')
+      .where('table.product_producer IS NULL')
+      .getMany();
+
+    return Promise.all([queryWithProductProducer, queryWithoutProductProducer])
+    .then(([recordsWithProductProducer, recordsWithoutProductProducer]) => [
+      ...recordsWithProductProducer,
+      ...recordsWithoutProductProducer,
+    ]);
   }
 
   public createQueryBuilderSliderAndSearch(repository: Repository<any>, sliderMinValue: number, sliderMaxValue: number, searchValue: string): Promise<TAllProductRepositories>{

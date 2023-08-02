@@ -91,10 +91,10 @@ export class FiltrationService {
     const condition2 = {names: checkboxArr.map((el) => el.typeOfProduct.name)};
 
     return Promise.all([
-      this.createQueryBuilderService.createQueryBuilderCheckBoxArrAndProductProducer(this.interiorDoorRepository, condition1, condition2),
-      this.createQueryBuilderService.createQueryBuilderCheckBoxArrAndProductProducer(this.entranceDoorRepository, condition1, condition2),
-      this.createQueryBuilderService.createQueryBuilderCheckBoxArrAndProductProducer(this.furnitureRepository, condition1, condition2),
-      this.createQueryBuilderService.createQueryBuilderCheckBoxArrAndProductProducer(this.windowRepository, condition1, condition2),
+      this.createQueryBuilderService.createQueryBuilderCheckBoxArrAndNoProductProducer(this.interiorDoorRepository, condition1, condition2),
+      this.createQueryBuilderService.createQueryBuilderCheckBoxArrAndNoProductProducer(this.entranceDoorRepository, condition1, condition2),
+      this.createQueryBuilderService.createQueryBuilderCheckBoxArrAndNoProductProducer(this.furnitureRepository, condition1, condition2),
+      this.createQueryBuilderService.createQueryBuilderCheckBoxArrAndNoProductProducer(this.windowRepository, condition1, condition2),
     ]).then((products) => products.flat())
   }
 
