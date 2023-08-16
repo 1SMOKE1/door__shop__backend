@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Brackets, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { TAllProductRepositories } from '../interfaces/TAllProductRepositories';
 
 @Injectable()

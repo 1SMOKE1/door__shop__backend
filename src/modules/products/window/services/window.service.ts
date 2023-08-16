@@ -81,6 +81,14 @@ export class WindowService extends CheckImagesArrOnCorrect{
     return currentProduct;
   }
 
+  async findByName(name: string) {
+    const currentProduct = await this.windowRepository.findOne({ where: { name }, relations: { product_producer: true } });
+
+    if (currentProduct == null) throw new HttpException(`window with name: ${name}, doesn't exists`, HttpStatus.FORBIDDEN);
+
+    return currentProduct;
+  }
+
   async createOne(body: CreateWindowDto, files: IImages) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
 
@@ -465,8 +473,192 @@ export class WindowService extends CheckImagesArrOnCorrect{
     curProduct.description = changedDescription;
     curProduct.images = imagesPathes;
 
+    return await this.windowRepository.save(curProduct)  
+  }
+
+  async updateByName(body: UpdateWindowDto, files: IImages) {
+    if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
+
+    const {
+      name,
+      country,
+      guarantee,
+      inStock,
+      price,
+      productProducerName,
+      typeOfProductName,
+      mosquitoNet,
+      windowSill,
+      windowEbb,
+      windowHand,
+      childLock,
+      housewifeStub,
+      glassPocketAdd,
+      lamination,
+      profile,
+      windowWidth,
+      windowHeight,
+      camerasCount,
+      features,
+      sectionCount,
+      homePage,
+      description,
+    } = body;
+
+    const curProduct = await this.findByName(name);
+
+    if (curProduct == null)
+    throw new HttpException(`window with current name: ${name} doesn't exists`,
+    HttpStatus.NOT_FOUND);
+
+    const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
+
+    if(type_of_product == null){
+      const typeOfProducts = await this.typeOfProductRepository.find();
+
+      throw new HttpException(`Incorrect typeOfProrductName you could choose from: ${typeOfProducts
+        .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
+    }
+
+    if(typeOfProductName !== TypeOfProductEnum.windows)
+    throw new HttpException(`typeOfProductName must be 'Вікна'`, HttpStatus.CONFLICT);
+
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}};
+
+    const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
+
+    if(productProducers.length === 0) throw new HttpException(`Будь ласка створіть хоча б 1 виробника для ${TypeOfProductEnum.windows}`, HttpStatus.NOT_FOUND);
+
+    let product_producer: ProductProducerEntity;
+
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
+      product_producer = null;
+    }
+    else {
+      product_producer= await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product});
+      if (product_producer == null) {
+        const producers = await this.productProducerRepository.find(typeOfProductRelations);
+  
+        throw new HttpException(`Некорректний виробник, ви взмозі обрати з: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+      }
+    }
+
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
+
+      throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+    }
+
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
+
+      throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+    }
+
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
+
+      throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+    }
 
 
+    let mosquito_net: MosquitNetEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(mosquitoNet).length !== 0)
+      mosquito_net = await this.convertingService.findAllByCond(this.mosquitoNetRepository, mosquitoNet);
+
+    let window_sill: WindowSillEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(windowSill).length !== 0)
+      window_sill = await this.convertingService.findAllByCond(this.windowSillRepository, windowSill);
+
+    let window_ebb: WindowEbbEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(windowEbb).length !== 0)
+      window_ebb = await this.convertingService.findAllByCond(this.windowEbbRepository, windowEbb);
+
+    let window_hand: WindowHandEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(windowHand).length !== 0)
+      window_hand = await this.convertingService.findAllByCond(this.windowHandRepository, windowHand);
+
+    let child_lock: ChildLockEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(childLock).length !== 0)
+      child_lock = await this.convertingService.findAllByCond(this.childLockRepository, childLock);
+
+    let housewife_stub: HousewifeStubEntity[] = [];
+    
+    if(this.convertingService.checkOnNotEmpty(housewifeStub).length !== 0)
+      housewife_stub = await this.convertingService.findAllByCond(this.houseWifeStubRepository, housewifeStub);
+
+    let glass_pocket_add: GlassPocketAddEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(glassPocketAdd).length !== 0)
+      glass_pocket_add = await this.convertingService.findAllByCond(this.glassPocketAddRepository, glassPocketAdd);
+
+    let window_lamination: WindowLaminationEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(lamination).length !== 0)
+      window_lamination = await this.convertingService.findAllByCond(this.laminationRepository, lamination);
+
+    let window_profile: WindowProfileEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(profile).length !== 0)
+      window_profile = await this.convertingService.findAllByCond(this.profileRepository, profile);
+    
+    let cameras_count: CamerasCountEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(camerasCount).length !== 0)
+      cameras_count = await this.convertingService.findAllByCond(this.camerasCountRepository, camerasCount);
+    
+    let window_features: FeaturesEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(features).length !== 0)
+      window_features = await this.convertingService.findAllByCond(this.featuresRepository, features);
+    
+    let sections_count: SectionCountEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(sectionCount).length !== 0)
+      sections_count = await this.convertingService.findAllByCond(this.sectionCountRepository, sectionCount);
+
+    const { images } = files;
+
+    let imagesPathes: string[] = [...curProduct.images];
+
+    const changedDescription = description.replace(/\n/g, '<br>' );
+    
+    if(images)
+    imagesPathes = images.map((el) => el ? el.path : null);
+
+    this.checkImagesArrOnCorrect(images);
+
+    await this.cacheManager.reset();
+
+    curProduct.name = name;
+    curProduct.product_producer = product_producer;
+    curProduct.type_of_product = type_of_product;
+    curProduct.guarantee = guarantee;
+    curProduct.country = country;
+    curProduct.in_stock = inStock;
+    curProduct.price = +price;
+    curProduct.mosquito_net = mosquito_net;
+    curProduct.window_sill = window_sill;
+    curProduct.window_ebb = window_ebb;
+    curProduct.window_hand = window_hand;
+    curProduct.child_lock = child_lock;
+    curProduct.housewife_stub = housewife_stub;
+    curProduct.glass_pocket_add = glass_pocket_add;
+    curProduct.lamination = window_lamination;
+    curProduct.profile = window_profile;
+    curProduct.window_width = +windowWidth;
+    curProduct.window_height = +windowHeight;
+    curProduct.cameras_count = cameras_count;
+    curProduct.features = window_features;
+    curProduct.sections_count = sections_count;
+    curProduct.home_page = homePage;
+    curProduct.description = changedDescription;
+    curProduct.images = imagesPathes;
 
     return await this.windowRepository.save(curProduct)  
   }

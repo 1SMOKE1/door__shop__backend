@@ -83,9 +83,18 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
  
     const currentProduct = await this.entranceDoorRepository.findOne({where: {id}, ...this.getRelations});
 
-    if (currentProduct == null) throw new HttpException(`entrance_door with id: ${id}, doesn't exists`, HttpStatus.FORBIDDEN);
+    if (currentProduct == null) throw new HttpException(`entrance_door with id: ${id}, doesn't exists`, HttpStatus.NOT_FOUND);
 
     return currentProduct;
+  }
+
+  async findByName(name: string) {
+
+    const currentProduct = await this.entranceDoorRepository.findOne({where: {name}, ...this.getRelations});
+
+    if(currentProduct == null) throw new HttpException(`entrence_door with name: ${name}, doesn't exists`, HttpStatus.NOT_FOUND);
+
+    return currentProduct
   }
 
   async createOne(body: CreateEntranceDoorDto, files: IImages) {
@@ -320,6 +329,186 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
       homePage,
       description,
     } = body;
+
+    const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
+
+    if(type_of_product == null){
+      const typeOfProducts = await this.typeOfProductRepository.find();
+
+      throw new HttpException(`Incorrect typeOfProrduct you could choose from: ${typeOfProducts
+        .map((el: TypeOfProductEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT)
+    }
+
+    if(typeOfProductName !== TypeOfProductEnum.entranceDoor)
+    throw new HttpException(`typeOfProductName must be 'Двері вхідні'`, HttpStatus.CONFLICT);
+
+    const typeOfProductRelations = {relations: {type_of_product: true}, where: {type_of_product}};
+
+    const productProducers = await this.productProducerRepository.find(typeOfProductRelations);
+
+    if(productProducers.length === 0) throw new HttpException(`Будь ласка створіть хоча б 1 виробника для ${TypeOfProductEnum.entranceDoor}`, HttpStatus.NOT_FOUND);
+
+    let product_producer: ProductProducerEntity;
+
+    if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
+      product_producer = null;
+    }
+    else {
+      product_producer= await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product});
+      if (product_producer == null) {
+        const producers = await this.productProducerRepository.find(typeOfProductRelations);
+  
+        throw new HttpException(`Некорректний виробник, ви взмозі обрати з: ${producers.map((el: ProductProducerEntity) => `'${el.name}'`)}`, HttpStatus.CONFLICT);
+      }
+    }
+      
+
+    
+
+    
+    if (!(checkEnum(CountryEnum, country))) {
+      const countries = generateErrorArr(CountryEnum);
+
+      throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+    }
+
+    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+      const guaranties = generateErrorArr(GuaranteeEnum);
+
+      throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+    }
+
+    if (!(checkEnum(InStockEnum, inStock))) {
+      const inStocks = generateErrorArr(InStockEnum);
+
+      throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
+    }
+
+    let door_insulation: DoorInsulationEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(doorInsulation).length !== 0)
+      door_insulation = await this.convertingService.findAllByCond(this.doorInsulationRepository, doorInsulation);
+    
+    let door_covering: DoorCoveringEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(covering).length !== 0)
+      door_covering = await this.convertingService.findAllByCond(this.doorCoveringRepository, covering);
+
+    let opening_type: OpeningTypeEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(openingType).length !== 0)
+      opening_type = await this.convertingService.findAllByCond(this.doorOpeningTypeRepository, openingType);
+
+    let door_size: DoorSizeEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(size).length !== 0)
+      door_size = await this.convertingService.findAllByCond(this.doorSizeRepository, size);
+
+    let lower_lock: FurnitureEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(lowerLock).length !== 0)
+      lower_lock = await this.convertingService.findAllByCond(this.furnitureRepository, lowerLock);
+
+    let upper_lock: FurnitureEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(upperLock).length !== 0)
+      upper_lock = await this.convertingService.findAllByCond(this.furnitureRepository, upperLock);
+
+    let door_hand: FurnitureEntity[] = [];
+    
+    if(this.convertingService.checkOnNotEmpty(doorHand).length !== 0)
+      door_hand = await this.convertingService.findAllByCond(this.furnitureRepository, doorHand);
+
+    let door_weight: DoorWeightEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(weight).length !== 0)
+      door_weight = await this.convertingService.findAllByCond(this.doorWeightRepository, weight);
+
+    let frame_material_construction: FrameMaterialConstructionEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(frameMaterialConstruction).length !== 0)
+      frame_material_construction = await this.convertingService.findAllByCond(this.doorFrameMaterialConstructionRepository, frameMaterialConstruction);
+  
+    let sealer_circuit: SealerCircuitEntity[] = [];
+
+    if(this.convertingService.checkOnNotEmpty(sealerCircuit).length !== 0)
+      sealer_circuit = await this.convertingService.findAllByCond(this.sealerCircuitRepository, sealerCircuit);
+
+     // IMAGES
+
+    const { images } = files;
+
+    let imagesPathes: string[] = [...curProduct.images];
+    
+    if(images)
+    imagesPathes = images.map((el) => el ? el.path : null);
+
+    const changedDescription = description.replace(/\n/g, '<br>' );
+
+    this.checkImagesArrOnCorrect(images);
+
+    await this.cacheManager.reset();
+
+    curProduct.name = name;
+    curProduct.product_producer = product_producer;
+    curProduct.type_of_product = type_of_product;
+    curProduct.guarantee = guarantee;
+    curProduct.country = country;
+    curProduct.in_stock = inStock;
+    curProduct.price = +price;
+    curProduct.fabric_material_thickness = +fabricMaterialThickness;
+    curProduct.frame_material_thickness = +frameMaterialThickness;
+    curProduct.door_insulation = door_insulation;
+    curProduct.covering = door_covering;
+    curProduct.door_peephole = doorPeephole;
+    curProduct.opening_type = opening_type;
+    curProduct.size = door_size;
+    curProduct.lower_lock = lower_lock;
+    curProduct.upper_lock = upper_lock;
+    curProduct.door_hand = door_hand;
+    curProduct.weight = door_weight;
+    curProduct.metal_thickness = +metalThickness;
+    curProduct.frame_material_construction = frame_material_construction;
+    curProduct.sealer_circuit = sealer_circuit;
+    curProduct.home_page = homePage;
+    curProduct.description = changedDescription;
+    curProduct.images = imagesPathes;
+    
+    return await this.entranceDoorRepository.save(curProduct);
+  }
+
+  async updateByName(body: UpdateEntranceDoorDto, files: IImages) {
+    if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
+
+    const {
+      name,
+      productProducerName,
+      typeOfProductName,
+      country,
+      guarantee,
+      inStock,
+      price,
+      fabricMaterialThickness,
+      frameMaterialThickness,
+      doorInsulation,
+      covering,
+      doorPeephole,
+      openingType,
+      size,
+      lowerLock,
+      upperLock,
+      doorHand,
+      weight,
+      metalThickness,
+      frameMaterialConstruction,
+      sealerCircuit,
+      homePage,
+      description,
+    } = body;
+
+    const curProduct = await this.findByName(name);
+
+    if (curProduct == null) throw new HttpException(`entrance_door with current name: ${name} doesn't exists`, HttpStatus.NOT_FOUND);
 
     const type_of_product = await this.typeOfProductRepository.findOneBy({name: typeOfProductName});
 

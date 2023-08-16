@@ -138,8 +138,6 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
   
         const furnitureWorkSheet = workbook.find((sheet) => sheet.name === 'furniture');
         const furnitureCsvData = furnitureWorkSheet.data.map((row) => row.join('|')).join('\n');
-
-        console.log(furnitureCsvData)
   
         const furnitureData = this.parseProducts(furnitureCsvData);
 
@@ -165,14 +163,6 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
   
         this.deleteFile(excel);
   
-
-
-
-        
-      
-    
-
-  
         return 'ok'
   }
   
@@ -187,8 +177,6 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
   private checkRowHeaders(row: IExcelProduct, typeOfProduct: TypeOfProductEnum){
     
       const rowKeys = Object.keys(row).map((key) => key.trim());
-
-      // console.log(row)
 
       // common headers
 
@@ -211,7 +199,7 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
           throw new HttpException('no images header', HttpStatus.CONFLICT);
         case !rowKeys.includes('description'):
           throw new HttpException('no description header', HttpStatus.CONFLICT);
-        case row.name === '' || row.name === undefined: 
+        // case row.name === '' || row.name === undefined: 
         //   throw new HttpException('name is required', HttpStatus.CONFLICT);
         // case row.productProducerName === '' || row.productProducerName === undefined:
         //   throw new HttpException('productProducerName is required', HttpStatus.CONFLICT);
@@ -338,8 +326,6 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
     this.resetImagesArrs();
     const imageNames = row.images === undefined || row.images as string === '' ? [] : (row.images as string).split(', ') ;
     const [convertedImageNames, convertedImageFiles] =  this.getImagesForCurentRow(images, imageNames);
-
-    console.log(typeof productProducerName)
 
     switch(true){
       case typeOfProduct === TypeOfProductEnum.interiorDoor:

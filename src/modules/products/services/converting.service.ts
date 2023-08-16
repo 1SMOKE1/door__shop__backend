@@ -10,7 +10,6 @@ export class ConvertingService {
       obj.map(p =>  
         new Promise((res) => res(p))
           .then((el: string) => {
-            console.log(el)
             return repository.findOneByOrFail({name: el})
           }
             ))
