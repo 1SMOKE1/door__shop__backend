@@ -53,7 +53,7 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
   async findByName(name: string) {
     const currentProduct = await this.furnitureRepository.findOne({where: {name}, ...this.getRelations});
 
-    if(currentProduct == null) throw new HttpException(`furniture with name: ${name}, doesn't exists`, HttpStatus.NOT_FOUND);
+    // if(currentProduct == null) throw new HttpException(`furniture with name: ${name}, doesn't exists`, HttpStatus.NOT_FOUND);
 
     return currentProduct;
   }
@@ -175,8 +175,6 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
 
   async updateById(id: number, body: UpdateFurnitureDto, files: IImages) {
     if (!body) throw new HttpException("No body", HttpStatus.BAD_REQUEST);
-
-    console.log(body)
 
     const curProduct = await this.findById(id);
 
@@ -321,7 +319,7 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
     let product_producer: ProductProducerEntity;
 
     if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
-      product_producer = null;
+      product_producer = curProduct.product_producer === null ? null : curProduct.product_producer;
     }
     else {
       product_producer= await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product});
@@ -332,19 +330,25 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
       }
     }
 
-    if (!(checkEnum(CountryEnum, country))) {
+    const updatedCountry = country as unknown as string !== '' ? country : curProduct.country;
+
+    if (!(checkEnum(CountryEnum, updatedCountry))) {
       const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+    const updatedGuarantee = guarantee as unknown as string !== '' ? guarantee : curProduct.guarantee;
+
+    if (!(checkEnum(GuaranteeEnum, updatedGuarantee))) {
       const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(checkEnum(InStockEnum, inStock))) {
+    const updatedInStock = inStock as unknown as string !== '' ? inStock : curProduct.in_stock;
+
+    if (!(checkEnum(InStockEnum, updatedInStock))) {
       const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
@@ -367,19 +371,21 @@ export class FurnitureService extends CheckImagesArrOnCorrect{
 
     const changedDescription = description.replace(/\n/g, '<br>' );
 
+    const updatedDescription = description === '' ? curProduct.description : changedDescription ;
+
     await this.cacheManager.reset();
 
     this.checkImagesArrOnCorrect(images);
 
     curProduct.name = name;
-    curProduct.country = country;
-    curProduct.guarantee = guarantee;
+    curProduct.country = updatedCountry;
+    curProduct.guarantee = updatedGuarantee;
     curProduct.product_producer = product_producer;
     curProduct.type_of_product = type_of_product;
-    curProduct.in_stock = inStock;
+    curProduct.in_stock = updatedInStock;
     curProduct.price = price;
     curProduct.home_page = homePage;
-    curProduct.description = changedDescription;
+    curProduct.description = updatedDescription;
     curProduct.images = imagesPathes;
     curProduct.choosen_image = choosenImage;
 

@@ -1,3 +1,4 @@
+import { UpdateInteriorDoorDto } from './../../products/interior-door/dto/update-interior-door.dto';
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
@@ -16,6 +17,10 @@ import { CreateFurnitureDto } from 'src/modules/products/furniture/dto/create-fu
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from "cache-manager";
 import { CheckImagesArrOnCorrect } from 'src/utils/checkImagesArrOnCorrect';
+import { UpdateEntranceDoorDto } from 'src/modules/products/entrance-door/dto/update-entrance-door.dto';
+import { UpdateWindowDto } from 'src/modules/products/window/dto/update-window.dto';
+import { UpdateFurnitureDto } from 'src/modules/products/furniture/dto/update-furniture.dto';
+import { EnumExcelMethod } from 'src/enums/excel-metho';
 
 @Injectable()
 export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
@@ -34,7 +39,7 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
     super();
   }
 
-  async readExcelAndPhotos(excel: Express.Multer.File, images: Array<Express.Multer.File>){
+  public async readExcelAndPhotos(excel: Express.Multer.File, images: Array<Express.Multer.File>, method: EnumExcelMethod){
     
         const workbook = reader.parse(fs.readFileSync(`${excel.path}`));
 
@@ -50,14 +55,20 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
   
         const interiorDoorData = this.parseProducts(interiorDoorCsvData);
 
-        // console.log(interiorDoorData)
-
         const interiorDoorData$: Promise<IExcelProduct>[] = interiorDoorData.map((row) => new Promise(async (res, rej) => {
           try{
             this.rowCounter += 1;
             this.checkRowHeaders(row, TypeOfProductEnum.interiorDoor);
-            await this.addRowToDb(row, TypeOfProductEnum.interiorDoor, images)
-            res(row)
+            switch(true){
+              case method === EnumExcelMethod.CREATE:
+                await this.addRowToDb(row, TypeOfProductEnum.interiorDoor, images);
+                res(row)
+                break;
+              case method === EnumExcelMethod.UPDATE:
+                await this.updateRowInDB(row, TypeOfProductEnum.interiorDoor, images);
+                res(row)
+                break;
+            }
           } catch (err) {
             const changedErr = {
               ...err, message: `${err.message}, in row: ${this.rowCounter}, list interior_door`
@@ -67,8 +78,14 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
             rej(changedErr)
           }
         }))
-
-        await Promise.all(interiorDoorData$);
+        try{
+          await Promise.all(interiorDoorData$);
+          this.resetRowCounter();
+        } catch (err) {
+          this.resetRowCounter();
+          throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+        }
+ 
         this.resetRowCounter();
 
 
@@ -87,7 +104,16 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
           try{
             this.rowCounter += 1;
             this.checkRowHeaders(row, TypeOfProductEnum.entranceDoor);
-            await this.addRowToDb(row, TypeOfProductEnum.entranceDoor, images)
+            switch(true){
+              case method === EnumExcelMethod.CREATE:
+                await this.addRowToDb(row, TypeOfProductEnum.entranceDoor, images);
+                res(row)
+                break;
+              case method === EnumExcelMethod.UPDATE:
+                await this.updateRowInDB(row, TypeOfProductEnum.entranceDoor, images);
+                res(row)
+                break;
+            }
             res(row)
           } catch (err) {
             const changedErr = {
@@ -98,9 +124,15 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
             rej(changedErr)
           }
         }))
-        
-        await Promise.all(entranceDoorData$);
-        this.resetRowCounter();
+        try{
+          await Promise.all(entranceDoorData$);
+          this.resetRowCounter();
+        } catch (err) {
+          this.resetRowCounter();
+          throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+        }
+   
+
   
         // windows
   
@@ -116,7 +148,16 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
           try{
             this.rowCounter += 1;
             this.checkRowHeaders(row, TypeOfProductEnum.windows);
-            await this.addRowToDb(row, TypeOfProductEnum.windows, images)
+            switch(true){
+              case method === EnumExcelMethod.CREATE:
+                await this.addRowToDb(row, TypeOfProductEnum.windows, images);
+                res(row)
+                break;
+              case method === EnumExcelMethod.UPDATE:
+                await this.updateRowInDB(row, TypeOfProductEnum.windows, images);
+                res(row)
+                break;
+            }
             res(row)
           } catch (err) {
             const changedErr = {
@@ -128,9 +169,14 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
           }
         }))
         
-        await Promise.all(windowsDoorData$);
-        this.resetRowCounter();
-  
+        try {
+          await Promise.all(windowsDoorData$);
+          this.resetRowCounter();
+        } catch (err) {
+          this.resetRowCounter();
+          throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+        }
+
         // furniture
   
         if(!workbook.find(({name}) => name === 'furniture'))
@@ -145,7 +191,16 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
           try{
             this.rowCounter += 1;
             this.checkRowHeaders(row, TypeOfProductEnum.furniture);
-            await this.addRowToDb(row, TypeOfProductEnum.furniture, images)
+            switch(true){
+              case method === EnumExcelMethod.CREATE:
+                await this.addRowToDb(row, TypeOfProductEnum.furniture, images);
+                res(row)
+                break;
+              case method === EnumExcelMethod.UPDATE:
+                await this.updateRowInDB(row, TypeOfProductEnum.furniture, images);
+                res(row)
+                break;
+            }
             res(row)
           } catch (err) {
             const changedErr = {
@@ -156,8 +211,15 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
             rej(changedErr)
           }
         }))
-        await Promise.all(furnitureData$);
-        this.resetRowCounter();
+        try{
+          await Promise.all(furnitureData$);
+          this.resetRowCounter();
+        } catch (err) {
+          this.resetRowCounter();
+          throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+        }
+  
+      
 
         await this.cache.reset();
   
@@ -165,7 +227,8 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
   
         return 'ok'
   }
-  
+
+
 
   private deleteFile(file: Express.Multer.File){
     return fs.unlink(`./uploads/images/${file.filename}`, (err) => {
@@ -431,10 +494,139 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
           homePage: homePage === undefined || homePage === 'no' ? false : true,
           choosenImage: 0
         }
-       await this.furnitureService.createOne(newFurniture, {images: convertedImageFiles})
-       break;
+        await this.furnitureService.createOne(newFurniture, {images: convertedImageFiles})
+        break;
     }
     
+  }
+
+  private async updateRowInDB(row: IExcelProduct, typeOfProduct: TypeOfProductEnum, images: Array<Express.Multer.File> | undefined) {
+    const {
+      name, country, productProducerName, guarantee,
+      price, inStock, fabricMaterialThickness, fabricMaterialHeight,
+      fabricMaterialWidth, doorIsolation, doorFrameMaterial, 
+      doorSelectionBoard, doorWelt,
+      doorHand, doorMechanism, doorLoops, doorStopper,
+      doorSlidingSystem, frameMaterialThickness, doorInsulation,
+      covering, doorPeephole, openingType, size, 
+      lowerLock, upperLock, weight, metalThickness,
+      frameMaterialConstruction, sealerCircuit, mosquitoNet,
+      windowSill, windowEbb, windowHand, childLock,
+      housewifeStub, glassPocketAdd, lamination, profile,
+      windowHeight, windowWidth, camerasCount, features,
+      sectionCount, homePage, description
+    } = row
+    this.resetImagesArrs();
+    const imageNames = row.images === undefined || row.images as string === '' ? [] : (row.images as string).split(', ') ;
+    const [convertedImageNames, convertedImageFiles] =  this.getImagesForCurentRow(images, imageNames);
+
+    switch(true){
+      case typeOfProduct === TypeOfProductEnum.interiorDoor:
+        const updatedInteriorDoor: UpdateInteriorDoorDto = {
+          name,
+          productProducerName: productProducerName === undefined || productProducerName === 'null' ? null : productProducerName,
+          typeOfProductName: typeOfProduct,
+          country,
+          guarantee,
+          price,
+          inStock,
+          fabricMaterialThickness: ((fabricMaterialThickness as unknown as string) === '' || fabricMaterialThickness === undefined) ? 0 : fabricMaterialThickness,
+          fabricMaterialHeight: ((fabricMaterialHeight as unknown as string) === '' || fabricMaterialHeight === undefined) ? 0 : fabricMaterialHeight,
+          fabricMaterialWidth: (fabricMaterialWidth === undefined || fabricMaterialWidth === '') ? [] : (fabricMaterialWidth as string).split(', '),
+          doorIsolation: (doorIsolation === undefined || doorIsolation === '') ? [] : (doorIsolation as string).split(', '),
+          doorFrameMaterial: (doorFrameMaterial === undefined || doorFrameMaterial === '') ? [] : (doorFrameMaterial as string).split(', '),
+          doorSelectionBoard: (doorSelectionBoard === undefined || doorSelectionBoard === '') ? [] : (doorSelectionBoard as string).split(', '),
+          doorWelt: (doorWelt === undefined || doorWelt === '') ? [] : (doorWelt as string).split(', '),
+          doorHand: (doorHand === undefined || doorHand === '') ? [] : (doorHand as string).split(', '),
+          doorLoops: (doorLoops === undefined || doorLoops === '') ? [] : (doorLoops as string).split(', '),
+          doorMechanism: (doorMechanism === undefined || doorMechanism === '') ? [] : (doorMechanism as string).split(', '),
+          doorStopper: (doorStopper === undefined || doorStopper === '')? [] : (doorStopper as string).split(', '),
+          doorSlidingSystem: (doorSlidingSystem === undefined || doorSlidingSystem === '')? [] : (doorSlidingSystem as string).split(', '),
+          images: (images === undefined || images as unknown as string === '') ? [] : convertedImageNames,
+          description: description === undefined ? '' : description,
+          homePage: homePage === undefined || homePage === 'no' ? false : true,
+          choosenImage: 0
+        }
+
+        await this.interiorDoorService.updateByName(updatedInteriorDoor, {images: convertedImageFiles});
+        break;
+      case typeOfProduct === TypeOfProductEnum.entranceDoor:
+        const updatedEntranceDoor: UpdateEntranceDoorDto = {
+          name,
+          productProducerName: productProducerName === undefined || productProducerName === 'null' ? null : productProducerName,
+          typeOfProductName: typeOfProduct,
+          country,
+          guarantee,
+          price,
+          inStock,
+          fabricMaterialThickness,
+          frameMaterialThickness,
+          doorInsulation: doorInsulation === undefined ? [] : (doorInsulation as string).split(', '),
+          covering: covering === undefined ? [] : (covering as string).split(', '),
+          doorPeephole: doorPeephole === undefined || homePage === 'no' ? false : true,
+          openingType: openingType === undefined ? [] : (openingType as string).split(', '),
+          size: size === undefined ? [] : (size as string).split(', '),
+          lowerLock: lowerLock === undefined ? [] : (lowerLock as string).split(', '),
+          upperLock: upperLock === undefined ? [] : (upperLock as string).split(', '),
+          weight: weight === undefined ? [] : (weight as string).split(', '),
+          metalThickness,
+          frameMaterialConstruction: frameMaterialConstruction === undefined ? [] : (frameMaterialConstruction as string).split(', '),
+          sealerCircuit: sealerCircuit === undefined ? [] : (sealerCircuit as string).split(', '),
+          doorHand: doorHand === undefined ? [] : (doorHand as string).split(', '),
+          images: images === undefined ? [] : convertedImageNames,
+          description: description === undefined ? '' : description,
+          homePage: homePage === undefined || homePage === 'no' ? false : true,
+          choosenImage: 0
+        }
+        await this.entranceDoorService.updateByName(updatedEntranceDoor, {images: convertedImageFiles});
+        break;
+      case typeOfProduct === TypeOfProductEnum.windows:
+        const updatedWindow: UpdateWindowDto = {
+          name,
+          productProducerName: productProducerName === undefined || productProducerName === 'null' ? null : productProducerName,
+          typeOfProductName: typeOfProduct,
+          country,
+          guarantee,
+          price,
+          inStock,
+          mosquitoNet: mosquitoNet === undefined ? [] : (mosquitoNet as string).split(', '),
+          windowSill: windowSill === undefined ? [] : (windowSill as string).split(', '),
+          windowEbb: windowEbb === undefined ? [] : (windowEbb as string).split(', '),
+          windowHand: windowHand === undefined ? [] : (windowHand as string).split(', '),
+          childLock: childLock === undefined ? [] : (childLock as string).split(', '),
+          housewifeStub: housewifeStub === undefined ? [] : (housewifeStub as string).split(', '),
+          glassPocketAdd: glassPocketAdd === undefined ? [] : (glassPocketAdd as string).split(', '),
+          lamination: lamination === undefined ? [] : (lamination as string).split(', '),
+          profile: profile === undefined ? [] : (profile as string).split(', '),
+          windowWidth,
+          windowHeight,
+          camerasCount: camerasCount === undefined ? [] : (camerasCount as string).split(', '),
+          features: features === undefined ? [] : (features as string).split(', '),
+          sectionCount: sectionCount === undefined ? [] : (sectionCount as string).split(', '),
+          images: images === undefined ? [] : convertedImageNames,
+          description: description === undefined ? '' : description,
+          homePage: homePage === undefined || homePage === 'no' ? false : true,
+          choosenImage: 0
+        }
+        await this.windowService.updateByName(updatedWindow, {images: convertedImageFiles});
+        break;
+      case typeOfProduct === TypeOfProductEnum.furniture:
+        const updatedFurniture: UpdateFurnitureDto = {
+          name, 
+          country,
+          productProducerName,
+          typeOfProductName: typeOfProduct,
+          price,
+          guarantee,
+          inStock,
+          images: images === undefined ? [] : convertedImageNames,
+          description: description === undefined ? '' : description,
+          homePage: homePage === undefined || homePage === 'no' ? false : true,
+          choosenImage: 0
+        }
+        await this.furnitureService.updateByName(updatedFurniture, {images: convertedImageFiles})
+        break;
+    }
   }
 
   private getImagesForCurentRow(images: Array<Express.Multer.File>, imageNames: string[]): [imageNames: string[], images: Array<Express.Multer.File>]{
@@ -465,4 +657,6 @@ export class ExcelAndPhotosService extends CheckImagesArrOnCorrect{
   private parseProducts(csvData: string){
     return parse(csvData, {output: 'objects', comma: '|'}) as unknown as IExcelProduct[];
   }
+
+
 }

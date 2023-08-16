@@ -84,7 +84,7 @@ export class WindowService extends CheckImagesArrOnCorrect{
   async findByName(name: string) {
     const currentProduct = await this.windowRepository.findOne({ where: { name }, relations: { product_producer: true } });
 
-    if (currentProduct == null) throw new HttpException(`window with name: ${name}, doesn't exists`, HttpStatus.FORBIDDEN);
+    // if (currentProduct == null) throw new HttpException(`window with name: ${name}, doesn't exists`, HttpStatus.FORBIDDEN);
 
     return currentProduct;
   }
@@ -532,7 +532,7 @@ export class WindowService extends CheckImagesArrOnCorrect{
     let product_producer: ProductProducerEntity;
 
     if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
-      product_producer = null;
+      product_producer = curProduct.product_producer === null ? null : curProduct.product_producer;
     }
     else {
       product_producer= await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product});
@@ -543,19 +543,25 @@ export class WindowService extends CheckImagesArrOnCorrect{
       }
     }
 
-    if (!(checkEnum(CountryEnum, country))) {
+    const updatedCountry = country as unknown as string !== '' ? country : curProduct.country;
+
+    if (!(checkEnum(CountryEnum, updatedCountry))) {
       const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+    const updatedGuarantee = guarantee as unknown as string !== '' ? guarantee : curProduct.guarantee;
+
+    if (!(checkEnum(GuaranteeEnum, updatedGuarantee))) {
       const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(checkEnum(InStockEnum, inStock))) {
+    const updatedInStock = inStock as unknown as string !== '' ? inStock : curProduct.in_stock;
+
+    if (!(checkEnum(InStockEnum, updatedInStock))) {
       const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
@@ -627,6 +633,8 @@ export class WindowService extends CheckImagesArrOnCorrect{
     let imagesPathes: string[] = [...curProduct.images];
 
     const changedDescription = description.replace(/\n/g, '<br>' );
+
+    const updatedDescription = description === '' ? curProduct.description : changedDescription ;
     
     if(images)
     imagesPathes = images.map((el) => el ? el.path : null);
@@ -638,9 +646,9 @@ export class WindowService extends CheckImagesArrOnCorrect{
     curProduct.name = name;
     curProduct.product_producer = product_producer;
     curProduct.type_of_product = type_of_product;
-    curProduct.guarantee = guarantee;
-    curProduct.country = country;
-    curProduct.in_stock = inStock;
+    curProduct.country = updatedCountry;
+    curProduct.guarantee = updatedGuarantee;
+    curProduct.in_stock = updatedInStock;
     curProduct.price = +price;
     curProduct.mosquito_net = mosquito_net;
     curProduct.window_sill = window_sill;
@@ -657,7 +665,7 @@ export class WindowService extends CheckImagesArrOnCorrect{
     curProduct.features = window_features;
     curProduct.sections_count = sections_count;
     curProduct.home_page = homePage;
-    curProduct.description = changedDescription;
+    curProduct.description = updatedDescription;
     curProduct.images = imagesPathes;
 
     return await this.windowRepository.save(curProduct)  

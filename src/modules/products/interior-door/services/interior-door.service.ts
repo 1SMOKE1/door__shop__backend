@@ -87,7 +87,7 @@ export class InteriorDoorService extends CheckImagesArrOnCorrect{
   async findByName(name: string) {
     const currentProduct = await this.interiorDoorRepository.findOne({where: {name}, ...this.getRelations});
 
-    if(currentProduct == null) throw new HttpException(`interiorDoor with name: ${name}, doesn't exists`, HttpStatus.NOT_FOUND);
+    // if(currentProduct == null) throw new HttpException(`interiorDoor with name: ${name}, doesn't exists`, HttpStatus.NOT_FOUND);
 
     return currentProduct;
   }
@@ -509,7 +509,7 @@ export class InteriorDoorService extends CheckImagesArrOnCorrect{
     let product_producer: ProductProducerEntity;
 
     if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
-      product_producer = null;
+      product_producer = curProduct.product_producer === null ? null : curProduct.product_producer;
     }
     else {
       product_producer= await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product});
@@ -520,19 +520,25 @@ export class InteriorDoorService extends CheckImagesArrOnCorrect{
       }
     }
 
-    if (!(checkEnum(CountryEnum, country))) {
+    const updatedCountry = country as unknown as string !== '' ? country : curProduct.country;
+
+    if (!(checkEnum(CountryEnum, updatedCountry))) {
       const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Некоректна країна, ви можете обрати з: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+    const updatedGuarantee = guarantee as unknown as string !== '' ? guarantee : curProduct.guarantee;
+
+    if (!(checkEnum(GuaranteeEnum, updatedGuarantee))) {
       const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Некоректна гарантія, ви можете обрати з: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(checkEnum(InStockEnum, inStock))) {
+    const updatedInStock = inStock as unknown as string !== '' ? inStock : curProduct.in_stock;
+
+    if (!(checkEnum(InStockEnum, updatedInStock))) {
       const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Некоректна наявність, ви можете обрати з: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
@@ -598,12 +604,14 @@ export class InteriorDoorService extends CheckImagesArrOnCorrect{
 
     const changedDescription = description.replace(/\n/g, '<br>' );
 
+    const updatedDescription = description === '' ? curProduct.description : changedDescription ;
+
     curProduct.name = name;
     curProduct.product_producer = product_producer;
     curProduct.type_of_product = type_of_product;
-    curProduct.guarantee = guarantee;
-    curProduct.country = country;
-    curProduct.in_stock = inStock;
+    curProduct.country = updatedCountry;
+    curProduct.guarantee = updatedGuarantee;
+    curProduct.in_stock = updatedInStock;
     curProduct.price = +price;
     curProduct.fabric_material_thickness = +fabricMaterialThickness;
     curProduct.fabric_material_height = +fabricMaterialHeight;
@@ -620,7 +628,7 @@ export class InteriorDoorService extends CheckImagesArrOnCorrect{
     curProduct.door_loops = door_loops;
     curProduct.door_stopper = door_stopper;
     curProduct.home_page = homePage;
-    curProduct.description = changedDescription;
+    curProduct.description = updatedDescription;
     curProduct.images = imagesPathes;
 
     await this.cacheManager.reset();

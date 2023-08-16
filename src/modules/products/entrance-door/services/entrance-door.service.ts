@@ -92,7 +92,7 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
 
     const currentProduct = await this.entranceDoorRepository.findOne({where: {name}, ...this.getRelations});
 
-    if(currentProduct == null) throw new HttpException(`entrence_door with name: ${name}, doesn't exists`, HttpStatus.NOT_FOUND);
+    // if(currentProduct == null) throw new HttpException(`entrence_door with name: ${name}, doesn't exists`, HttpStatus.NOT_FOUND);
 
     return currentProduct
   }
@@ -531,7 +531,7 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
     let product_producer: ProductProducerEntity;
 
     if(productProducerName === '' || productProducerName === undefined || productProducerName === null){
-      product_producer = null;
+      product_producer = curProduct.product_producer === null ? null : curProduct.product_producer;
     }
     else {
       product_producer= await this.productProducerRepository.findOneBy({ name: productProducerName, type_of_product});
@@ -542,23 +542,25 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
       }
     }
       
-
+    const updatedCountry = country as unknown as string !== '' ? country : curProduct.country;
     
-
-    
-    if (!(checkEnum(CountryEnum, country))) {
+    if (!(checkEnum(CountryEnum, updatedCountry))) {
       const countries = generateErrorArr(CountryEnum);
 
       throw new HttpException(`Incorrect country, you could choose from: ${countries.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(checkEnum(GuaranteeEnum, guarantee))) {
+    const updatedGuarantee = guarantee as unknown as string !== '' ? guarantee : curProduct.guarantee;
+
+    if (!(checkEnum(GuaranteeEnum, updatedGuarantee))) {
       const guaranties = generateErrorArr(GuaranteeEnum);
 
       throw new HttpException(`Incorrect guarantee, you could choose from: ${guaranties.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
     }
 
-    if (!(checkEnum(InStockEnum, inStock))) {
+    const updatedInStock = inStock as unknown as string !== '' ? inStock : curProduct.in_stock;
+
+    if (!(checkEnum(InStockEnum, updatedInStock))) {
       const inStocks = generateErrorArr(InStockEnum);
 
       throw new HttpException(`Incorrect inStock, you could choose from: ${inStocks.map((el: string) => `'${el}'`)}`, HttpStatus.CONFLICT);
@@ -625,6 +627,8 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
 
     const changedDescription = description.replace(/\n/g, '<br>' );
 
+    const updatedDescription = description === '' ? curProduct.description : changedDescription ;
+
     this.checkImagesArrOnCorrect(images);
 
     await this.cacheManager.reset();
@@ -632,9 +636,9 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
     curProduct.name = name;
     curProduct.product_producer = product_producer;
     curProduct.type_of_product = type_of_product;
-    curProduct.guarantee = guarantee;
-    curProduct.country = country;
-    curProduct.in_stock = inStock;
+    curProduct.country = updatedCountry;
+    curProduct.guarantee = updatedGuarantee;
+    curProduct.in_stock = updatedInStock;
     curProduct.price = +price;
     curProduct.fabric_material_thickness = +fabricMaterialThickness;
     curProduct.frame_material_thickness = +frameMaterialThickness;
@@ -651,7 +655,7 @@ export class EntranceDoorService extends CheckImagesArrOnCorrect{
     curProduct.frame_material_construction = frame_material_construction;
     curProduct.sealer_circuit = sealer_circuit;
     curProduct.home_page = homePage;
-    curProduct.description = changedDescription;
+    curProduct.description = updatedDescription;
     curProduct.images = imagesPathes;
     
     return await this.entranceDoorRepository.save(curProduct);
