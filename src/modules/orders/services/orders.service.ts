@@ -43,14 +43,14 @@ export class OrdersService {
     // client email
 
     try {
-      await this.mailerService.sendMail(userMessage(name, email, totalCost, phone, cartLines));
+      await this.mailerService.sendMail(await userMessage(name, email, totalCost, phone, cartLines));
     } catch (err) {
       throw new HttpException("Incorrect user email", HttpStatus.CONFLICT);
     }
 
     // site owner email
     try {
-      await this.mailerService.sendMail(ownerMessage(name, email, totalCost, phone, address, kindOfPayment, cartLines));
+      await this.mailerService.sendMail(await ownerMessage(name, email, totalCost, phone, address, kindOfPayment, cartLines));
     } catch (err) {
       throw new HttpException("Incorrect some data for emailing to owner", HttpStatus.CONFLICT);
     }

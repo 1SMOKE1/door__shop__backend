@@ -6,7 +6,7 @@ import { ICartLineImage } from "src/interfaces/ICartLineImage";
 
 
 
-const userMessage = (name: string, email: string, totalCost: number, phone: string, cartLines: ICartLine[] & JSON): ISendMailOptions => {
+const userMessage = async (name: string, email: string, totalCost: number, phone: string, cartLines: ICartLine[] & JSON): Promise<ISendMailOptions> => {
 
 
   const logo: ICartLineImage = {

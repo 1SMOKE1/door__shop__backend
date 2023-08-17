@@ -4,7 +4,7 @@ import { ICartLine } from "src/modules/orders/interfaces/ICartLine";
 import getCartLinesHTML from "./cartLinesHTML";
 import getCartLinesImages from "./cartLinesImages";
 
-const ownerMessage = (name: string, email: string, totalCost: number, phone: string, address: string, kindOfPayment: string, cartLines: ICartLine[] & JSON): ISendMailOptions => {
+const ownerMessage = async (name: string, email: string, totalCost: number, phone: string, address: string, kindOfPayment: string, cartLines: ICartLine[] & JSON): Promise<ISendMailOptions> => {
   const logo: ICartLineImage = {
     filename: "logo.png",
     path: "assets/logo.png",
