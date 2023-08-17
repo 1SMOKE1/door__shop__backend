@@ -42,18 +42,27 @@ export class OrdersService {
 
     // client email
 
-    try {
-      await this.mailerService.sendMail(await userMessage(name, email, totalCost, phone, cartLines));
-    } catch (err) {
-      throw new HttpException("Incorrect user email", HttpStatus.CONFLICT);
-    }
+    const [userMessageSend, ownerMessageSend] = await Promise.all([
+      userMessage(name, email, totalCost, phone, cartLines),
+      ownerMessage(name, email, totalCost, phone, address, kindOfPayment, cartLines)
+    ])
+
+    await Promise.all([
+      this.mailerService.sendMail(userMessageSend), 
+      this.mailerService.sendMail(ownerMessageSend)
+    ])
+    // try {
+      
+    // } catch (err) {
+    //   throw new HttpException("Incorrect user email", HttpStatus.CONFLICT);
+    // }
 
     // site owner email
-    try {
-      await this.mailerService.sendMail(await ownerMessage(name, email, totalCost, phone, address, kindOfPayment, cartLines));
-    } catch (err) {
-      throw new HttpException("Incorrect some data for emailing to owner", HttpStatus.CONFLICT);
-    }
+    // try {
+      
+    // } catch (err) {
+    //   throw new HttpException("Incorrect some data for emailing to owner", HttpStatus.CONFLICT);
+    // }
 
     const newOrder = this.orderRepository.create(newOrderBody);
     return await this.orderRepository.save(newOrder);
