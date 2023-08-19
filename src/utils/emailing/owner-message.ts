@@ -22,7 +22,7 @@ const ownerMessage = async (name: string, email: string, totalCost: number, phon
 
   return {
     from: "Doorshop.dp.ua@gmail.com",
-    to: "yakdveri@gmail.com", // "kamyshan19@gmail.com", 
+    to: "kamyshan19@gmail.com", // "kamyshan19@gmail.com", // "yakdveri@gmail.com"
     subject: `Замовлення З door_shop`,
     html: `
         <body style="margin: 0;">

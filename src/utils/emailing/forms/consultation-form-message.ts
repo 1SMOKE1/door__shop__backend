@@ -13,8 +13,8 @@ const consultationFormMessage = (name: string, phone: string ): ISendMailOptions
 
   return {
     from: 'Doorshop.dp.ua@gmail.com',
-        to: 'kamyshan19@gmail.com', // chumak.dp.ua@gmail.com
-        subject: `Замовлення на "безкоштовний замір" door_shop`,
+    to: 'kamyshan19@gmail.com', // chumak.dp.ua@gmail.com
+    subject: `Замовлення на "безкоштовний замір" door_shop`,
         html: `
         <body style="margin: 0; background-color: #033579;">
         <div style="min-height: 80px; background-color: #778899;">
