@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { OrderEntity } from "../order.entity";
 import { Repository } from "typeorm";
@@ -7,8 +7,6 @@ import { MailerService } from "@nestjs-modules/mailer";
 import userMessage from "src/utils/emailing/user-message";
 import { UpdateOrderDto } from "../dto/update-order.dto";
 import ownerMessage from "src/utils/emailing/owner-message";
-import { Cache } from "cache-manager";
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class OrdersService {
@@ -16,7 +14,6 @@ export class OrdersService {
     @InjectRepository(OrderEntity)
     private readonly orderRepository: Repository<OrderEntity>,
     private readonly mailerService: MailerService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   async findAll() {
@@ -50,39 +47,24 @@ export class OrdersService {
       ownerMessage(name, email, totalCost, phone, address, kindOfPayment, cartLines)
     ])
 
-    const chachedUserMessage = await this.cacheManager.get('user_message');
-    const chachedOwnerMessage = await this.cacheManager.get('owner_message');
-
-    if(chachedUserMessage){
-      return chachedUserMessage
-    }
-
-    if(chachedOwnerMessage){
-      return chachedOwnerMessage
-    }
-
-
-
-    try{
-      await Promise.all([
-        this.mailerService.sendMail(userMessageSend), 
-        this.mailerService.sendMail(ownerMessageSend)
-      ])
-
+    await Promise.all([
+      this.mailerService.sendMail(userMessageSend), 
+      this.mailerService.sendMail(ownerMessageSend)
+    ])
+    // try {
       
-    } catch (err) {
-      throw new HttpException("Incorrect user email", HttpStatus.CONFLICT);
-    }
+    // } catch (err) {
+    //   throw new HttpException("Incorrect user email", HttpStatus.CONFLICT);
+    // }
 
+    // site owner email
+    // try {
+      
+    // } catch (err) {
+    //   throw new HttpException("Incorrect some data for emailing to owner", HttpStatus.CONFLICT);
+    // }
 
     const newOrder = this.orderRepository.create(newOrderBody);
-
-    await Promise.all([
-      this.cacheManager.set('user_message', chachedUserMessage, 60 * 60 * 1000),
-      this.cacheManager.set('owner_message', chachedOwnerMessage, 60 * 60 * 1000)
-    ])
-
-
     return await this.orderRepository.save(newOrder);
   }
 
